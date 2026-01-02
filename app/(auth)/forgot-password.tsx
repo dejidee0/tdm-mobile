@@ -1,21 +1,30 @@
 import { ThemedText } from '@/components/themed-text';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Image, StyleSheet, TextInput, TouchableOpacity, View, ActivityIndicator, ImageBackground } from 'react-native';
+import { ActivityIndicator, Alert, Image, ImageBackground, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuth } from '../context/AuthContext';
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
   const [email, setEmail] = useState('');
 
   const [loading, setLoading] = useState(false);
+  const { forgotPassword } = useAuth();
 
   async function handleSend() {
     setLoading(true);
     try {
+      if (!email) {
+        Alert.alert('Missing email', 'Please provide your email address');
+        return;
+      }
+      await forgotPassword(email);
+      Alert.alert('Sent', 'Check your email for password reset instructions');
       router.push('/(auth)/password-reset');
     } catch (e) {
       console.warn(e);
+      Alert.alert('Failed', e?.message ?? String(e));
     } finally {
       setLoading(false);
     }

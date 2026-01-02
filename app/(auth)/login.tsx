@@ -1,9 +1,10 @@
 import { ThemedText } from '@/components/themed-text';
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Image, StyleSheet, TextInput, TouchableOpacity, View, ActivityIndicator, ImageBackground } from 'react-native';
+import { ActivityIndicator, Alert, Image, ImageBackground, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from "@expo/vector-icons";
+import { useAuth } from '../context/AuthContext';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -11,13 +12,20 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
 
   async function handleLogin() {
     setLoading(true);
     try {
+      if (!email || !password) {
+        Alert.alert('Missing fields', 'Please provide email and password');
+        return;
+      }
+      await login({ email, password });
       router.replace('/(tabs)');
     } catch (e) {
       console.warn(e);
+      Alert.alert('Login failed', e?.message ?? String(e));
     } finally {
       setLoading(false);
     }

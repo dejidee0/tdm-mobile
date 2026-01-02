@@ -2,11 +2,15 @@ import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
+import { AppProvider } from './context/AppContext';
+import { AuthProvider } from './context/AuthContext';
 
 export default function RootLayout() {
   return (
     <ThemeProvider value={DefaultTheme}>
-      <Stack>
+      <AuthProvider>
+        <AppProvider>
+          <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="onboarding-screen" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
@@ -22,8 +26,10 @@ export default function RootLayout() {
         <Stack.Screen name="(screens)/checkout/index" options={{ headerShown: false }} />
         <Stack.Screen name="(screens)/payment/index" options={{ headerShown: false }} />
         <Stack.Screen name="(screens)/order-placement/order-success" options={{ headerShown: false }} />
-      </Stack>
-      <StatusBar style="auto" />
+          </Stack>
+          <StatusBar style="auto" />
+        </AppProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }
