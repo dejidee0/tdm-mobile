@@ -2,12 +2,22 @@ import { ThemedText } from '@/components/themed-text';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuth } from '../context/AuthContext';
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const { user, fetchMe, logout } = useAuth();
+
+  useEffect(() => {
+    const getUser = async () => {
+      await fetchMe();
+    }
+
+    getUser();
+  }, []);
 
   const profileActions = [
     {
@@ -20,7 +30,7 @@ export default function ProfileScreen() {
       id: 'details',
       label: 'My Details',
       icon: require('@/assets/images/profile/my-details.png'),
-      route: '/profile/details',
+      route: '/my-details',
     },
     {
       id: 'delivery-address',
@@ -29,16 +39,16 @@ export default function ProfileScreen() {
       route: '/delivery-address',
     },
     {
+      id: 'rewards',
+      label: 'Rewards',
+      icon: require('@/assets/images/profile/rewards.png'),
+      route: '/rewards',
+    },
+    {
       id: 'notifications',
       label: 'Notifications',
       icon: require('@/assets/images/profile/notifications.png'),
       route: '/notifications',
-    },
-    {
-      id: 'contact-us',
-      label: 'Contact Us',
-      icon: require('@/assets/images/profile/notifications.png'),
-      route: '/contact-us',
     },
   ];
 
@@ -56,8 +66,8 @@ export default function ProfileScreen() {
         <View style={styles.profileRow}>
           <Image source={require('@/assets/images/profile.jpg')} style={styles.avatar} />
           <View style={{ marginLeft: 12 }}>
-            <ThemedText type="defaultSemiBold">Andrea Hirata</ThemedText>
-            <ThemedText style={{ color: '#9aa3a7', marginTop: 6 }}>hirata@gmail.com</ThemedText>
+            <ThemedText type="defaultSemiBold">{user?.name}</ThemedText>
+            <ThemedText style={{ color: '#9aa3a7', marginTop: 6 }}>{user?.email}</ThemedText>
           </View>
         </View>
 
@@ -87,9 +97,9 @@ export default function ProfileScreen() {
         <TouchableOpacity
           style={styles.logoutButton}
           activeOpacity={0.8}
-          onPress={() => {
-            // TODO: clear auth state if present
-            router.replace('/(auth)/login');
+          onPress={async () => {
+            await logout();
+            return router.replace('/(auth)/login');
           }}
         >
           <Ionicons name="log-out-outline" size={20} color="#263a63" />

@@ -1,5 +1,6 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import React from 'react';
@@ -116,12 +117,18 @@ export default function HomeScreen() {
             scrollEnabled={false}
             renderItem={({ item }) => (
               <View style={styles.productCard}>
-                <Image source={item.image} style={styles.productImage} />
-                <TouchableOpacity style={styles.heart}>
-                  <ThemedText>♡</ThemedText>
+                <TouchableOpacity
+                  activeOpacity={0.9}
+                  onPress={() => router.push({ pathname: '/product-details', params: { id: item.id } })}
+                >
+                  <Image source={item.image} style={styles.productImage} />
+                  <ThemedText style={styles.productTitle}>{item.title}</ThemedText>
+                  <ThemedText style={styles.productPrice}>{item.price}</ThemedText>
                 </TouchableOpacity>
-                <ThemedText style={styles.productTitle}>{item.title}</ThemedText>
-                <ThemedText style={styles.productPrice}>{item.price}</ThemedText>
+
+                <TouchableOpacity style={styles.heart}>
+                  <Ionicons name="heart-outline" size={20} color="#263a63" />
+                </TouchableOpacity>
               </View>
             )}
           />
@@ -151,7 +158,7 @@ export default function HomeScreen() {
               <View style={styles.productCard}>
                 <Image source={item.image} style={styles.productImage} />
                 <TouchableOpacity style={styles.heart}>
-                  <ThemedText>♡</ThemedText>
+                  <Ionicons name="heart-outline" size={20} color="#263a63" />
                 </TouchableOpacity>
                 <ThemedText style={styles.productTitle}>{item.title}</ThemedText>
                 <ThemedText style={styles.productPrice}>{item.price}</ThemedText>

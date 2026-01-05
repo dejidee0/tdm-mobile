@@ -21,9 +21,21 @@ export default function LoginScreen() {
         Alert.alert('Missing fields', 'Please provide email and password');
         return;
       }
-      await login({ email, password });
-      router.replace('/(tabs)');
-    } catch (e) {
+      const response = await login({ email, password });
+      Alert.alert(
+        'Success',
+        response.data?.message,
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              router.replace('/(tabs)');
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+    } catch (e: any) {
       console.warn(e);
       Alert.alert('Login failed', e?.message ?? String(e));
     } finally {

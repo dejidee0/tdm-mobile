@@ -4,10 +4,10 @@ import React, { createContext, ReactNode, useContext, useEffect, useState } from
 const API_BASE = process.env.EXPO_PUBLIC_API_BASE_URL as string
 const BASE_URL = API_BASE.replace(/\/$/, '') + '/Auth';
 
-type User = { id?: string; name?: string; email?: string } | null;
+type User = { id?: string; name?: string; firstName?: string; lastName?: string; email?: string; phoneNumber?: string } | null;
 
 export type LoginDto = { email: string; password: string };
-export type RegisterDto = { name?: string; email: string; password: string };
+export type RegisterDto = { firstName: string; lastName: string; email: string; password: string; confirmPassword: string; phoneNumber: string };
 
 type Tokens = { accessToken: string; refreshToken?: string } | null;
 
@@ -15,11 +15,12 @@ export type AuthContextType = {
   user: User;
   tokens: Tokens;
   loading: boolean;
-  login: (payload: LoginDto) => Promise<void>;
-  register: (payload: RegisterDto) => Promise<void>;
+  fetchMe: () => Promise<boolean>;
+  login: (payload: LoginDto) => Promise<any>;
+  register: (payload: RegisterDto) => Promise<any>;
   logout: () => Promise<void>;
   refreshToken: () => Promise<boolean>;
-  forgotPassword: (email: string) => Promise<void>;
+  forgotPassword: (email: string) => Promise<any>;
   resetPassword: (payload: { token: string; password: string }) => Promise<void>;
 };
 
@@ -32,6 +33,7 @@ const defaultValue: AuthContextType = {
   user: null,
   tokens: null,
   loading: true,
+  fetchMe: async () => false,
   login: async () => undefined,
   register: async () => undefined,
   logout: async () => undefined,
@@ -107,17 +109,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!r.ok) throw new Error(r.data?.message || `Login failed (${r.status})`);
 
     // try multiple token shapes
-    const d = r.data;
+    const d = r.data.data;
     const newTokens: Tokens =
-      d?.accessToken || d?.token
-        ? { accessToken: d.accessToken ?? d.token, refreshToken: d.refreshToken ?? d.refresh_token }
-        : null;
+      d?.accessToken ? { accessToken: d.accessToken, refreshToken: d.refreshToken } : null;
+
     if (newTokens) {
       await saveTokens(newTokens);
       setTokens(newTokens);
       await fetchMe();
-      return;
+      return r;
     }
+
     throw new Error('Auth tokens not returned by server');
   }
 
@@ -125,16 +127,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const r = await callApi('/register', { method: 'POST', body: JSON.stringify(payload) });
     if (!r.ok) throw new Error(r.data?.message || `Register failed (${r.status})`);
     // registration may or may not return tokens — try to login if not provided
-    const d = r.data;
+    const d = r.data.data;
     const newTokens: Tokens =
-      d?.accessToken || d?.token
-        ? { accessToken: d.accessToken ?? d.token, refreshToken: d.refreshToken ?? d.refresh_token }
-        : null;
+      d?.accessToken ? { accessToken: d.accessToken, refreshToken: d.refreshToken } : null;
+
     if (newTokens) {
       await saveTokens(newTokens);
       setTokens(newTokens);
       await fetchMe();
     }
+
+    return r;
   }
 
   async function logout() {
@@ -169,6 +172,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function forgotPassword(email: string) {
     const r = await callApi('/forgot-password', { method: 'POST', body: JSON.stringify({ email }) });
     if (!r.ok) throw new Error(r.data?.message || `Forgot password failed (${r.status})`);
+    return r;
   }
 
   async function resetPassword(payload: { token: string; password: string }) {
@@ -205,7 +209,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, tokens, loading, login, register, logout, refreshToken, forgotPassword, resetPassword }}>
+    <AuthContext.Provider value={{ user, fetchMe, tokens, loading, login, register, logout, refreshToken, forgotPassword, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );

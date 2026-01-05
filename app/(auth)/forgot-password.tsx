@@ -19,10 +19,23 @@ export default function ForgotPasswordScreen() {
         Alert.alert('Missing email', 'Please provide your email address');
         return;
       }
-      await forgotPassword(email);
-      Alert.alert('Sent', 'Check your email for password reset instructions');
-      router.push('/(auth)/password-reset');
-    } catch (e) {
+      const response = await forgotPassword(email);
+      console.log(response);
+      Alert.alert(
+        'Success',
+        response.data.message,
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              router.replace('/(auth)/password-reset');
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+      // router.push('/(auth)/password-reset');
+    } catch (e: any) {
       console.warn(e);
       Alert.alert('Failed', e?.message ?? String(e));
     } finally {

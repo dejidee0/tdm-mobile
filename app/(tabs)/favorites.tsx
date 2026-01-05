@@ -1,6 +1,7 @@
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import React from 'react';
@@ -37,10 +38,15 @@ export default function FavoritesScreen() {
           columnWrapperStyle={{ justifyContent: 'space-evenly' }}
           renderItem={({ item }) => (
             <View style={styles.productCard}>
-              <Image source={item.image} style={styles.productImage} />
-              <TouchableOpacity style={styles.heart}><ThemedText>♡</ThemedText></TouchableOpacity>
-              <ThemedText style={styles.productTitle}>{item.title}</ThemedText>
-              <ThemedText style={styles.productPrice}>{item.price}</ThemedText>
+              <TouchableOpacity activeOpacity={0.9} onPress={() => router.push({ pathname: '/product-details', params: { id: item.id } })}>
+                <Image source={item.image} style={styles.productImage} />
+                <ThemedText style={styles.productTitle}>{item.title}</ThemedText>
+                <ThemedText style={styles.productPrice}>{item.price}</ThemedText>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.heart}>
+                <Ionicons name="trash" size={16} color="#263a63" />
+              </TouchableOpacity>
             </View>
           )}
         />

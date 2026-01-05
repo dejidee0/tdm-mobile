@@ -3,20 +3,24 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    ActivityIndicator, Alert, Image, ImageBackground, StyleSheet,
-    TextInput,
-    TouchableOpacity,
-    View
+  ActivityIndicator, Alert, Image, ImageBackground, StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 
 export default function RegisterScreen() {
   const router = useRouter();
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const { register } = useAuth();
@@ -32,11 +36,24 @@ export default function RegisterScreen() {
         Alert.alert('Missing fields', 'Please provide email and password');
         return;
       }
-      await register({ name, email, password });
-      router.replace('/(tabs)');
-    } catch (e) {
-      console.warn(e);
-      Alert.alert('Registration failed', e?.message ?? String(e));
+      const response = await register({ firstName, lastName, email, phoneNumber, password, confirmPassword });
+      console.log('Registration successful', response);
+      Alert.alert(
+        'Success',
+        response.data?.message,
+        [
+          {
+            text: 'OK',
+            onPress: () => {
+              router.replace('/(auth)/login');
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+    } catch (e: any) {
+      console.warn(e.message);
+      Alert.alert('Registration failed', e.message || 'An error occurred during registration');
     } finally {
       setLoading(false);
     }
@@ -60,20 +77,38 @@ export default function RegisterScreen() {
           </ThemedText>
 
           <TextInput
-            placeholder="Full name"
-            value={name}
-            onChangeText={setName}
+            placeholder="First Name"
+            value={firstName}
+            onChangeText={setFirstName}
             style={styles.input}
             autoCapitalize="words"
           />
 
           <TextInput
-            placeholder="Enter Email Address"
+            placeholder="Last Name"
+            value={lastName}
+            onChangeText={setLastName}
+            style={styles.input}
+            autoCapitalize="words"
+          />
+
+          <TextInput
+            placeholder="Email Address"
             value={email}
             onChangeText={setEmail}
             style={styles.input}
             autoCapitalize="none"
             keyboardType="email-address"
+            autoCorrect={false}
+          />
+
+          <TextInput
+            placeholder="Phone Number"
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
+            style={styles.input}
+            autoCapitalize="none"
+            keyboardType="number-pad"
             autoCorrect={false}
           />
 
@@ -97,6 +132,29 @@ export default function RegisterScreen() {
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
               <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={20} />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.inputWrapper}>
+            <TextInput
+              placeholder="Confirm Password"
+              secureTextEntry={!showConfirmPassword}
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              style={[styles.input, { flex: 1 }]}
+              autoCapitalize="none"
+              autoCorrect={false}
+              textContentType="password"
+            />
+
+            <TouchableOpacity
+              onPress={() => setShowConfirmPassword((s) => !s)}
+              style={styles.iconButton}
+              accessibilityRole="button"
+              accessibilityLabel={showConfirmPassword ? 'Hide password' : 'Show password'}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Ionicons name={showConfirmPassword ? 'eye-off' : 'eye'} size={20} />
             </TouchableOpacity>
           </View>
 

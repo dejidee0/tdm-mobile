@@ -1,5 +1,5 @@
 import { ThemedText } from '@/components/themed-text';
-import { useRouter, useSearchParams } from 'expo-router';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ActivityIndicator, Alert, Image, ImageBackground, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,9 +7,8 @@ import { useAuth } from '../context/AuthContext';
 
 export default function PasswordResetScreen() {
   const router = useRouter();
-  const { token: tokenParam } = useSearchParams();
   const { resetPassword } = useAuth();
-  const [token, setToken] = useState<string | undefined>((tokenParam as string) ?? undefined);
+  const [token, setToken] = useState<string | undefined>(undefined);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -70,7 +69,7 @@ export default function PasswordResetScreen() {
                   await resetPassword({ token: String(token), password });
                   Alert.alert('Success', 'Password has been reset');
                   router.replace('/(auth)/login');
-                } catch (e) {
+                } catch (e: any) {
                   console.warn(e);
                   Alert.alert('Reset failed', e?.message ?? String(e));
                 } finally {
@@ -142,4 +141,14 @@ const styles = StyleSheet.create({
   },
 
   primaryText: { color: '#fff', fontWeight: '700' },
+  input: {
+    height: 48,
+    paddingHorizontal: 16,
+    paddingRight: 48,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    marginTop: 12,
+  },
 });
