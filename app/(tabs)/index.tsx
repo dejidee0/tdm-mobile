@@ -271,9 +271,12 @@ const styles = StyleSheet.create({
     color: '#222a44',
   },
   card: {
-    marginTop: 16,
+    marginTop: -30,
     paddingTop: 20,
     backgroundColor: '#fff',
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    overflow: 'hidden',
   },
   categoriesSection: {
     marginBottom: 24,
