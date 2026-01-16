@@ -28,6 +28,7 @@ export default function RootLayout() {
         <Stack.Screen name="(screens)/order-placement/order-success" options={{ headerShown: false }} />
         <Stack.Screen name="(screens)/rewards" options={{ headerShown: false }} />
         <Stack.Screen name="(screens)/product-details" options={{ headerShown: false }} />
+        <Stack.Screen name="(screens)/ar-view" options={{ headerShown: false }} />
           </Stack>
           <StatusBar style="auto" />
         </AppProvider>

@@ -1,11 +1,8 @@
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
-import { Dimensions, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
@@ -28,51 +25,53 @@ export default function CategoryScreen() {
   const slug = (params.slug as string) || 'category';
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#F7F9FB' }}>
-      <View style={styles.headerWrap}>
-        <TouchableOpacity style={styles.back} onPress={() => router.back()}>
-          <IconSymbol name="chevron.left" size={20} color="#263a63" />
+    <SafeAreaView style={styles.safe}>
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.headerBack} onPress={() => router.back()}>
+          <Ionicons name="chevron-back" size={24} color="#222a44" />
         </TouchableOpacity>
-        <ThemedText type="title" style={styles.headerTitle}>{capitalize(slug)}</ThemedText>
-        <TouchableOpacity style={styles.filter} onPress={() => {}}>
-          <IconSymbol name="line.horizontal.3" size={20} color="#263a63" />
+        <Text style={styles.headerTitle}>{capitalize(slug)}</Text>
+        <TouchableOpacity style={styles.filter}>
+          <Ionicons name="options" size={20} color="#222a44" />
         </TouchableOpacity>
       </View>
 
-      <ThemedView style={styles.container}>
+      <View style={styles.container}>
         <FlatList
           data={PRODUCTS}
           keyExtractor={(i) => i.id}
           numColumns={2}
-          columnWrapperStyle={{ justifyContent: 'space-evenly' }}
+          columnWrapperStyle={{ justifyContent: 'space-between', paddingHorizontal: 16 }}
+          scrollEnabled={true}
           renderItem={({ item }) => (
             <View style={styles.productCard}>
               <TouchableOpacity activeOpacity={0.9} onPress={() => router.push({ pathname: '/product-details', params: { id: item.id } })}>
                 <Image source={item.image} style={styles.productImage} />
-                <ThemedText style={styles.productTitle}>{item.title}</ThemedText>
-                <ThemedText style={styles.productPrice}>{item.price}</ThemedText>
+                <Text style={styles.productTitle}>{item.title}</Text>
+                <Text style={styles.productPrice}>{item.price}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity style={styles.heart}>
-                <Ionicons name="heart-outline" size={20} color="#263a63" />
+                <Ionicons name="heart-outline" size={20} color="#e24a43" />
               </TouchableOpacity>
             </View>
           )}
         />
-      </ThemedView>
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  headerWrap: { height: 80, paddingHorizontal: 14, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff' },
-  back: { width: 40, height: 40, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
-  filter: { width: 40, height: 40, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { fontSize: 20, fontWeight: '700', color: '#263a63' },
-  container: { marginTop: 10, paddingVertical: 18, paddingBottom: 28, minHeight: 520 },
-  productCard: { backgroundColor: '#fff', width: (width - 56) / 2, borderRadius: 12, padding: 10, marginBottom: 12, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 8 },
-  productImage: { width: '100%', height: 120, borderRadius: 8, marginBottom: 8 },
-  heart: { position: 'absolute', right: 12, top: 12, backgroundColor: '#fff', width: 34, height: 34, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
-  productTitle: { color: '#9aa3a7', fontSize: 13 },
-  productPrice: { fontWeight: '700', marginTop: 6 },
+  safe: { flex: 1, backgroundColor: '#fff' },
+  header: { height: 60, paddingHorizontal: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
+  headerBack: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
+  filter: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
+  headerTitle: { fontWeight: '600', fontSize: 18, color: '#222a44' },
+  container: { flex: 1, paddingVertical: 16, backgroundColor: '#fff' },
+  productCard: { backgroundColor: '#fff', width: (width - 48) / 2, borderRadius: 12, overflow: 'hidden', marginBottom: 14, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
+  productImage: { width: '100%', height: 140, backgroundColor: '#f5f5f5' },
+  productTitle: { color: '#999', fontSize: 13, fontWeight: '500', padding: 10, paddingBottom: 4 },
+  productPrice: { fontWeight: '700', fontSize: 14, color: '#222a44', paddingHorizontal: 10, paddingBottom: 10 },
+  heart: { position: 'absolute', right: 10, top: 10, backgroundColor: '#fff', width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 4, elevation: 2 },
 });

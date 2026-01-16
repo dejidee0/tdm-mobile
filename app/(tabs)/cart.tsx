@@ -1,6 +1,5 @@
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -10,48 +9,148 @@ export default function CartScreen() {
   const router = useRouter();
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#F7F9FB' }}>
+    <SafeAreaView style={styles.safe}>
+      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBack}>
-          <IconSymbol name="chevron.left" size={20} color="#263a63" />
+          <Ionicons name="chevron-back" size={28} color="#222a44" />
         </TouchableOpacity>
-        <ThemedText type="title" style={styles.headerTitle}>Cart</ThemedText>
+        <ThemedText style={styles.headerTitle}>Cart</ThemedText>
         <View style={{ width: 40 }} />
       </View>
 
-      <ThemedView style={styles.container}>
+      <View style={styles.container}>
+        {/* Cart Item Card */}
         <View style={styles.card}>
           <Image source={require('@/assets/images/products/chair1.jpg')} style={styles.thumb} />
-          <View style={{ flex: 1, marginLeft: 12 }}>
-            <ThemedText type="defaultSemiBold">Mini sit me</ThemedText>
-            <ThemedText style={{ color: '#9aa3a7', marginTop: 6, fontSize: 12 }}>EST: 15 WORKING DAYS</ThemedText>
+          <View style={styles.itemDetails}>
+            <ThemedText style={styles.itemTitle}>Mini sit me</ThemedText>
+            <ThemedText style={styles.itemDelivery}>Est: 15 working days</ThemedText>
           </View>
-          <ThemedText style={{ fontWeight: '700' }}>N75,000</ThemedText>
+          <ThemedText style={styles.itemPrice}>N75,000</ThemedText>
         </View>
 
+        {/* Total Row */}
         <View style={styles.totalRow}>
           <View>
-            <ThemedText style={{ color: '#9aa3a7' }}>Total:</ThemedText>
-            <ThemedText type="defaultSemiBold" style={{ fontSize: 20 }}>N75,000</ThemedText>
-            <ThemedText style={{ color: '#9aa3a7', fontSize: 12 }}>DELIVERY EXCLUSIVE</ThemedText>
+            <ThemedText style={styles.totalLabel}>Total:</ThemedText>
+            <ThemedText style={styles.totalPrice}>N75,000</ThemedText>
+            <ThemedText style={styles.deliveryNote}>Delivery exclusive</ThemedText>
           </View>
 
-          <TouchableOpacity style={styles.checkoutBtn} onPress={() => router.push('/checkout')} activeOpacity={0.9}>
-            <ThemedText style={{ color: '#fff', fontWeight: '500' }}>Checkout</ThemedText>
+          <TouchableOpacity style={styles.checkoutBtn} onPress={() => router.push('/checkout')} activeOpacity={0.8}>
+            <ThemedText style={styles.checkoutText}>Checkout</ThemedText>
           </TouchableOpacity>
         </View>
-      </ThemedView>
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  header: { height: 80, paddingHorizontal: 14, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff' },
-  headerBack: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { fontWeight: '600', color: '#263a63' },
-  container: { padding: 14 },
-  card: { flexDirection: 'row', alignItems: 'center', padding: 16, backgroundColor: '#fff', borderRadius: 12, marginBottom: 24 },
-  thumb: { width: 90, height: 90, borderRadius: 8, backgroundColor: '#f2f4f6' },
-  totalRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 6 },
-  checkoutBtn: { backgroundColor: '#263a63', height: 56, borderRadius: 12, paddingHorizontal: 28, alignItems: 'center', justifyContent: 'center' },
+  safe: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  header: {
+    height: 60,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  headerBack: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerTitle: {
+    fontWeight: '600',
+    fontSize: 18,
+    color: '#222a44',
+  },
+  container: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 24,
+    justifyContent: 'flex-start',
+  },
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    padding: 14,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  thumb: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+    backgroundColor: '#f5f5f5',
+  },
+  itemDetails: {
+    flex: 1,
+    gap: 6,
+  },
+  itemTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#222a44',
+  },
+  itemDelivery: {
+    fontSize: 12,
+    color: '#999',
+  },
+  itemPrice: {
+    fontWeight: '700',
+    fontSize: 14,
+    color: '#222a44',
+  },
+  totalRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 14,
+    marginTop: 24,
+  },
+  totalLabel: {
+    fontSize: 13,
+    color: '#999',
+    marginBottom: 4,
+  },
+  totalPrice: {
+    fontWeight: '700',
+    fontSize: 20,
+    color: '#222a44',
+    marginBottom: 4,
+  },
+  deliveryNote: {
+    fontSize: 11,
+    color: '#999',
+  },
+  checkoutBtn: {
+    backgroundColor: '#222a44',
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#222a44',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  checkoutText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 14,
+  },
 });

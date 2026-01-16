@@ -1,80 +1,88 @@
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function CheckoutScreen() {
   const router = useRouter();
+  const [focusedInput, setFocusedInput] = useState<any>(null);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#F7F9FB' }}>
+    <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBack}>
-          <IconSymbol name="chevron.left" size={20} color="#263a63" />
+          <Ionicons name="chevron-back" size={24} color="#222a44" />
         </TouchableOpacity>
-        <ThemedText type="title" style={styles.headerTitle}>Checkout</ThemedText>
+        <Text style={styles.headerTitle}>Checkout</Text>
         <View style={{ width: 40 }} />
       </View>
 
-      <ThemedView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.selectBox}>
-          <ThemedText style={{ color: '#263a63' }}>Select delivery state</ThemedText>
+          <Text style={styles.label}>Select Delivery State</Text>
           <View style={styles.dropdown}>
-            <ThemedText>Lagos - N5000</ThemedText>
-            <IconSymbol name="chevron.right" size={18} color="#9aa3a7" />
+            <Text style={styles.dropdownText}>Lagos - N5000</Text>
+            <Ionicons name="chevron-forward" size={18} color="#ccc" />
           </View>
         </View>
 
-        <ThemedText style={{ marginTop: 14, marginBottom: 8 }}>Delivery Details</ThemedText>
+        <Text style={[styles.label, { marginTop: 20 }]}>Delivery Details</Text>
         <View style={styles.formBox}>
-          <View style={styles.input} />
-          <View style={styles.input} />
-          <View style={styles.input} />
-          <View style={styles.input} />
-          <View style={{ marginTop: 12, flexDirection: 'row', alignItems: 'center' }}>
-            <View style={styles.radio} />
-            <ThemedText style={{ marginLeft: 8 }}>Save Address</ThemedText>
+          <TextInput placeholder="Full Name" style={[styles.input, focusedInput === 'fullName' && styles.inputFocused]} placeholderTextColor="#ccc" onFocus={() => setFocusedInput('fullName')} onBlur={() => setFocusedInput(null)} />
+          <TextInput placeholder="Email Address" style={[styles.input, focusedInput === 'email' && styles.inputFocused]} placeholderTextColor="#ccc" keyboardType="email-address" onFocus={() => setFocusedInput('email')} onBlur={() => setFocusedInput(null)} />
+          <TextInput placeholder="Phone Number" style={[styles.input, focusedInput === 'phone' && styles.inputFocused]} placeholderTextColor="#ccc" keyboardType="phone-pad" onFocus={() => setFocusedInput('phone')} onBlur={() => setFocusedInput(null)} />
+          <TextInput placeholder="Address" style={[styles.input, { minHeight: 80 }, focusedInput === 'address' && styles.inputFocused]} placeholderTextColor="#ccc" multiline onFocus={() => setFocusedInput('address')} onBlur={() => setFocusedInput(null)} />
+          <View style={styles.checkboxRow}>
+            <View style={styles.checkbox} />
+            <Text style={styles.checkboxLabel}>Save Address</Text>
           </View>
         </View>
 
-        <View style={{ marginTop: 18 }}>
-          <View style={styles.summaryCard}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <ThemedText>Subtotal</ThemedText>
-              <ThemedText>N75,000</ThemedText>
-            </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
-              <ThemedText>Shipping</ThemedText>
-              <ThemedText>N5,000</ThemedText>
-            </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 18 }}>
-              <ThemedText type="defaultSemiBold">Total</ThemedText>
-              <ThemedText type="defaultSemiBold">N80,000</ThemedText>
-            </View>
-
-            <TouchableOpacity style={styles.payBtn} onPress={() => router.push('/payment')} activeOpacity={0.9}>
-              <ThemedText style={{ color: '#fff', fontWeight: '700' }}>Pay Now</ThemedText>
-            </TouchableOpacity>
+        <View style={styles.summaryCard}>
+          <View style={styles.summaryRow}>
+            <Text style={styles.summaryLabel}>Subtotal</Text>
+            <Text style={styles.summaryValue}>N75,000</Text>
           </View>
+          <View style={[styles.summaryRow, { marginTop: 12 }]}>
+            <Text style={styles.summaryLabel}>Shipping</Text>
+            <Text style={styles.summaryValue}>N5,000</Text>
+          </View>
+          <View style={[styles.summaryRow, { marginTop: 14, paddingTop: 14, borderTopWidth: 1, borderTopColor: '#f0f0f0' }]}>
+            <Text style={styles.summaryTotal}>Total</Text>
+            <Text style={styles.summaryTotal}>N80,000</Text>
+          </View>
+
+          <TouchableOpacity style={styles.payBtn} onPress={() => router.push('/payment')} activeOpacity={0.8}>
+            <Text style={styles.payBtnText}>Pay Now</Text>
+          </TouchableOpacity>
         </View>
-      </ThemedView>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  header: { height: 80, paddingHorizontal: 14, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff' },
+  safe: { flex: 1, backgroundColor: '#fff' },
+  header: { height: 60, paddingHorizontal: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
   headerBack: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { fontWeight: '700', color: '#263a63' },
-  container: { padding: 14 },
-  selectBox: { marginBottom: 12 },
-  dropdown: { height: 56, borderRadius: 12, backgroundColor: '#fff', marginTop: 8, paddingHorizontal: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderWidth: 1, borderColor: '#e6eaec' },
-  formBox: { marginTop: 6 },
-  input: { height: 48, backgroundColor: '#fff', borderRadius: 8, marginBottom: 10, borderWidth: 1, borderColor: '#e6eaec' },
-  radio: { width: 18, height: 18, borderRadius: 9, borderWidth: 1, borderColor: '#9aa3a7' },
-  summaryCard: { marginTop: 18, backgroundColor: '#fff', padding: 18, borderRadius: 12 },
-  payBtn: { marginTop: 18, height: 56, borderRadius: 12, backgroundColor: '#263a63', alignItems: 'center', justifyContent: 'center' },
+  headerTitle: { fontWeight: '600', fontSize: 18, color: '#222a44' },
+  container: { padding: 20, paddingBottom: 40 },
+  selectBox: { marginBottom: 20 },
+  label: { fontSize: 14, fontWeight: '600', color: '#222a44', marginBottom: 8 },
+  dropdown: { height: 48, borderRadius: 10, backgroundColor: '#f5f5f5', paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderWidth: 1, borderColor: '#f0f0f0' },
+  dropdownText: { color: '#222a44', fontWeight: '500' },
+  formBox: { marginTop: 8, gap: 10 },
+  input: { height: 48, backgroundColor: '#f5f5f5', borderRadius: 10, paddingHorizontal: 14, fontSize: 14, color: '#222a44', borderWidth: 1, borderColor: '#f0f0f0' },
+  inputFocused: { borderColor: '#222a44', borderWidth: 2, backgroundColor: '#fff' },
+  checkboxRow: { marginTop: 14, flexDirection: 'row', alignItems: 'center' },
+  checkbox: { width: 20, height: 20, borderRadius: 4, borderWidth: 1.5, borderColor: '#e24a43', backgroundColor: '#fff' },
+  checkboxLabel: { marginLeft: 10, fontSize: 14, color: '#222a44', fontWeight: '500' },
+  summaryCard: { marginTop: 40, backgroundColor: '#fff', padding: 18, borderRadius: 12, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
+  summaryRow: { flexDirection: 'row', justifyContent: 'space-between' },
+  summaryLabel: { fontSize: 14, color: '#999' },
+  summaryValue: { fontSize: 14, fontWeight: '600', color: '#222a44' },
+  summaryTotal: { fontSize: 16, fontWeight: '700', color: '#222a44' },
+  payBtn: { marginTop: 20, height: 48, borderRadius: 10, backgroundColor: '#222a44', alignItems: 'center', justifyContent: 'center', shadowColor: '#222a44', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 5 },
+  payBtnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
 });

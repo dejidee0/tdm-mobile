@@ -1,9 +1,8 @@
-import { ThemedText } from '@/components/themed-text';
-import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ProductDetails() {
@@ -24,13 +23,16 @@ export default function ProductDetails() {
         <View style={styles.mediaWrap}>
           <Image source={require('@/assets/images/products/chair1.jpg')} style={styles.media} />
           <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-            <IconSymbol name="chevron.left" size={20} color="#fff" />
+            <Ionicons name="chevron-back" size={24} color="#fff" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.heartBtn}>
+            <Ionicons name="heart-outline" size={22} color="#fff" />
           </TouchableOpacity>
         </View>
 
         <View style={styles.contentCard}>
-          <ThemedText type="defaultSemiBold" style={styles.title}>Mini sit me</ThemedText>
-          <ThemedText type="defaultSemiBold" style={styles.price}>N75,000</ThemedText>
+          <Text style={styles.title}>Mini sit me</Text>
+          <Text style={styles.price}>N75,000</Text>
 
           <View style={styles.rowSpacing}>
             <View style={styles.colorRow}>
@@ -40,33 +42,37 @@ export default function ProductDetails() {
             </View>
 
             <View style={styles.qtyRow}>
-              <TouchableOpacity style={styles.qtyBtn} onPress={dec}><ThemedText>-</ThemedText></TouchableOpacity>
-              <ThemedText style={styles.qtyText}>{qty}</ThemedText>
-              <TouchableOpacity style={styles.qtyBtn} onPress={inc}><ThemedText>+</ThemedText></TouchableOpacity>
+              <TouchableOpacity style={styles.qtyBtn} onPress={dec}>
+                <Ionicons name="remove" size={18} color="#222a44" />
+              </TouchableOpacity>
+              <Text style={styles.qtyText}>{qty}</Text>
+              <TouchableOpacity style={styles.qtyBtn} onPress={inc}>
+                <Ionicons name="add" size={18} color="#222a44" />
+              </TouchableOpacity>
             </View>
           </View>
 
           <View style={styles.tabsRow}>
             <TouchableOpacity style={[styles.tabBtn, tab === 'description' && styles.tabActive]} onPress={() => setTab('description')}>
-              <ThemedText style={[styles.tabText, tab === 'description' && styles.tabTextActive]}>Description</ThemedText>
+              <Text style={[styles.tabText, tab === 'description' && styles.tabTextActive]}>Description</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.tabBtn, tab === 'reviews' && styles.tabActive]} onPress={() => setTab('reviews')}>
-              <ThemedText style={[styles.tabText, tab === 'reviews' && styles.tabTextActive]}>Reviews</ThemedText>
+              <Text style={[styles.tabText, tab === 'reviews' && styles.tabTextActive]}>Reviews</Text>
             </TouchableOpacity>
           </View>
 
-          <ThemedText style={styles.description}>
+          <Text style={styles.description}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc consectetur velit at massa vehicula, quis fringilla urna gravida.
-          </ThemedText>
+          </Text>
 
           <View style={styles.infoRow}>
-            <View style={{ display: 'flex', gap: 4, flexDirection: 'row' }}>
-              <ThemedText style={styles.infoLabel}>Availability:</ThemedText>
-              <ThemedText style={styles.infoValue}>In stock · Limited units available</ThemedText>
+            <View style={styles.infoPair}>
+              <Text style={styles.infoLabel}>Availability:</Text>
+              <Text style={styles.infoValue}>In stock · Limited units available</Text>
             </View>
-            <View style={{ display: 'flex', gap: 4, flexDirection: 'row' }}>
-              <ThemedText style={styles.infoLabel}>Delivery:</ThemedText>
-              <ThemedText style={styles.infoValue}>15 days after payment confirmation</ThemedText>
+            <View style={styles.infoPair}>
+              <Text style={styles.infoLabel}>Delivery:</Text>
+              <Text style={styles.infoValue}>15 days after payment confirmation</Text>
             </View>
           </View>
 
@@ -76,10 +82,14 @@ export default function ProductDetails() {
 
       <View style={styles.footer}>
         <TouchableOpacity style={styles.outlineBtn}>
-          <ThemedText style={styles.outlineText}>Add to cart</ThemedText>
+          <Text style={styles.outlineText}>Add to cart</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.primaryBtn}>
-          <ThemedText style={styles.primaryText}>Set in your space</ThemedText>
+        <TouchableOpacity
+          style={styles.primaryBtn}
+          onPress={() => router.push('/(screens)/ar-view')}
+        >
+          <Image source={require('@/assets/images/icons/vr.png')} style={{ width: 20, height: 20 }} />
+          <Text style={styles.primaryText}>Set in your space</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -87,41 +97,35 @@ export default function ProductDetails() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#F7F9FB' },
-  container: { paddingBottom: 40 },
-  mediaWrap: { height: 300, backgroundColor: '#f3f5f6' },
+  safe: { flex: 1, backgroundColor: '#fff' },
+  container: { paddingBottom: 80 },
+  mediaWrap: { height: 300, backgroundColor: '#f5f5f5', position: 'relative' },
   media: { width: '100%', height: '100%' },
-  backBtn: { position: 'absolute', top: 16, left: 12, width: 40, height: 40, borderRadius: 12, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center' },
-
-  contentCard: { marginTop: -24, borderTopLeftRadius: 24, borderTopRightRadius: 24, backgroundColor: '#fff', padding: 18, minHeight: 320 },
-  title: { fontSize: 18, color: '#111827', marginBottom: 8 },
-  price: { fontSize: 16, color: '#263a63', fontWeight: '700', marginBottom: 12 },
-
-  rowSpacing: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
-  colorRow: { flexDirection: 'row', alignItems: 'center' },
-  swatch: { width: 20, height: 20, borderRadius: 10, marginRight: 8 },
-
-  qtyRow: { flexDirection: 'row', alignItems: 'center' },
-  qtyBtn: { width: 34, height: 34, borderRadius: 8, borderWidth: 1, borderColor: '#e6e9ef', alignItems: 'center', justifyContent: 'center', marginHorizontal: 6 },
-  qtyText: { fontSize: 16, fontWeight: '600', minWidth: 24, textAlign: 'center' },
-
-  tabsRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
-  tabBtn: { paddingVertical: 8, paddingHorizontal: 12, borderRadius: 12, backgroundColor: '#f3f5f6', marginRight: 8 },
-  tabActive: { backgroundColor: '#e3e7ff' },
-  tabText: { color: '#9aa3a7' },
-  tabTextActive: { color: '#263a63', fontWeight: '700' },
-
-  description: { color: '#9aa3a7', lineHeight: 20, marginBottom: 18 },
-
-  infoRow: { borderTopWidth: 1, borderTopColor: '#f1f3f4', paddingTop: 12, flexDirection: 'column', justifyContent: 'space-between' },
-  infoLabel: { color: '#263a63', fontWeight: '700', marginBottom: 4 },
-  infoValue: { color: '#9aa3a7', fontSize: 13 },
-
-  bottomSpacer: { height: 80 },
-
-  footer: { position: 'absolute', left: 16, right: 16, bottom: 18, flexDirection: 'row', alignItems: 'center' },
-  outlineBtn: { flex: 1, height: 48, borderRadius: 12, borderWidth: 1, borderColor: '#e6e9ef', backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center', marginRight: 12 },
-  outlineText: { color: '#111827', fontWeight: '600' },
-  primaryBtn: { flex: 2, height: 48, borderRadius: 12, backgroundColor: '#263a63', alignItems: 'center', justifyContent: 'center' },
-  primaryText: { color: '#fff', fontWeight: '700' },
+  backBtn: { position: 'absolute', top: 14, left: 14, width: 40, height: 40, borderRadius: 10, backgroundColor: 'rgba(0,0,0,0.4)', alignItems: 'center', justifyContent: 'center' },
+  heartBtn: { position: 'absolute', top: 14, right: 14, width: 40, height: 40, borderRadius: 10, backgroundColor: 'rgba(0,0,0,0.4)', alignItems: 'center', justifyContent: 'center' },
+  contentCard: { marginTop: -20, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#fff', padding: 20, minHeight: 320 },
+  title: { fontSize: 18, fontWeight: '700', color: '#222a44', marginBottom: 8 },
+  price: { fontSize: 20, fontWeight: '700', color: '#222a44', marginBottom: 16 },
+  rowSpacing: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
+  colorRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  swatch: { width: 24, height: 24, borderRadius: 12 },
+  qtyRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#f5f5f5', borderRadius: 10, paddingHorizontal: 6, paddingVertical: 4 },
+  qtyBtn: { width: 36, height: 36, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
+  qtyText: { fontSize: 16, fontWeight: '600', minWidth: 30, textAlign: 'center', color: '#222a44' },
+  tabsRow: { flexDirection: 'row', gap: 8, marginBottom: 16, borderBottomWidth: 1, borderBottomColor: '#f0f0f0', paddingBottom: 12 },
+  tabBtn: { paddingVertical: 8, paddingHorizontal: 14, borderRadius: 8 },
+  tabActive: { backgroundColor: '#ACB9ED' },
+  tabText: { color: '#999', fontSize: 14, fontWeight: '500' },
+  tabTextActive: { color: '#222a44', fontWeight: '700' },
+  description: { color: '#999', lineHeight: 20, marginBottom: 20, fontSize: 14 },
+  infoRow: { borderTopWidth: 1, borderTopColor: '#f0f0f0', paddingTop: 16, gap: 16 },
+  infoPair: { gap: 4 },
+  infoLabel: { color: '#222a44', fontWeight: '600', fontSize: 13 },
+  infoValue: { color: '#999', fontSize: 13 },
+  bottomSpacer: { height: 20 },
+  footer: { position: 'absolute', left: 16, right: 16, bottom: 16, flexDirection: 'row', alignItems: 'center', gap: 12 },
+  outlineBtn: { flex: 1, height: 48, borderRadius: 10, borderWidth: 1.5, borderColor: '#222a44', backgroundColor: '#fff', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
+  outlineText: { color: '#222a44', fontWeight: '600', fontSize: 14 },
+  primaryBtn: { display: 'flex', flexDirection: 'row', flex: 1, gap: 4, height: 48, borderRadius: 10, backgroundColor: '#222a44', alignItems: 'center', justifyContent: 'center', shadowColor: '#222a44', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 5 },
+  primaryText: { color: '#fff', fontWeight: '700', fontSize: 14 },
 });

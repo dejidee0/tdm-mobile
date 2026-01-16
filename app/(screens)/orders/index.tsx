@@ -1,9 +1,7 @@
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ORDERS = [
@@ -16,40 +14,47 @@ export default function OrdersScreen() {
   const router = useRouter();
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#F7F9FB' }}>
+    <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBack}>
-          <IconSymbol name="chevron.left" size={20} color="#263a63" />
+          <Ionicons name="chevron-back" size={24} color="#222a44" />
         </TouchableOpacity>
-        <ThemedText type="title" style={styles.headerTitle}>My Order</ThemedText>
+        <Text style={styles.headerTitle}>My Orders</Text>
         <View style={{ width: 40 }} />
       </View>
 
-      <ThemedView style={styles.container}>
+      <View style={styles.container}>
         <FlatList
           data={ORDERS}
           keyExtractor={(i) => i.id}
+          scrollEnabled={true}
+          contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 12 }}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.card} onPress={() => router.push(`/orders/${item.id}`)}>
+            <TouchableOpacity style={styles.card} onPress={() => router.push(`/orders/${item.id}`)} activeOpacity={0.7}>
               <Image source={item.image} style={styles.thumb} />
-              <View style={{ flex: 1, marginLeft: 12 }}>
-                <ThemedText type="defaultSemiBold">{item.title}</ThemedText>
-                <ThemedText style={{ color: '#9aa3a7', marginTop: 6, fontSize: 12 }}>EST: 15 WORKING DAYS</ThemedText>
+              <View style={styles.cardInfo}>
+                <Text style={styles.cardTitle}>{item.title}</Text>
+                <Text style={styles.cardEstimate}>EST: 15 WORKING DAYS</Text>
               </View>
-              <ThemedText style={{ fontWeight: '700' }}>{item.price}</ThemedText>
+              <Text style={styles.cardPrice}>{item.price}</Text>
             </TouchableOpacity>
           )}
         />
-      </ThemedView>
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  header: { height: 80, paddingHorizontal: 14, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff' },
+  safe: { flex: 1, backgroundColor: '#fff' },
+  header: { height: 60, paddingHorizontal: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
   headerBack: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { fontWeight: '700', color: '#263a63' },
-  container: { padding: 14 },
-  card: { flexDirection: 'row', alignItems: 'center', padding: 16, backgroundColor: '#fff', borderRadius: 12, marginBottom: 12 },
-  thumb: { width: 80, height: 80, borderRadius: 8, backgroundColor: '#f2f4f6' },
+  headerTitle: { fontWeight: '600', fontSize: 18, color: '#222a44' },
+  container: { flex: 1, backgroundColor: '#fff' },
+  card: { flexDirection: 'row', alignItems: 'center', padding: 14, backgroundColor: '#fff', borderRadius: 12, marginBottom: 10, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
+  thumb: { width: 80, height: 80, borderRadius: 10, backgroundColor: '#f5f5f5' },
+  cardInfo: { flex: 1, marginLeft: 14, gap: 4 },
+  cardTitle: { fontWeight: '600', fontSize: 14, color: '#222a44' },
+  cardEstimate: { fontSize: 12, color: '#999' },
+  cardPrice: { fontWeight: '700', fontSize: 15, color: '#222a44' },
 });

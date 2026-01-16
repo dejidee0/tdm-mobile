@@ -1,9 +1,7 @@
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function OrderDetails() {
@@ -12,38 +10,45 @@ export default function OrderDetails() {
   const id = (params.id as string) || '1';
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#F7F9FB' }}>
+    <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBack}>
-          <IconSymbol name="chevron.left" size={20} color="#263a63" />
+          <Ionicons name="chevron-back" size={24} color="#222a44" />
         </TouchableOpacity>
-        <ThemedText type="title" style={styles.headerTitle}>My Order</ThemedText>
+        <Text style={styles.headerTitle}>Order Details</Text>
         <View style={{ width: 40 }} />
       </View>
 
-      <ThemedView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.card}>
           <Image source={require('@/assets/images/products/chair1.jpg')} style={styles.thumb} />
-          <View style={{ flex: 1, marginLeft: 12 }}>
-            <ThemedText type="defaultSemiBold">Mini sit me</ThemedText>
-            <ThemedText style={{ color: '#9aa3a7', marginTop: 6 }}>EST: 15 WORKING DAYS</ThemedText>
+          <View style={styles.cardInfo}>
+            <Text style={styles.cardTitle}>Mini sit me</Text>
+            <Text style={styles.cardEstimate}>EST: 15 WORKING DAYS</Text>
           </View>
-          <ThemedText style={{ fontWeight: '700' }}>N80,000</ThemedText>
+          <Text style={styles.cardPrice}>N80,000</Text>
         </View>
 
-        <View style={{ padding: 18 }}>
-          <ThemedText style={{ color: '#9aa3a7', textAlign: 'center', marginTop: 24 }}>Tracking details will be available in your email</ThemedText>
+        <View style={styles.infoCard}>
+          <Text style={styles.infoText}>Tracking details will be available in your email</Text>
         </View>
-      </ThemedView>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  header: { height: 80, paddingHorizontal: 14, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff' },
+  safe: { flex: 1, backgroundColor: '#fff' },
+  header: { height: 60, paddingHorizontal: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
   headerBack: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { fontWeight: '700', color: '#263a63' },
-  container: { padding: 14 },
-  card: { flexDirection: 'row', alignItems: 'center', padding: 16, backgroundColor: '#fff', borderRadius: 12 },
-  thumb: { width: 90, height: 90, borderRadius: 8, backgroundColor: '#f2f4f6' },
+  headerTitle: { fontWeight: '600', fontSize: 18, color: '#222a44' },
+  container: { padding: 20, paddingBottom: 40 },
+  card: { flexDirection: 'row', alignItems: 'center', padding: 16, backgroundColor: '#fff', borderRadius: 12, marginBottom: 20, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
+  thumb: { width: 90, height: 90, borderRadius: 10, backgroundColor: '#f5f5f5' },
+  cardInfo: { flex: 1, marginLeft: 14, gap: 4 },
+  cardTitle: { fontWeight: '600', fontSize: 15, color: '#222a44' },
+  cardEstimate: { fontSize: 12, color: '#999' },
+  cardPrice: { fontWeight: '700', fontSize: 15, color: '#222a44' },
+  infoCard: { padding: 18, backgroundColor: '#fff', borderRadius: 12, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
+  infoText: { color: '#999', textAlign: 'center', fontSize: 14, lineHeight: 20 },
 });

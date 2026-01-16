@@ -1,6 +1,4 @@
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
@@ -21,49 +19,123 @@ export default function FavoritesScreen() {
   const router = useRouter();
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#F7F9FB' }}>
-      <View style={styles.headerWrap}>
-        <TouchableOpacity style={styles.back} onPress={() => router.back()}>
-          <IconSymbol name="chevron.left" size={20} color="#263a63" />
+    <SafeAreaView style={styles.safe}>
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.headerBack} onPress={() => router.back()}>
+          <Ionicons name="chevron-back" size={28} color="#222a44" />
         </TouchableOpacity>
-        <ThemedText type="title" style={styles.headerTitle}>Favorites</ThemedText>
-        <View></View>
+        <ThemedText style={styles.headerTitle}>Favorites</ThemedText>
+        <View style={{ width: 40 }} />
       </View>
 
-      <ThemedView style={styles.container}>
+      {/* Products Grid */}
+      <View style={styles.container}>
         <FlatList
           data={PRODUCTS}
           keyExtractor={(i) => i.id}
           numColumns={2}
-          columnWrapperStyle={{ justifyContent: 'space-evenly' }}
+          columnWrapperStyle={{ gap: 12, paddingHorizontal: 16, marginBottom: 16 }}
+          contentContainerStyle={{ paddingVertical: 16, paddingBottom: 20 }}
+          scrollEnabled={false}
           renderItem={({ item }) => (
             <View style={styles.productCard}>
-              <TouchableOpacity activeOpacity={0.9} onPress={() => router.push({ pathname: '/product-details', params: { id: item.id } })}>
+              <TouchableOpacity
+                activeOpacity={0.85}
+                onPress={() => router.push({ pathname: '/product-details', params: { id: item.id } })}
+              >
                 <Image source={item.image} style={styles.productImage} />
-                <ThemedText style={styles.productTitle}>{item.title}</ThemedText>
-                <ThemedText style={styles.productPrice}>{item.price}</ThemedText>
               </TouchableOpacity>
 
+              <View style={styles.productInfo}>
+                <ThemedText style={styles.productTitle}>{item.title}</ThemedText>
+                <ThemedText style={styles.productPrice}>{item.price}</ThemedText>
+              </View>
+
               <TouchableOpacity style={styles.heart}>
-                <Ionicons name="trash" size={16} color="#263a63" />
+                <Ionicons name="trash-outline" size={20} color="#e24a43" />
               </TouchableOpacity>
             </View>
           )}
         />
-      </ThemedView>
+      </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  headerWrap: { height: 80, paddingHorizontal: 14, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff' },
-  back: { width: 40, height: 40, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
-  filter: { width: 40, height: 40, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { fontSize: 20, fontWeight: '700', color: '#263a63' },
-  container: { marginTop: 10, paddingVertical: 18, paddingBottom: 28, minHeight: 520 },
-  productCard: { backgroundColor: '#fff', width: (width - 56) / 2, borderRadius: 12, padding: 10, marginBottom: 12, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 8 },
-  productImage: { width: '100%', height: 120, borderRadius: 8, marginBottom: 8 },
-  heart: { position: 'absolute', right: 12, top: 12, backgroundColor: '#fff', width: 34, height: 34, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
-  productTitle: { color: '#9aa3a7', fontSize: 13 },
-  productPrice: { fontWeight: '700', marginTop: 6 },
+  safe: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  header: {
+    height: 60,
+    paddingHorizontal: 16,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  headerBack: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerTitle: {
+    fontWeight: '600',
+    fontSize: 18,
+    color: '#222a44',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  productCard: {
+    flex: 1,
+    backgroundColor: '#fff',
+    borderRadius: 14,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+  },
+  productImage: {
+    width: '100%',
+    height: 140,
+    backgroundColor: '#f5f5f5',
+  },
+  productInfo: {
+    padding: 12,
+    gap: 4,
+  },
+  productTitle: {
+    color: '#999',
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  productPrice: {
+    fontWeight: '700',
+    fontSize: 14,
+    color: '#222a44',
+  },
+  heart: {
+    position: 'absolute',
+    right: 10,
+    top: 10,
+    backgroundColor: '#fff',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
+  },
 });

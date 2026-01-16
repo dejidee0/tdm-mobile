@@ -1,9 +1,8 @@
-import { ThemedText } from '@/components/themed-text';
-import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Ionicons } from '@expo/vector-icons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Notification = { id: string; title: string; body: string; time: string; unread?: boolean; kind?: 'success' | 'reward' | 'info' | 'account' };
@@ -37,9 +36,9 @@ function NotificationCard({ n }: { n: Notification }) {
       <IconBox kind={n.kind} />
 
       <View style={styles.cardBody}>
-        <ThemedText style={styles.cardTitle}>{n.title}</ThemedText>
-        <ThemedText style={styles.cardText}>{n.body}</ThemedText>
-        <ThemedText style={styles.cardTime}>{n.time}</ThemedText>
+        <Text style={styles.cardTitle}>{n.title}</Text>
+        <Text style={styles.cardText}>{n.body}</Text>
+        <Text style={styles.cardTime}>{n.time}</Text>
       </View>
 
       {n.unread ? <View style={styles.redDot} /> : null}
@@ -55,21 +54,21 @@ export default function NotificationsScreen() {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.headerRow}>
           <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-            <IconSymbol name="chevron.left" size={24} color="#263a63" />
+            <Ionicons name="chevron-back" size={24} color="#222a44" />
           </TouchableOpacity>
-          <ThemedText type="subtitle" style={styles.headerTitle}>Notifications</ThemedText>
+          <Text style={styles.headerTitle}>Notifications</Text>
           <TouchableOpacity style={styles.markBtn}>
-            <ThemedText style={styles.markText}>✓</ThemedText>
+            <Ionicons name="checkmark" size={20} color="#222a44" />
             <View style={styles.markDot} />
           </TouchableOpacity>
         </View>
 
-        <ThemedText style={styles.sectionTitle}>TODAY</ThemedText>
+        <Text style={styles.sectionTitle}>TODAY</Text>
         {NOTIFICATIONS.filter((x, i) => i < 2).map((n) => (
           <NotificationCard key={n.id} n={n} />
         ))}
 
-        <ThemedText style={[styles.sectionTitle, { marginTop: 18 }]}>EARLIER</ThemedText>
+        <Text style={[styles.sectionTitle, { marginTop: 20 }]}>EARLIER</Text>
         {NOTIFICATIONS.filter((x, i) => i >= 2).map((n) => (
           <NotificationCard key={n.id} n={n} />
         ))}
@@ -79,24 +78,20 @@ export default function NotificationsScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#F7F9FB' },
+  safe: { flex: 1, backgroundColor: '#fff' },
   container: { padding: 16, paddingBottom: 40 },
-  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
-  backBtn: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { color: '#263a63', fontSize: 18 },
-  markBtn: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
-  markText: { fontSize: 16, color: '#263a63' },
-  markDot: { position: 'absolute', top: 4, right: 0, width: 10, height: 10, borderRadius: 6, backgroundColor: '#ff3b30' },
-
-  sectionTitle: { color: '#9aa3a7', fontSize: 12, marginBottom: 8 },
-
-  card: { flexDirection: 'row', alignItems: 'center', padding: 14, borderRadius: 12, backgroundColor: '#fff', marginBottom: 12, borderWidth: 1, borderColor: '#fff' },
-  cardUnread: { backgroundColor: '#fff5f6', borderColor: '#fdecea' },
-  iconBox: { width: 52, height: 52, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
-  iconEmoji: { fontSize: 20 },
-  cardBody: { flex: 1 },
-  cardTitle: { fontSize: 16, fontWeight: '700', color: '#111827' },
-  cardText: { fontSize: 12, color: '#9aa3a7', marginTop: 6 },
-  cardTime: { fontSize: 10, color: '#c3c7cb', marginTop: 8 },
-  redDot: { width: 10, height: 10, borderRadius: 6, backgroundColor: '#ff3b30' },
+  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, paddingBottom: 16, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
+  backBtn: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
+  headerTitle: { fontWeight: '600', fontSize: 18, color: '#222a44' },
+  markBtn: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center', position: 'relative' },
+  markDot: { position: 'absolute', top: 4, right: 4, width: 8, height: 8, borderRadius: 4, backgroundColor: '#e24a43' },
+  sectionTitle: { color: '#999', fontSize: 12, fontWeight: '600', marginBottom: 12, textTransform: 'uppercase' },
+  card: { flexDirection: 'row', alignItems: 'center', padding: 14, borderRadius: 12, backgroundColor: '#fff', marginBottom: 10, borderWidth: 1, borderColor: '#f5f5f5' },
+  cardUnread: { backgroundColor: '#fff5f5', borderColor: '#ffe6e3' },
+  iconBox: { width: 48, height: 48, borderRadius: 10, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
+  cardBody: { flex: 1, gap: 4 },
+  cardTitle: { fontSize: 15, fontWeight: '600', color: '#222a44' },
+  cardText: { fontSize: 13, color: '#999', lineHeight: 18 },
+  cardTime: { fontSize: 11, color: '#ccc', marginTop: 2 },
+  redDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#e24a43' },
 });

@@ -12,6 +12,7 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [focusedInput, setFocusedInput] = useState<any>(null);
   const { login } = useAuth();
 
   async function handleLogin() {
@@ -44,89 +45,240 @@ export default function LoginScreen() {
   }
 
   return (
-    <ImageBackground source={require('../../assets/images/bg.jpg')} style={styles.bg} imageStyle={styles.bgImage}>
+    <ImageBackground source={require('../../assets/images/bg.jpg')} style={styles.background}>
+      <View style={styles.overlay} />
       <SafeAreaView style={styles.container}>
-        <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
+      <View style={styles.formContainer}>
+        <View style={styles.logoContainer}>
+          <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
+        </View>
 
-        <View style={styles.content}>
+        <View style={styles.headerSection}>
           <ThemedText type="title" style={styles.title}>Welcome Back</ThemedText>
-          <ThemedText style={{ marginTop: 8, marginBottom: 18, color: '#000' }}>Login to your TBM account</ThemedText>
+          <ThemedText style={styles.subtitle}>Login to your account</ThemedText>
+        </View>
 
-          <TextInput placeholder="Enter Email Address" value={email} onChangeText={setEmail} style={styles.input} />
+        <View style={styles.formContent}>
+          <View style={styles.inputGroup}>
+            <ThemedText style={styles.inputLabel}>Email Address</ThemedText>
+            <TextInput
+              placeholder="you@example.com"
+              value={email}
+              onChangeText={setEmail}
+              style={[styles.input, focusedInput === 'email' && styles.inputFocused]}
+              placeholderTextColor="#999"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+              editable={!loading}
+              onFocus={() => setFocusedInput('email')}
+              onBlur={() => setFocusedInput(null)}
+            />
+          </View>
 
-          <View>
-            <View style={styles.inputWrapper}>
+          <View style={styles.inputGroup}>
+            <ThemedText style={styles.inputLabel}>Password</ThemedText>
+            <View style={[styles.passwordInputWrapper, focusedInput === 'password' && styles.inputFocused]}>
               <TextInput
-                placeholder="Password"
+                placeholder="Enter your password"
                 secureTextEntry={!showPassword}
                 value={password}
                 onChangeText={setPassword}
-                style={[styles.input, { flex: 1 }]}
+                style={styles.passwordInput}
+                placeholderTextColor="#999"
                 autoCapitalize="none"
                 autoCorrect={false}
                 textContentType="password"
+                editable={!loading}
+                onFocus={() => setFocusedInput('password')}
+                onBlur={() => setFocusedInput(null)}
               />
-
               <TouchableOpacity
                 onPress={() => setShowPassword((s) => !s)}
-                style={styles.iconButton}
+                style={styles.passwordIconButton}
                 accessibilityRole="button"
                 accessibilityLabel={showPassword ? "Hide password" : "Show password"}
-                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <Ionicons name={showPassword ? "eye-off" : "eye"} size={20} />
+                <Ionicons name={showPassword ? "eye-off" : "eye"} size={22} color="#222a44" />
               </TouchableOpacity>
             </View>
           </View>
 
-          <TouchableOpacity onPress={() => router.push('/(auth)/forgot-password')} style={{ alignSelf: 'flex-end', marginTop: 8 }}>
-            <ThemedText style={{ color: '#000' }}>Forgot Password?</ThemedText>
+          <TouchableOpacity onPress={() => router.push('/(auth)/forgot-password')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <ThemedText style={styles.forgotPasswordText}>Forgot Password?</ThemedText>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.primary} onPress={handleLogin} activeOpacity={0.85} disabled={loading}>
-            {loading ? <ActivityIndicator color="#fff" /> : <ThemedText style={styles.primaryText}>Login</ThemedText>}
+          <TouchableOpacity style={styles.loginButton} onPress={handleLogin} activeOpacity={0.8} disabled={loading}>
+            {loading ? (
+              <ActivityIndicator color="#fff" size="small" />
+            ) : (
+              <ThemedText style={styles.loginButtonText}>Login</ThemedText>
+            )}
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => router.push('/(auth)/register')} style={{ alignSelf: 'center', marginTop: 18 }}>
-            <ThemedText style={{ color: '#000' }}>Don&rsquo;t have an account? <ThemedText style={{ color: '#e24a43' }}>Create Account Here</ThemedText></ThemedText>
+          <View style={styles.divider} />
+
+          <TouchableOpacity onPress={() => router.push('/(auth)/register')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <View style={styles.signUpContainer}>
+              <ThemedText style={styles.signUpText}>Don&rsquo;t have an account? </ThemedText>
+              <ThemedText style={styles.signUpLink}>Create Account</ThemedText>
+            </View>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </View>
+    </SafeAreaView>
     </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  bg: { flex: 1, backgroundColor: '#fff' },
-  bgImage: { opacity: 0.06, resizeMode: 'cover' },
-  container: { flex: 1, backgroundColor: '#fff' },
-  logo: { width: 70, height: 70, margin: 16 },
-  content: { paddingHorizontal: 20, paddingTop: 6 },
-  title: { fontSize: 34, color: '#222a44' },
-  inputWrapper: {
-    position: "relative",
-    width: "100%",
-    marginTop: 12,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
+  background: {
+    flex: 1,
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(255, 255, 255, 0.93)',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+  logoContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 16,
+    backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 2,
+    alignSelf: 'center',
+    marginBottom: 28,
+  },
+  logo: {
+    width: 70,
+    height: 70,
+  },
+  formContainer: {
+    flex: 1,
+    paddingHorizontal: 24,
+    justifyContent: 'center',
+  },
+  headerSection: {
+    marginBottom: 36,
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#222a44',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#999',
+    marginBottom: 8,
+    lineHeight: 20,
+  },
+  formContent: {
+    gap: 20,
+  },
+  inputGroup: {
+    gap: 8,
+  },
+  inputLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#222a44',
+    marginLeft: 2,
   },
   input: {
-    height: 48,
+    height: 52,
+    paddingHorizontal: 16,
+    borderWidth: 1.5,
+    borderColor: '#e8e8e8',
+    borderRadius: 12,
+    backgroundColor: '#fafafa',
+    fontSize: 15,
+    color: '#222a44',
+  },
+  inputFocused: {
+    borderColor: '#222a44',
+    borderWidth: 2,
+    backgroundColor: '#fff',
+  },
+  passwordInputWrapper: {
+    position: 'relative',
+    width: '100%',
+    justifyContent: 'center',
+    borderWidth: 1.5,
+    borderColor: '#e8e8e8',
+    borderRadius: 12,
+    backgroundColor: '#fafafa',
+  },
+  passwordInput: {
+    height: 52,
     paddingHorizontal: 16,
     paddingRight: 48,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    backgroundColor: "#fff",
+    fontSize: 15,
+    color: '#222a44',
   },
-  iconButton: {
-    position: "absolute",
-    right: 8,
-    top: "50%",
-    transform: [{ translateY: -15 }],
-    padding: 6,
+  passwordIconButton: {
+    position: 'absolute',
+    right: 14,
+    padding: 8,
   },
-  primary: { backgroundColor: '#222a44', paddingVertical: 16, borderRadius: 10, alignItems: 'center', marginTop: 20 },
-  primaryText: { color: '#fff', fontWeight: '700' },
+  forgotPasswordText: {
+    color: '#e24a43',
+    fontSize: 13,
+    fontWeight: '600',
+    alignSelf: 'flex-end',
+    marginTop: 6,
+  },
+  loginButton: {
+    backgroundColor: '#222a44',
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 12,
+    shadowColor: '#222a44',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  loginButtonText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 15,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#e8e8e8',
+    marginVertical: 4,
+  },
+  signUpContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  signUpText: {
+    color: '#999',
+    fontSize: 13,
+  },
+  signUpLink: {
+    color: '#e24a43',
+    fontWeight: '700',
+    fontSize: 13,
+  },
 });

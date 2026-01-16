@@ -1,10 +1,8 @@
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const REWARDS = new Array(4).fill(0).map((_, i) => ({ id: String(i + 1), title: 'Free Delivery', points: 500 }));
@@ -14,17 +12,17 @@ function RewardItem({ title, points }: { title: string; points: number }) {
     <View style={styles.rewardRow}>
       <View style={styles.rewardIconWrap}>
         <View style={styles.rewardIconInner}>
-          <ThemedText style={styles.giftEmoji}>🎁</ThemedText>
+          <Ionicons name="gift" size={22} color="#e24a43" />
         </View>
       </View>
 
       <View style={styles.rewardInfo}>
-        <ThemedText style={styles.rewardTitle}>{title}</ThemedText>
-        <ThemedText style={styles.rewardPoints}>{points} points</ThemedText>
+        <Text style={styles.rewardTitle}>{title}</Text>
+        <Text style={styles.rewardPoints}>{points} points</Text>
       </View>
 
       <TouchableOpacity style={styles.claimBtn} activeOpacity={0.8}>
-        <ThemedText style={styles.claimText}>Claim</ThemedText>
+        <Text style={styles.claimText}>Claim</Text>
       </TouchableOpacity>
     </View>
   );
@@ -38,61 +36,48 @@ export default function RewardsScreen() {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.headerRow}>
           <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-            <IconSymbol name="chevron.left" size={24} color="#263a63" />
+            <Ionicons name="chevron-back" size={24} color="#222a44" />
           </TouchableOpacity>
-          <ThemedText type="subtitle" style={styles.headerTitle}>
-            Rewards
-          </ThemedText>
-          <View style={{ width: 36 }} />
+          <Text style={styles.headerTitle}>Rewards</Text>
+          <View style={{ width: 40 }} />
         </View>
 
-        <LinearGradient colors={["rgba(38, 47, 86, 1)", "rgba(83, 103, 188, 1)"]} style={styles.pointsCard} start={[0, 0]} end={[1, 1]}>
-          <ThemedText style={styles.pointsLabel}>Your Points</ThemedText>
-          <ThemedText type="title" style={styles.pointsAmount}>1,250</ThemedText>
-          <ThemedText style={styles.pointsSub}>250 points until next reward</ThemedText>
+        <LinearGradient colors={['#222a44', '#5367bc']} style={styles.pointsCard} start={[0, 0]} end={[1, 1]}>
+          <Text style={styles.pointsLabel}>Your Points</Text>
+          <Text style={styles.pointsAmount}>1,250</Text>
+          <Text style={styles.pointsSub}>250 points until next reward</Text>
         </LinearGradient>
 
-        <ThemedText type="defaultSemiBold" style={styles.availableTitle}>Available Rewards</ThemedText>
+        <Text style={styles.availableTitle}>Available Rewards</Text>
 
-        <ThemedView style={styles.listCard}>
+        <View style={styles.listCard}>
           {REWARDS.map((r) => (
             <RewardItem key={r.id} title={r.title} points={r.points} />
           ))}
-        </ThemedView>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#F7F9FB' },
+  safe: { flex: 1, backgroundColor: '#fff' },
   container: { padding: 16, paddingBottom: 40 },
-  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
-  backBtn: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { color: '#263a63', fontSize: 18 },
-
-  pointsCard: {
-    height: 120,
-    borderRadius: 12,
-    padding: 18,
-    justifyContent: 'center',
-    marginBottom: 18,
-    overflow: 'hidden',
-  },
-  pointsLabel: { color: '#fff', fontSize: 12, marginBottom: 6 },
-  pointsAmount: { color: '#fff', fontSize: 28, fontWeight: '900', marginBottom: 6 },
-  pointsSub: { color: '#e6e9ff', fontSize: 12 },
-
-  availableTitle: { marginBottom: 10, color: '#111827' },
-  listCard: { backgroundColor: '#fff', borderRadius: 12, paddingVertical: 8, paddingHorizontal: 6 },
-
-  rewardRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 8, borderBottomColor: '#f1f3f4', borderBottomWidth: 1 },
-  rewardIconWrap: { paddingRight: 12 },
-  rewardIconInner: { width: 42, height: 42, borderRadius: 10, backgroundColor: '#ffe9ef', alignItems: 'center', justifyContent: 'center' },
-  giftEmoji: { fontSize: 18 },
-  rewardInfo: { flex: 1 },
-  rewardTitle: { fontSize: 16, fontWeight: '600', color: '#111827' },
-  rewardPoints: { fontSize: 12, color: '#9aa3a7', marginTop: 2 },
-  claimBtn: { backgroundColor: '#ff8b8b', paddingVertical: 8, paddingHorizontal: 14, borderRadius: 14 },
-  claimText: { color: '#fff', fontWeight: '600' },
+  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, paddingBottom: 16, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
+  backBtn: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
+  headerTitle: { fontWeight: '600', fontSize: 18, color: '#222a44' },
+  pointsCard: { height: 140, borderRadius: 14, padding: 20, justifyContent: 'center', marginBottom: 24, overflow: 'hidden', shadowColor: '#222a44', shadowOpacity: 0.1, shadowRadius: 10, shadowOffset: { width: 0, height: 4 }, elevation: 4 },
+  pointsLabel: { color: '#fff', fontSize: 12, fontWeight: '500', marginBottom: 8 },
+  pointsAmount: { color: '#fff', fontSize: 32, fontWeight: '800', marginBottom: 8 },
+  pointsSub: { color: 'rgba(255,255,255,0.8)', fontSize: 13 },
+  availableTitle: { fontWeight: '700', fontSize: 16, color: '#222a44', marginBottom: 12 },
+  listCard: { backgroundColor: '#fff', borderRadius: 12, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
+  rewardRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 14, borderBottomColor: '#f5f5f5', borderBottomWidth: 1 },
+  rewardIconWrap: { marginRight: 12 },
+  rewardIconInner: { width: 44, height: 44, borderRadius: 10, backgroundColor: '#ffe6e3', alignItems: 'center', justifyContent: 'center' },
+  rewardInfo: { flex: 1, gap: 3 },
+  rewardTitle: { fontSize: 15, fontWeight: '600', color: '#222a44' },
+  rewardPoints: { fontSize: 12, color: '#999' },
+  claimBtn: { backgroundColor: '#e24a43', paddingVertical: 8, paddingHorizontal: 16, borderRadius: 8 },
+  claimText: { color: '#fff', fontWeight: '600', fontSize: 13 },
 });

@@ -1,8 +1,7 @@
-import { ThemedText } from '@/components/themed-text';
-import { IconSymbol } from '@/components/ui/icon-symbol';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
@@ -13,6 +12,7 @@ export default function AddAddressScreen() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
+  const [focusedInput, setFocusedInput] = useState<any>(null);
 
   function submit() {
     // TODO: persist address
@@ -20,26 +20,26 @@ export default function AddAddressScreen() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#F7F9FB' }}>
+    <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBack}>
-          <IconSymbol name="chevron.left" size={20} color="#263a63" />
+          <Ionicons name="chevron-back" size={24} color="#222a44" />
         </TouchableOpacity>
-        <ThemedText type="title" style={styles.headerTitle}>Add New Address</ThemedText>
+        <Text style={styles.headerTitle}>Add New Address</Text>
         <View style={{ width: 40 }} />
       </View>
 
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
-        <ScrollView contentContainerStyle={{ padding: 18 }}>
-          <ThemedText style={{ marginBottom: 12 }}>Delivery Details</ThemedText>
+        <ScrollView contentContainerStyle={styles.container}>
+          <Text style={styles.label}>Delivery Details</Text>
 
-          <TextInput placeholder="Full Name" value={name} onChangeText={setName} style={styles.input} />
-          <TextInput placeholder="Email" value={email} onChangeText={setEmail} style={styles.input} keyboardType="email-address" />
-          <TextInput placeholder="Phone number" value={phone} onChangeText={setPhone} style={styles.input} keyboardType="phone-pad" />
-          <TextInput placeholder="Address" value={address} onChangeText={setAddress} style={styles.input} multiline numberOfLines={3} />
+          <TextInput placeholder="Full Name" value={name} onChangeText={setName} style={[styles.input, focusedInput === 'name' && styles.inputFocused]} placeholderTextColor="#ccc" onFocus={() => setFocusedInput('name')} onBlur={() => setFocusedInput(null)} />
+          <TextInput placeholder="Email Address" value={email} onChangeText={setEmail} style={[styles.input, focusedInput === 'email' && styles.inputFocused]} keyboardType="email-address" placeholderTextColor="#ccc" onFocus={() => setFocusedInput('email')} onBlur={() => setFocusedInput(null)} />
+          <TextInput placeholder="Phone Number" value={phone} onChangeText={setPhone} style={[styles.input, focusedInput === 'phone' && styles.inputFocused]} keyboardType="phone-pad" placeholderTextColor="#ccc" onFocus={() => setFocusedInput('phone')} onBlur={() => setFocusedInput(null)} />
+          <TextInput placeholder="Address" value={address} onChangeText={setAddress} style={[styles.input, { minHeight: 100 }, focusedInput === 'address' && styles.inputFocused]} multiline numberOfLines={4} placeholderTextColor="#ccc" onFocus={() => setFocusedInput('address')} onBlur={() => setFocusedInput(null)} />
 
           <TouchableOpacity style={styles.submitBtn} activeOpacity={0.8} onPress={submit}>
-            <ThemedText style={{ color: '#fff', fontWeight: '700' }}>Add new address</ThemedText>
+            <Text style={styles.submitBtnText}>Add New Address</Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -48,9 +48,14 @@ export default function AddAddressScreen() {
 }
 
 const styles = StyleSheet.create({
-  header: { height: 80, paddingHorizontal: 14, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff' },
+  safe: { flex: 1, backgroundColor: '#fff' },
+  header: { height: 60, paddingHorizontal: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
   headerBack: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { fontWeight: '700', color: '#263a63' },
-  input: { backgroundColor: '#fff', height: 48, borderRadius: 8, paddingHorizontal: 12, marginBottom: 12, borderWidth: 1, borderColor: '#e6eaec' },
-  submitBtn: { height: 56, borderRadius: 12, backgroundColor: '#263a63', alignItems: 'center', justifyContent: 'center', marginTop: 18, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 8 },
+  headerTitle: { fontWeight: '600', fontSize: 18, color: '#222a44' },
+  container: { padding: 20, paddingBottom: 40 },
+  label: { fontSize: 14, fontWeight: '600', color: '#222a44', marginBottom: 16 },
+  input: { backgroundColor: '#f5f5f5', height: 48, borderRadius: 10, paddingHorizontal: 14, marginBottom: 12, fontSize: 14, color: '#222a44', borderWidth: 1, borderColor: '#f0f0f0' },
+  inputFocused: { borderColor: '#222a44', borderWidth: 2, backgroundColor: '#fff' },
+  submitBtn: { height: 48, borderRadius: 10, backgroundColor: '#222a44', alignItems: 'center', justifyContent: 'center', marginTop: 20, shadowColor: '#222a44', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 5 },
+  submitBtnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
 });

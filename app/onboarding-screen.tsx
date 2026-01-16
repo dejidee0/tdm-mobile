@@ -1,57 +1,158 @@
 import { ThemedText } from '@/components/themed-text';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { Image, ImageBackground, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, ImageBackground, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function OnboardingScreen() {
   const router = useRouter();
 
   return (
-    <ImageBackground source={require('../assets/images/bg.jpg')} style={styles.bg} imageStyle={styles.bgImage}>
+    <ImageBackground source={require('../assets/images/bg.jpg')} style={styles.background}>
+      <View style={styles.overlay} />
       <SafeAreaView style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <View style={styles.content}>
           <Image source={require('../assets/images/onboard.png')} style={styles.onboard} />
 
-          <View>
+          <View style={styles.textSection}>
             <ThemedText type="title" style={styles.title}>Visualize Your Space With AI</ThemedText>
-            <ThemedText type="default" style={styles.subtitle}>Transform your room, try new styles, and see materials before you buy.</ThemedText>
-
-            <TouchableOpacity style={styles.primary} onPress={() => router.push('/(auth)/login')} activeOpacity={0.85}>
-              <ThemedText style={styles.primaryText}>Login</ThemedText>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.ghost} onPress={() => router.push('/(auth)/register')} activeOpacity={0.85}>
-              <ThemedText style={styles.ghostText}>Create Account</ThemedText>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={() => {/* continue as guest */}}>
-              <ThemedText type="link" style={{ textAlign: 'center', marginTop: 10, color: '#000' }}>Continue as Guest</ThemedText>
-            </TouchableOpacity>
+            <ThemedText style={styles.subtitle}>Transform your room, try new styles, and see materials before you buy.</ThemedText>
           </View>
         </View>
 
-        <ThemedText style={{ color: '#000', marginBottom: 10, textAlign: 'center', fontSize: 12 }}>
-          By tapping Continue or Create Account, you agree to our{' '}
-          <ThemedText type="link" style={{ color: '#000', fontWeight: 'bold', fontSize: 12 }}>
-            Terms of Service and Privacy Policy
-          </ThemedText>
-        </ThemedText>
-      </SafeAreaView>
+        <View style={styles.buttonSection}>
+          <TouchableOpacity style={styles.loginButton} onPress={() => router.push('/(auth)/login')} activeOpacity={0.8}>
+            <ThemedText style={styles.loginButtonText}>Login</ThemedText>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.registerButton} onPress={() => router.push('/(auth)/register')} activeOpacity={0.8}>
+            <ThemedText style={styles.registerButtonText}>Create Account</ThemedText>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => {/* continue as guest */}} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <ThemedText style={styles.guestText}>Continue as Guest</ThemedText>
+          </TouchableOpacity>
+
+          <View style={styles.footerText}>
+            <ThemedText style={styles.disclaimerText}>
+              By continuing, you agree to our{' '}
+              <ThemedText style={styles.disclaimerLink}>Terms of Service</ThemedText>
+              {' '}and{' '}
+              <ThemedText style={styles.disclaimerLink}>Privacy Policy</ThemedText>
+            </ThemedText>
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
     </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  bg: { flex: 1, backgroundColor: '#fff' },
-  bgImage: { opacity: 0.06, resizeMode: 'cover' },
-  container: { flex: 1, alignItems: 'center', flexDirection: 'column', justifyContent: 'space-between', gap: 20, paddingHorizontal: 20 },
-  content: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: 24 },
-  onboard: { width: 400, height: 300 },
-  title: { marginTop: 30, fontSize: 28, lineHeight: 36, color: '#000' },
-  subtitle: { marginTop: 12, color: '#707070' },
-  primary: { backgroundColor: '#222a44', paddingVertical: 16, borderRadius: 10, alignItems: 'center', marginTop: 24, shadowColor: '#000', shadowOpacity: 0.12, shadowRadius: 8 },
-  primaryText: { color: '#fff', fontSize: 18, fontWeight: '700' },
-  ghost: { backgroundColor: '#eef0f2', paddingVertical: 14, borderRadius: 10, alignItems: 'center', marginTop: 12 },
-  ghostText: { color: '#263a63', fontSize: 16, fontWeight: '700' },
+  background: {
+    flex: 1,
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(255, 255, 255, 0.93)',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+  scrollContent: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    justifyContent: 'space-between',
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 32,
+  },
+  onboard: {
+    width: '100%',
+    height: 320,
+    resizeMode: 'contain',
+  },
+  textSection: {
+    alignItems: 'center',
+    gap: 12,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#222a44',
+    textAlign: 'center',
+    lineHeight: 36,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#999',
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  buttonSection: {
+    gap: 12,
+    paddingVertical: 20,
+  },
+  loginButton: {
+    backgroundColor: '#222a44',
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#222a44',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  loginButtonText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  registerButton: {
+    backgroundColor: '#f0f0f0',
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1.5,
+    borderColor: '#e8e8e8',
+  },
+  registerButtonText: {
+    color: '#222a44',
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  guestText: {
+    color: '#e24a43',
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
+    paddingVertical: 8,
+  },
+  footerText: {
+    marginTop: 8,
+    paddingVertical: 12,
+  },
+  disclaimerText: {
+    fontSize: 12,
+    color: '#999',
+    textAlign: 'center',
+    lineHeight: 16,
+  },
+  disclaimerLink: {
+    color: '#222a44',
+    fontWeight: '600',
+  },
 });
