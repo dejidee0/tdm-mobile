@@ -178,13 +178,15 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: '700',
-    color: '#222a44',
+    fontWeight: '900',
+    color: '#273054',
     marginBottom: 8,
+    width: '100%',
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 14,
-    color: '#999',
+    color: '#000000',
     marginBottom: 8,
     lineHeight: 20,
   },
@@ -237,7 +239,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   forgotPasswordText: {
-    color: '#e24a43',
+    color: '#000000',
     fontSize: 13,
     fontWeight: '600',
     alignSelf: 'flex-end',
@@ -258,7 +260,7 @@ const styles = StyleSheet.create({
   },
   loginButtonText: {
     color: '#fff',
-    fontWeight: '700',
+    fontWeight: '900',
     fontSize: 15,
   },
   divider: {

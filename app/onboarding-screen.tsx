@@ -36,10 +36,8 @@ export default function OnboardingScreen() {
 
           <View style={styles.footerText}>
             <ThemedText style={styles.disclaimerText}>
-              By continuing, you agree to our{' '}
-              <ThemedText style={styles.disclaimerLink}>Terms of Service</ThemedText>
-              {' '}and{' '}
-              <ThemedText style={styles.disclaimerLink}>Privacy Policy</ThemedText>
+              By tapping Continue or Create Account, you agree {'\n'} to our{' '}
+              <ThemedText style={styles.disclaimerLink}>Terms & Privacy Policy</ThemedText>
             </ThemedText>
           </View>
         </View>
@@ -88,16 +86,16 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: '700',
+    fontWeight: '900',
     color: '#222a44',
     textAlign: 'center',
-    lineHeight: 36,
+    lineHeight: 26.5,
   },
   subtitle: {
     fontSize: 14,
     color: '#999',
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: 26.5,
   },
   buttonSection: {
     gap: 12,
@@ -135,11 +133,12 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   guestText: {
-    color: '#e24a43',
+    color: '#000000',
     fontSize: 14,
     fontWeight: '600',
     textAlign: 'center',
     paddingVertical: 8,
+    textDecorationLine: 'underline',
   },
   footerText: {
     marginTop: 8,
@@ -153,6 +152,7 @@ const styles = StyleSheet.create({
   },
   disclaimerLink: {
     color: '#222a44',
-    fontWeight: '600',
+    fontSize: 11,
+    fontWeight: '900',
   },
 });

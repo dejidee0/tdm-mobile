@@ -82,6 +82,12 @@ export default function HomeScreen() {
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         {/* Header Section */}
         <ImageBackground source={require('@/assets/images/homehero.png')} style={styles.header} imageStyle={styles.headerImage}>
+        <LinearGradient
+          colors={['#273054B0', '#414D7982']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={StyleSheet.absoluteFillObject}
+        />
           <ThemedText type="title" style={styles.headerTitle}>Spaces Built Smarter</ThemedText>
           <ThemedText style={styles.headerSubtitle}>Discover premium furniture & decor</ThemedText>
 
@@ -101,7 +107,6 @@ export default function HomeScreen() {
         <View style={styles.card}>
           {/* Categories Section */}
           <View style={styles.categoriesSection}>
-            <ThemedText style={styles.sectionTitle}>Categories</ThemedText>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -226,7 +231,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   header: {
-    backgroundColor: '#222a44',
+    backgroundColor: '#273054B0',
     paddingHorizontal: 24,
     paddingVertical: 40,
     justifyContent: 'center',
@@ -280,6 +285,7 @@ const styles = StyleSheet.create({
   },
   categoriesSection: {
     marginBottom: 24,
+    marginTop: 35,
   },
   sectionTitle: {
     fontSize: 16,
@@ -358,14 +364,13 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   productTitle: {
-    color: '#999',
+    color: '#AAAAAA',
     fontSize: 12,
-    fontWeight: '500',
   },
   productPrice: {
-    fontWeight: '700',
+    fontWeight: '900',
     fontSize: 14,
-    color: '#222a44',
+    color: '#121212',
   },
   heart: {
     position: 'absolute',
