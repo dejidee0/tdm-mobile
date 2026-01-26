@@ -54,11 +54,11 @@ export default function NotificationsScreen() {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.headerRow}>
           <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-            <Ionicons name="chevron-back" size={24} color="#222a44" />
+            <Ionicons name="chevron-back" size={24} color="#273054" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Notifications</Text>
           <TouchableOpacity style={styles.markBtn}>
-            <Ionicons name="checkmark" size={20} color="#222a44" />
+            <Ionicons name="checkmark" size={20} color="#273054" />
             <View style={styles.markDot} />
           </TouchableOpacity>
         </View>
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   container: { padding: 16, paddingBottom: 40 },
   headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, paddingBottom: 16, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
   backBtn: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { fontWeight: '600', fontSize: 18, color: '#222a44' },
+  headerTitle: { fontWeight: '600', fontSize: 18, color: '#273054' },
   markBtn: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center', position: 'relative' },
   markDot: { position: 'absolute', top: 4, right: 4, width: 8, height: 8, borderRadius: 4, backgroundColor: '#e24a43' },
   sectionTitle: { color: '#999', fontSize: 12, fontWeight: '600', marginBottom: 12, textTransform: 'uppercase' },
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   cardUnread: { backgroundColor: '#fff5f5', borderColor: '#ffe6e3' },
   iconBox: { width: 48, height: 48, borderRadius: 10, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
   cardBody: { flex: 1, gap: 4 },
-  cardTitle: { fontSize: 15, fontWeight: '600', color: '#222a44' },
+  cardTitle: { fontSize: 15, fontWeight: '600', color: '#273054' },
   cardText: { fontSize: 13, color: '#999', lineHeight: 18 },
   cardTime: { fontSize: 11, color: '#ccc', marginTop: 2 },
   redDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#e24a43' },

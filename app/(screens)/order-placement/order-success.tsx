@@ -30,8 +30,8 @@ const styles = StyleSheet.create({
 	header: { height: 60, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
 	contentContainer: { flex: 1, padding: 24, alignItems: 'center', justifyContent: 'center', gap: 16 },
 	successImage: { width: 200, height: 200, marginBottom: 10 },
-	title: { fontSize: 20, fontWeight: '700', color: '#222a44', textAlign: 'center', marginBottom: 8 },
+	title: { fontSize: 20, fontWeight: '900', color: '#273054', textAlign: 'center', marginBottom: 8 },
 	description: { fontSize: 14, color: '#999', textAlign: 'center', lineHeight: 20, marginBottom: 24 },
-	orderBtn: { marginTop: 20, height: 48, width: '100%', maxWidth: 320, borderRadius: 10, backgroundColor: '#222a44', alignItems: 'center', justifyContent: 'center', shadowColor: '#222a44', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 5 },
-	orderBtnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
+	orderBtn: { marginTop: 20, height: 48, width: '100%', maxWidth: 320, borderRadius: 10, backgroundColor: '#273054', alignItems: 'center', justifyContent: 'center', shadowColor: '#273054', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 5 },
+	orderBtnText: { color: '#fff', fontWeight: '900', fontSize: 15 },
 });

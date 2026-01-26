@@ -13,7 +13,7 @@ export default function CartScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBack}>
-          <Ionicons name="chevron-back" size={28} color="#222a44" />
+          <Ionicons name="chevron-back" size={28} color="#273054" />
         </TouchableOpacity>
         <ThemedText style={styles.headerTitle}>Cart</ThemedText>
         <View style={{ width: 40 }} />
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontWeight: '600',
     fontSize: 18,
-    color: '#222a44',
+    color: '#273054',
   },
   container: {
     flex: 1,
@@ -102,16 +102,16 @@ const styles = StyleSheet.create({
   itemTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#222a44',
+    color: '#273054',
   },
   itemDelivery: {
     fontSize: 12,
     color: '#999',
   },
   itemPrice: {
-    fontWeight: '700',
+    fontWeight: '900',
     fontSize: 14,
-    color: '#222a44',
+    color: '#273054',
   },
   totalRow: {
     flexDirection: 'row',
@@ -126,9 +126,9 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   totalPrice: {
-    fontWeight: '700',
+    fontWeight: '900',
     fontSize: 20,
-    color: '#222a44',
+    color: '#273054',
     marginBottom: 4,
   },
   deliveryNote: {
@@ -136,13 +136,13 @@ const styles = StyleSheet.create({
     color: '#999',
   },
   checkoutBtn: {
-    backgroundColor: '#222a44',
+    backgroundColor: '#273054',
     paddingVertical: 14,
     paddingHorizontal: 20,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#222a44',
+    shadowColor: '#273054',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 8,
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   },
   checkoutText: {
     color: '#fff',
-    fontWeight: '700',
+    fontWeight: '900',
     fontSize: 14,
   },
 });

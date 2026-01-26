@@ -28,11 +28,11 @@ export default function CategoryScreen() {
     <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
         <TouchableOpacity style={styles.headerBack} onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={24} color="#222a44" />
+          <Ionicons name="chevron-back" size={24} color="#273054" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{capitalize(slug)}</Text>
         <TouchableOpacity style={styles.filter}>
-          <Ionicons name="options" size={20} color="#222a44" />
+          <Ionicons name="options" size={20} color="#273054" />
         </TouchableOpacity>
       </View>
 
@@ -67,11 +67,11 @@ const styles = StyleSheet.create({
   header: { height: 60, paddingHorizontal: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
   headerBack: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
   filter: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { fontWeight: '600', fontSize: 18, color: '#222a44' },
+  headerTitle: { fontWeight: '600', fontSize: 18, color: '#273054' },
   container: { flex: 1, paddingVertical: 16, backgroundColor: '#fff' },
   productCard: { backgroundColor: '#fff', width: (width - 48) / 2, borderRadius: 12, overflow: 'hidden', marginBottom: 14, shadowColor: '#000', shadowOpacity: 0.06, shadowRadius: 8, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
   productImage: { width: '100%', height: 140, backgroundColor: '#f5f5f5' },
   productTitle: { color: '#999', fontSize: 13, fontWeight: '500', padding: 10, paddingBottom: 4 },
-  productPrice: { fontWeight: '700', fontSize: 14, color: '#222a44', paddingHorizontal: 10, paddingBottom: 10 },
+  productPrice: { fontWeight: '900', fontSize: 14, color: '#273054', paddingHorizontal: 10, paddingBottom: 10 },
   heart: { position: 'absolute', right: 10, top: 10, backgroundColor: '#fff', width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 4, elevation: 2 },
 });

@@ -12,7 +12,7 @@ export default function CheckoutScreen() {
     <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBack}>
-          <Ionicons name="chevron-back" size={24} color="#222a44" />
+          <Ionicons name="chevron-back" size={24} color="#273054" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Checkout</Text>
         <View style={{ width: 40 }} />
@@ -66,23 +66,23 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: '#fff' },
   header: { height: 60, paddingHorizontal: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
   headerBack: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { fontWeight: '600', fontSize: 18, color: '#222a44' },
+  headerTitle: { fontWeight: '600', fontSize: 18, color: '#273054' },
   container: { padding: 20, paddingBottom: 40 },
   selectBox: { marginBottom: 20 },
-  label: { fontSize: 14, fontWeight: '600', color: '#222a44', marginBottom: 8 },
+  label: { fontSize: 14, fontWeight: '600', color: '#273054', marginBottom: 8 },
   dropdown: { height: 48, borderRadius: 10, backgroundColor: '#f5f5f5', paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderWidth: 1, borderColor: '#f0f0f0' },
-  dropdownText: { color: '#222a44', fontWeight: '500' },
+  dropdownText: { color: '#273054', fontWeight: '500' },
   formBox: { marginTop: 8, gap: 10 },
-  input: { height: 48, backgroundColor: '#f5f5f5', borderRadius: 10, paddingHorizontal: 14, fontSize: 14, color: '#222a44', borderWidth: 1, borderColor: '#f0f0f0' },
-  inputFocused: { borderColor: '#222a44', borderWidth: 2, backgroundColor: '#fff' },
+  input: { height: 48, backgroundColor: '#f5f5f5', borderRadius: 10, paddingHorizontal: 14, fontSize: 14, color: '#273054', borderWidth: 1, borderColor: '#f0f0f0' },
+  inputFocused: { borderColor: '#273054', borderWidth: 2, backgroundColor: '#fff' },
   checkboxRow: { marginTop: 14, flexDirection: 'row', alignItems: 'center' },
   checkbox: { width: 20, height: 20, borderRadius: 4, borderWidth: 1.5, borderColor: '#e24a43', backgroundColor: '#fff' },
-  checkboxLabel: { marginLeft: 10, fontSize: 14, color: '#222a44', fontWeight: '500' },
+  checkboxLabel: { marginLeft: 10, fontSize: 14, color: '#273054', fontWeight: '500' },
   summaryCard: { marginTop: 40, backgroundColor: '#fff', padding: 18, borderRadius: 12, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
   summaryRow: { flexDirection: 'row', justifyContent: 'space-between' },
   summaryLabel: { fontSize: 14, color: '#999' },
-  summaryValue: { fontSize: 14, fontWeight: '600', color: '#222a44' },
-  summaryTotal: { fontSize: 16, fontWeight: '700', color: '#222a44' },
-  payBtn: { marginTop: 20, height: 48, borderRadius: 10, backgroundColor: '#222a44', alignItems: 'center', justifyContent: 'center', shadowColor: '#222a44', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 5 },
-  payBtnText: { color: '#fff', fontWeight: '700', fontSize: 15 },
+  summaryValue: { fontSize: 14, fontWeight: '600', color: '#273054' },
+  summaryTotal: { fontSize: 16, fontWeight: '900', color: '#273054' },
+  payBtn: { marginTop: 20, height: 48, borderRadius: 10, backgroundColor: '#273054', alignItems: 'center', justifyContent: 'center', shadowColor: '#273054', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 5 },
+  payBtnText: { color: '#fff', fontWeight: '900', fontSize: 15 },
 });

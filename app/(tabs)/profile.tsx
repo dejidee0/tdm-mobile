@@ -59,11 +59,11 @@ export default function ProfileScreen() {
     <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBack}>
-          <Ionicons name="chevron-back" size={24} color="#222a44" />
+          <Ionicons name="chevron-back" size={24} color="#273054" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Profile</Text>
         <TouchableOpacity onPress={() => router.push('/notifications')} style={styles.headerNotification}>
-          <Ionicons name="notifications" size={24} color="#222a44" />
+          <Ionicons name="notifications" size={24} color="#273054" />
         </TouchableOpacity>
       </View>
 
@@ -71,8 +71,8 @@ export default function ProfileScreen() {
         <View style={styles.profileSection}>
           <Image source={require('@/assets/images/profile.jpg')} style={styles.avatar} />
           <View style={styles.profileInfo}>
-            <Text style={styles.userName}>{user?.name}</Text>
-            <Text style={styles.userEmail}>{user?.email}</Text>
+            <Text style={styles.userName}>{user?.name || 'Andrea Hirata'}</Text>
+            <Text style={styles.userEmail}>{user?.email || 'hirata@gmail.com'}</Text>
           </View>
         </View>
 
@@ -88,7 +88,7 @@ export default function ProfileScreen() {
                 {item.type === 'image' ? (
                   <Image source={item.icon} style={styles.iconImage} />
                 ) : (
-                  <Ionicons name={item.icon} size={20} color="#222a44" />
+                  <Ionicons name={item.icon} size={20} color="#273054" />
                 )}
               </View>
               <Text style={styles.listText}>{item.label}</Text>
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontWeight: '600',
     fontSize: 18,
-    color: '#222a44',
+    color: '#273054',
   },
   container: {
     flex: 1,
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
   userName: {
     fontWeight: '600',
     fontSize: 16,
-    color: '#222a44',
+    color: '#273054',
   },
   userEmail: {
     fontSize: 13,
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     fontWeight: '500',
-    color: '#222a44',
+    color: '#273054',
   },
   logoutWrap: {
     paddingHorizontal: 20,

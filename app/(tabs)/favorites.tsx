@@ -23,7 +23,7 @@ export default function FavoritesScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.headerBack} onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={28} color="#222a44" />
+          <Ionicons name="chevron-back" size={28} color="#273054" />
         </TouchableOpacity>
         <ThemedText style={styles.headerTitle}>Favorites</ThemedText>
         <View style={{ width: 40 }} />
@@ -50,6 +50,9 @@ export default function FavoritesScreen() {
               <View style={styles.productInfo}>
                 <ThemedText style={styles.productTitle}>{item.title}</ThemedText>
                 <ThemedText style={styles.productPrice}>{item.price}</ThemedText>
+                <TouchableOpacity onPress={() => router.push('/ar-view')}>
+                  <ThemedText style={styles.tryNowLink}>Try now →</ThemedText>
+                </TouchableOpacity>
               </View>
 
               <TouchableOpacity style={styles.heart}>
@@ -87,7 +90,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontWeight: '600',
     fontSize: 18,
-    color: '#222a44',
+    color: '#273054',
   },
   container: {
     flex: 1,
@@ -114,14 +117,20 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   productTitle: {
-    color: '#999',
+    color: '#AAAAAA',
     fontSize: 12,
     fontWeight: '500',
   },
   productPrice: {
-    fontWeight: '700',
+    fontWeight: '900',
     fontSize: 14,
-    color: '#222a44',
+    color: '#273054',
+  },
+  tryNowLink: {
+    color: '#273054',
+    fontSize: 11,
+    fontWeight: '600',
+    marginTop: 4,
   },
   heart: {
     position: 'absolute',

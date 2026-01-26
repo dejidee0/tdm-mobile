@@ -3,8 +3,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
+  Animated,
+  Easing,
   FlatList,
   ImageBackground,
   ScrollView,
@@ -68,7 +70,99 @@ const latestRelease = [
 
 export default function HomeScreen() {
   const router = useRouter();
-  const [searchFocused, setSearchFocused] = React.useState(false);
+  const [searchFocused, setSearchFocused] = useState(false);
+
+  // Animation values
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(50)).current;
+  const headerScale = useRef(new Animated.Value(0.8)).current;
+  const searchBarAnim = useRef(new Animated.Value(0)).current;
+  const categoryAnims = useRef(categories.map(() => new Animated.Value(0))).current;
+  const productAnims = useRef(products.map(() => new Animated.Value(0))).current;
+  const bannerAnim = useRef(new Animated.Value(0)).current;
+  const trendingAnims = useRef(latestRelease.map(() => new Animated.Value(0))).current;
+
+  useEffect(() => {
+    // Sequence all animations
+    Animated.sequence([
+      // Header animations
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 800,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.spring(headerScale, {
+          toValue: 1,
+          tension: 40,
+          friction: 8,
+          useNativeDriver: true,
+        }),
+      ]),
+      
+      // Search bar animation
+      Animated.spring(searchBarAnim, {
+        toValue: 1,
+        tension: 50,
+        friction: 7,
+        useNativeDriver: true,
+      }),
+      
+      // Card slide up
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 600,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    // Stagger category animations
+    const categoryAnimations = categoryAnims.map((anim, index) =>
+      Animated.spring(anim, {
+        toValue: 1,
+        delay: 600 + index * 80,
+        tension: 50,
+        friction: 7,
+        useNativeDriver: true,
+      })
+    );
+    Animated.parallel(categoryAnimations).start();
+
+    // Stagger product animations
+    const productAnimations = productAnims.map((anim, index) =>
+      Animated.spring(anim, {
+        toValue: 1,
+        delay: 1000 + index * 100,
+        tension: 40,
+        friction: 8,
+        useNativeDriver: true,
+      })
+    );
+    Animated.parallel(productAnimations).start();
+
+    // Banner animation
+    Animated.spring(bannerAnim, {
+      toValue: 1,
+      delay: 1600,
+      tension: 40,
+      friction: 8,
+      useNativeDriver: true,
+    }).start();
+
+    // Trending animations
+    const trendingAnimations = trendingAnims.map((anim, index) =>
+      Animated.spring(anim, {
+        toValue: 1,
+        delay: 2000 + index * 100,
+        tension: 40,
+        friction: 8,
+        useNativeDriver: true,
+      })
+    );
+    Animated.parallel(trendingAnimations).start();
+  }, []);
 
   function openCategory(id: string) {
     router.push({
@@ -77,21 +171,46 @@ export default function HomeScreen() {
     });
   }
 
+  const searchBarScale = searchBarAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.9, 1],
+  });
+
+  const searchBarOpacity = searchBarAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1],
+  });
+
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         {/* Header Section */}
         <ImageBackground source={require('@/assets/images/homehero.png')} style={styles.header} imageStyle={styles.headerImage}>
-        <LinearGradient
-          colors={['#273054B0', '#414D7982']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          style={StyleSheet.absoluteFillObject}
-        />
-          <ThemedText type="title" style={styles.headerTitle}>Spaces Built Smarter</ThemedText>
-          <ThemedText style={styles.headerSubtitle}>Discover premium furniture & decor</ThemedText>
+          <LinearGradient
+            colors={['#273054B0', '#414D7982']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={StyleSheet.absoluteFillObject}
+          />
+          <Animated.View
+            style={{
+              opacity: fadeAnim,
+              transform: [{ scale: headerScale }],
+            }}
+          >
+            <ThemedText type="title" style={styles.headerTitle}>Spaces Built Smarter</ThemedText>
+            <ThemedText style={styles.headerSubtitle}>Discover premium furniture & decor</ThemedText>
+          </Animated.View>
 
-          <View style={styles.searchRow}>
+          <Animated.View
+            style={[
+              styles.searchRow,
+              {
+                opacity: searchBarOpacity,
+                transform: [{ scale: searchBarScale }],
+              },
+            ]}
+          >
             <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
             <TextInput
               placeholder="Search items..."
@@ -100,11 +219,18 @@ export default function HomeScreen() {
               onFocus={() => setSearchFocused(true)}
               onBlur={() => setSearchFocused(false)}
             />
-          </View>
+          </Animated.View>
         </ImageBackground>
 
         {/* Main Content Card */}
-        <View style={styles.card}>
+        <Animated.View
+          style={[
+            styles.card,
+            {
+              transform: [{ translateY: slideAnim }],
+            },
+          ]}
+        >
           {/* Categories Section */}
           <View style={styles.categoriesSection}>
             <ScrollView
@@ -113,17 +239,28 @@ export default function HomeScreen() {
               style={styles.categoryScroll}
               contentContainerStyle={{ paddingHorizontal: 16, gap: 12 }}
             >
-              {categories.map((c, idx) => (
-                <TouchableOpacity key={c.id} onPress={() => openCategory(c.id)} activeOpacity={0.7}>
-                  <View style={[styles.categoryItem, idx === 0 && styles.categoryItemActive]}>
-                    <Image
-                      source={c.icon}
-                      style={styles.categoryIcon}
-                    />
-                  </View>
-                  <ThemedText style={[styles.catText, idx === 0 && styles.catTextActive]}>{c.title}</ThemedText>
-                </TouchableOpacity>
-              ))}
+              {categories.map((c, idx) => {
+                const categoryScale = categoryAnims[idx].interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0.5, 1],
+                });
+
+                return (
+                  <TouchableOpacity key={c.id} onPress={() => openCategory(c.id)} activeOpacity={0.7}>
+                    <Animated.View
+                      style={{
+                        opacity: categoryAnims[idx],
+                        transform: [{ scale: categoryScale }],
+                      }}
+                    >
+                      <View style={[styles.categoryItem, idx === 0 && styles.categoryItemActive]}>
+                        <Image source={c.icon} style={styles.categoryIcon} />
+                      </View>
+                      <ThemedText style={[styles.catText, idx === 0 && styles.catTextActive]}>{c.title}</ThemedText>
+                    </Animated.View>
+                  </TouchableOpacity>
+                );
+              })}
             </ScrollView>
           </View>
 
@@ -138,34 +275,72 @@ export default function HomeScreen() {
 
             <FlatList
               data={products}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item: any) => item.id}
               numColumns={2}
               columnWrapperStyle={{ gap: 12, paddingHorizontal: 16, marginBottom: 16 }}
               scrollEnabled={false}
-              renderItem={({ item }) => (
-                <View style={styles.productCard}>
-                  <TouchableOpacity
-                    activeOpacity={0.85}
-                    onPress={() => router.push({ pathname: '/product-details', params: { id: item.id } })}
+              renderItem={({ item, index }: { item: any; index: number }) => {
+                const productScale = productAnims[index].interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0.8, 1],
+                });
+
+                const productTranslateY = productAnims[index].interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [30, 0],
+                });
+
+                return (
+                  <Animated.View
+                    style={[
+                      styles.productCard,
+                      {
+                        opacity: productAnims[index],
+                        transform: [{ scale: productScale }, { translateY: productTranslateY }],
+                      },
+                    ]}
                   >
-                    <Image source={item.image} style={styles.productImage} />
-                  </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.85}
+                      onPress={() => router.push({ pathname: '/product-details', params: { id: item.id } })}
+                    >
+                      <Image source={item.image} style={styles.productImage} />
+                    </TouchableOpacity>
 
-                  <View style={styles.productInfo}>
-                    <ThemedText style={styles.productTitle}>{item.title}</ThemedText>
-                    <ThemedText style={styles.productPrice}>{item.price}</ThemedText>
-                  </View>
+                    <View style={styles.productInfo}>
+                      <ThemedText style={styles.productTitle}>{item.title}</ThemedText>
+                      <ThemedText style={styles.productPrice}>{item.price}</ThemedText>
+                      <TouchableOpacity onPress={() => router.push('/ar-view')}>
+                        <ThemedText style={styles.tryNowLink}>Try now →</ThemedText>
+                      </TouchableOpacity>
+                    </View>
 
-                  <TouchableOpacity style={styles.heart}>
-                    <Ionicons name="heart-outline" size={22} color="#222a44" />
-                  </TouchableOpacity>
-                </View>
-              )}
+                    <TouchableOpacity style={styles.heart}>
+                      <Ionicons name="heart-outline" size={22} color="#273054" />
+                    </TouchableOpacity>
+                  </Animated.View>
+                );
+              }}
             />
           </View>
 
           {/* Banner Section */}
-          <View style={styles.bannerContainer}>
+          <Animated.View
+            style={[
+              styles.bannerContainer,
+              {
+                opacity: bannerAnim,
+                transform: [
+                  {
+                    scale: bannerAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0.9, 1],
+                    }),
+                  },
+                ],
+              },
+            ]}
+          >
             <LinearGradient
               colors={['#7F8ECB', '#6977B0']}
               start={{ x: 0, y: 0 }}
@@ -178,7 +353,7 @@ export default function HomeScreen() {
               </View>
               <Image source={require('@/assets/images/vr.png')} style={styles.bannerImage} />
             </LinearGradient>
-          </View>
+          </Animated.View>
 
           {/* Second Latest Release */}
           <View style={styles.sectionContainer}>
@@ -191,32 +366,55 @@ export default function HomeScreen() {
 
             <FlatList
               data={latestRelease}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item: any) => item.id}
               numColumns={2}
               columnWrapperStyle={{ gap: 12, paddingHorizontal: 16, marginBottom: 16 }}
               scrollEnabled={false}
-              renderItem={({ item }) => (
-                <View style={styles.productCard}>
-                  <TouchableOpacity
-                    activeOpacity={0.85}
-                    onPress={() => router.push({ pathname: '/product-details', params: { id: item.id } })}
+              renderItem={({ item, index }: { item: any; index: number }) => {
+                const trendingScale = trendingAnims[index].interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0.8, 1],
+                });
+
+                const trendingTranslateY = trendingAnims[index].interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [30, 0],
+                });
+
+                return (
+                  <Animated.View
+                    style={[
+                      styles.productCard,
+                      {
+                        opacity: trendingAnims[index],
+                        transform: [{ scale: trendingScale }, { translateY: trendingTranslateY }],
+                      },
+                    ]}
                   >
-                    <Image source={item.image} style={styles.productImage} />
-                  </TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.85}
+                      onPress={() => router.push({ pathname: '/product-details', params: { id: item.id } })}
+                    >
+                      <Image source={item.image} style={styles.productImage} />
+                    </TouchableOpacity>
 
-                  <View style={styles.productInfo}>
-                    <ThemedText style={styles.productTitle}>{item.title}</ThemedText>
-                    <ThemedText style={styles.productPrice}>{item.price}</ThemedText>
-                  </View>
+                    <View style={styles.productInfo}>
+                      <ThemedText style={styles.productTitle}>{item.title}</ThemedText>
+                      <ThemedText style={styles.productPrice}>{item.price}</ThemedText>
+                      <TouchableOpacity onPress={() => router.push('/ar-view')}>
+                        <ThemedText style={styles.tryNowLink}>Try now →</ThemedText>
+                      </TouchableOpacity>
+                    </View>
 
-                  <TouchableOpacity style={styles.heart}>
-                    <Ionicons name="heart-outline" size={22} color="#222a44" />
-                  </TouchableOpacity>
-                </View>
-              )}
+                    <TouchableOpacity style={styles.heart}>
+                      <Ionicons name="heart-outline" size={22} color="#273054" />
+                    </TouchableOpacity>
+                  </Animated.View>
+                );
+              }}
             />
           </View>
-        </View>
+        </Animated.View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -270,10 +468,10 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 14,
-    color: '#222a44',
+    color: '#273054',
   },
   searchInputFocused: {
-    color: '#222a44',
+    color: '#273054',
   },
   card: {
     marginTop: -30,
@@ -311,7 +509,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   categoryItemActive: {
-    backgroundColor: '#222a44',
+    backgroundColor: '#273054',
   },
   categoryIcon: {
     width: 32,
@@ -326,7 +524,7 @@ const styles = StyleSheet.create({
     width: 72,
   },
   catTextActive: {
-    color: '#222a44',
+    color: '#273054',
   },
   sectionContainer: {
     marginBottom: 24,
@@ -371,6 +569,12 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     fontSize: 14,
     color: '#121212',
+  },
+  tryNowLink: {
+    color: '#273054',
+    fontSize: 11,
+    fontWeight: '600',
+    marginTop: 4,
   },
   heart: {
     position: 'absolute',

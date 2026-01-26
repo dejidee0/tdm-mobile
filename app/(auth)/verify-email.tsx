@@ -136,8 +136,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: '700',
-    color: '#222a44',
+    fontWeight: '900',
+    color: '#273054',
     marginBottom: 8,
   },
   subtitle: {
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#222a44',
+    color: '#273054',
     marginLeft: 2,
   },
   input: {
@@ -166,23 +166,23 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: '#fafafa',
     fontSize: 15,
-    color: '#222a44',
+    color: '#273054',
     letterSpacing: 4,
     textAlign: 'center',
   },
   inputFocused: {
-    borderColor: '#222a44',
+    borderColor: '#273054',
     borderWidth: 2,
     backgroundColor: '#fff',
   },
   verifyButton: {
-    backgroundColor: '#222a44',
+    backgroundColor: '#273054',
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 12,
-    shadowColor: '#222a44',
+    shadowColor: '#273054',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 8,
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
   },
   verifyButtonText: {
     color: '#fff',
-    fontWeight: '700',
+    fontWeight: '900',
     fontSize: 15,
   },
   divider: {
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   },
   backLink: {
     color: '#e24a43',
-    fontWeight: '700',
+    fontWeight: '900',
     fontSize: 13,
   },
 });
