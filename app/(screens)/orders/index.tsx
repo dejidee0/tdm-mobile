@@ -1,17 +1,17 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React from 'react';
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-const ORDERS = [
-  { id: '1', title: 'Mini sit me', price: 'N80,000', image: require('@/assets/images/products/chair1.jpg') },
-  { id: '2', title: 'Mini sit me', price: 'N80,000', image: require('@/assets/images/products/chair1.jpg') },
-  { id: '3', title: 'Mini sit me', price: 'N80,000', image: require('@/assets/images/products/chair1.jpg') },
-];
+import { useOrders } from '../../context/OrdersContext';
 
 export default function OrdersScreen() {
   const router = useRouter();
+  const { orders, loading, fetchMyOrders } = useOrders();
+
+  useEffect(() => {
+    fetchMyOrders();
+  }, []);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -24,22 +24,38 @@ export default function OrdersScreen() {
       </View>
 
       <View style={styles.container}>
-        <FlatList
-          data={ORDERS}
-          keyExtractor={(i) => i.id}
-          scrollEnabled={true}
-          contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 12 }}
-          renderItem={({ item }) => (
-            <TouchableOpacity style={styles.card} onPress={() => router.push(`/orders/${item.id}`)} activeOpacity={0.7}>
-              <Image source={item.image} style={styles.thumb} />
-              <View style={styles.cardInfo}>
-                <Text style={styles.cardTitle}>{item.title}</Text>
-                <Text style={styles.cardEstimate}>EST: 15 WORKING DAYS</Text>
-              </View>
-              <Text style={styles.cardPrice}>{item.price}</Text>
-            </TouchableOpacity>
-          )}
-        />
+        {loading ? (
+          <ActivityIndicator style={{ marginTop: 24 }} />
+        ) : (
+          <FlatList
+            data={orders || []}
+            keyExtractor={(i: any) => i.id?.toString() || i.orderNumber?.toString()}
+            scrollEnabled={true}
+            contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 12 }}
+            renderItem={({ item }: { item: any }) => {
+              const thumb = item.items && item.items[0] && item.items[0].product && item.items[0].product.images && item.items[0].product.images[0];
+              const title = item.orderNumber ? `Order #${item.orderNumber}` : item.id;
+              const status = item.status || item.orderStatus || '';
+              const total = item.total || (item.orderSummary && item.orderSummary.totalAmount) || '';
+              return (
+                <TouchableOpacity style={styles.card} onPress={() => router.push(`/orders/${item.id || item.orderNumber}`)} activeOpacity={0.7}>
+                  {thumb ? (
+                    <Image source={{ uri: thumb }} style={styles.thumb} />
+                  ) : (
+                    <View style={[styles.thumb, { alignItems: 'center', justifyContent: 'center' }]}>
+                      <Ionicons name="cart" size={28} color="#ccc" />
+                    </View>
+                  )}
+                  <View style={styles.cardInfo}>
+                    <Text style={styles.cardTitle}>{title}</Text>
+                    <Text style={styles.cardEstimate}>{status}</Text>
+                  </View>
+                  <Text style={styles.cardPrice}>{total}</Text>
+                </TouchableOpacity>
+              );
+            }}
+          />
+        )}
       </View>
     </SafeAreaView>
   );

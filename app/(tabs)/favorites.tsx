@@ -2,8 +2,9 @@ import { ThemedText } from '@/components/themed-text';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Dimensions, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useProducts } from '../context/ProductsContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
@@ -17,6 +18,13 @@ const PRODUCTS = [
 
 export default function FavoritesScreen() {
   const router = useRouter();
+  const { fetchFeatured, featured, products } = useProducts();
+
+  useEffect(() => {
+    (async () => {
+      await fetchFeatured();
+    })();
+  }, []);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -32,7 +40,7 @@ export default function FavoritesScreen() {
       {/* Products Grid */}
       <View style={styles.container}>
         <FlatList
-          data={PRODUCTS}
+          data={featured && featured.length ? featured : products}
           keyExtractor={(i) => i.id}
           numColumns={2}
           columnWrapperStyle={{ gap: 12, paddingHorizontal: 16, marginBottom: 16 }}
@@ -44,7 +52,7 @@ export default function FavoritesScreen() {
                 activeOpacity={0.85}
                 onPress={() => router.push({ pathname: '/product-details', params: { id: item.id } })}
               >
-                <Image source={item.image} style={styles.productImage} />
+                <Image source={typeof item.image === 'string' ? { uri: item.image } : item.image} style={styles.productImage} />
               </TouchableOpacity>
 
               <View style={styles.productInfo}>

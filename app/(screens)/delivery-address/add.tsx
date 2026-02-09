@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -15,8 +16,19 @@ export default function AddAddressScreen() {
   const [focusedInput, setFocusedInput] = useState<any>(null);
 
   function submit() {
-    // TODO: persist address
-    router.back();
+    (async () => {
+      try {
+        const key = '@app_addresses';
+        const raw = await AsyncStorage.getItem(key);
+        const list = raw ? JSON.parse(raw) : [];
+        const id = String(Date.now());
+        list.unshift({ id, name, email, phone, address });
+        await AsyncStorage.setItem(key, JSON.stringify(list));
+      } catch {
+        // ignore
+      }
+      router.back();
+    })();
   }
 
   return (

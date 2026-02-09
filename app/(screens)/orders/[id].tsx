@@ -1,13 +1,27 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useOrders } from '../../context/OrdersContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function OrderDetails() {
   const params = useLocalSearchParams();
   const router = useRouter();
   const id = (params.id as string) || '1';
+  const { getOrder } = useOrders();
+  const [order, setOrder] = useState<any>(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const o = await getOrder(id);
+        setOrder(o);
+      } catch {
+        // ignore
+      }
+    })();
+  }, [id]);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -21,12 +35,12 @@ export default function OrderDetails() {
 
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.card}>
-          <Image source={require('@/assets/images/products/chair1.jpg')} style={styles.thumb} />
+          <Image source={typeof order?.product?.image === 'string' ? { uri: order.product.image } : order?.product?.image ?? require('@/assets/images/products/chair1.jpg')} style={styles.thumb} />
           <View style={styles.cardInfo}>
-            <Text style={styles.cardTitle}>Mini sit me</Text>
-            <Text style={styles.cardEstimate}>EST: 15 WORKING DAYS</Text>
+            <Text style={styles.cardTitle}>{order?.product?.title ?? order?.title ?? 'Order item'}</Text>
+            <Text style={styles.cardEstimate}>{order?.status ?? 'EST: 15 WORKING DAYS'}</Text>
           </View>
-          <Text style={styles.cardPrice}>N80,000</Text>
+          <Text style={styles.cardPrice}>{order?.total ?? order?.price ?? ''}</Text>
         </View>
 
         <View style={styles.infoCard}>

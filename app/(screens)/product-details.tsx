@@ -1,14 +1,20 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useProducts } from '../context/ProductsContext';
 
 export default function ProductDetails() {
   const router = useRouter();
+  const params = useLocalSearchParams();
+  const id = (params.id as string) || undefined;
   const [qty, setQty] = useState(1);
   const [tab, setTab] = useState<'description' | 'reviews'>('description');
+  const [product, setProduct] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const { fetchProduct } = useProducts();
 
   function dec() {
     setQty((s) => Math.max(1, s - 1));
@@ -16,6 +22,24 @@ export default function ProductDetails() {
   function inc() {
     setQty((s) => s + 1);
   }
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      if (!id) return;
+      setLoading(true);
+      try {
+        const p = await fetchProduct(id);
+        if (mounted) setProduct(p);
+      } catch {
+        // ignore
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [id]);
 
   return (
     <SafeAreaView style={styles.safe}>

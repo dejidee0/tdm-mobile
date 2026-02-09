@@ -1,12 +1,31 @@
 import { ThemedText } from '@/components/themed-text';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React from 'react';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useMemo } from 'react';
+import { FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useCart } from '../context/CartContext';
 
 export default function CartScreen() {
   const router = useRouter();
+  const { items, fetchCart, loading } = useCart();
+
+  useEffect(() => {
+    fetchCart();
+  }, []);
+
+  function parsePrice(v: any) {
+    if (!v) return 0;
+    if (typeof v === 'number') return v;
+    if (typeof v === 'string') {
+      const n = v.replace(/[^0-9.]/g, '');
+      return parseFloat(n) || 0;
+    }
+    if (v.price) return parsePrice(v.price);
+    return 0;
+  }
+
+  const subtotal = useMemo(() => items.reduce((s: number, it: any) => s + (parsePrice(it.price) || parsePrice(it.product?.price) || 0) * (it.quantity ?? it.qty ?? 1), 0), [items]);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -20,21 +39,26 @@ export default function CartScreen() {
       </View>
 
       <View style={styles.container}>
-        {/* Cart Item Card */}
-        <View style={styles.card}>
-          <Image source={require('@/assets/images/products/chair1.jpg')} style={styles.thumb} />
-          <View style={styles.itemDetails}>
-            <ThemedText style={styles.itemTitle}>Mini sit me</ThemedText>
-            <ThemedText style={styles.itemDelivery}>Est: 15 working days</ThemedText>
-          </View>
-          <ThemedText style={styles.itemPrice}>N75,000</ThemedText>
-        </View>
+        <FlatList
+          data={items}
+          keyExtractor={(i: any) => i.id ?? String(i.product?.id ?? Math.random())}
+          renderItem={({ item }) => (
+            <View style={styles.card}>
+              <Image source={typeof item.product?.image === 'string' ? { uri: item.product.image } : item.product?.image ?? require('@/assets/images/products/chair1.jpg')} style={styles.thumb} />
+              <View style={styles.itemDetails}>
+                <ThemedText style={styles.itemTitle}>{item.product?.title ?? item.name ?? 'Item'}</ThemedText>
+                <ThemedText style={styles.itemDelivery}>Est: {item.deliveryEstimate ?? '15 working days'}</ThemedText>
+              </View>
+              <ThemedText style={styles.itemPrice}>{(item.quantity ?? item.qty ?? 1) > 1 ? `N${(parseFloat(String(subtotal)) || 0).toFixed(2)}` : `N${(parsePrice(item.price) || parsePrice(item.product?.price) || 0).toFixed(2)}`}</ThemedText>
+            </View>
+          )}
+        />
 
         {/* Total Row */}
         <View style={styles.totalRow}>
           <View>
-            <ThemedText style={styles.totalLabel}>Total:</ThemedText>
-            <ThemedText style={styles.totalPrice}>N75,000</ThemedText>
+            <ThemedText style={styles.totalLabel}>Subtotal:</ThemedText>
+            <ThemedText style={styles.totalPrice}>N{subtotal.toFixed(2)}</ThemedText>
             <ThemedText style={styles.deliveryNote}>Delivery exclusive</ThemedText>
           </View>
 

@@ -1,11 +1,25 @@
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function DeliveryAddressScreen() {
   const router = useRouter();
+  const [addresses, setAddresses] = useState<any[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const raw = await AsyncStorage.getItem('@app_addresses');
+        const list = raw ? JSON.parse(raw) : [];
+        setAddresses(list);
+      } catch {
+        setAddresses([]);
+      }
+    })();
+  }, []);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -18,16 +32,22 @@ export default function DeliveryAddressScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.card}>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.cardName}>Najeeb Abubakar</Text>
-            <Text style={styles.cardAddress}>Third Ave, Lekki phase 1, Lagos, Nigeria</Text>
-            <Text style={styles.cardPhone}>+234 7060 868580</Text>
-          </View>
-          <TouchableOpacity style={styles.editIcon} onPress={() => router.push('/delivery-address/add')}>
-            <Ionicons name="pencil" size={18} color="#273054" />
-          </TouchableOpacity>
-        </View>
+        {addresses.length ? (
+          addresses.map((a) => (
+            <View key={a.id} style={styles.card}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.cardName}>{a.name}</Text>
+                <Text style={styles.cardAddress}>{a.address}</Text>
+                <Text style={styles.cardPhone}>{a.phone}</Text>
+              </View>
+              <TouchableOpacity style={styles.editIcon} onPress={() => router.push('/delivery-address/add')}>
+                <Ionicons name="pencil" size={18} color="#273054" />
+              </TouchableOpacity>
+            </View>
+          ))
+        ) : (
+          <Text style={{ color: '#999', marginBottom: 12 }}>No saved addresses</Text>
+        )}
 
         <TouchableOpacity style={styles.addBtn} onPress={() => router.push('/delivery-address/add')} activeOpacity={0.8}>
           <Ionicons name="add" size={20} color="#273054" />

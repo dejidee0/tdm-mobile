@@ -4,6 +4,7 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
+import { useProducts } from '../context/ProductsContext';
 import {
   Animated,
   Easing,
@@ -26,7 +27,7 @@ const categories = [
   { id: 'lamp', title: 'Lamp', icon: require('@/assets/images/icons/lamp.png') },
 ];
 
-const products = [
+const INITIAL_PRODUCTS = [
   {
     id: '1',
     title: 'Sverom chair',
@@ -53,7 +54,7 @@ const products = [
   },
 ];
 
-const latestRelease = [
+const INITIAL_LATEST = [
   {
     id: '1',
     title: 'Sverom chair',
@@ -71,6 +72,11 @@ const latestRelease = [
 export default function HomeScreen() {
   const router = useRouter();
   const [searchFocused, setSearchFocused] = useState(false);
+  const { fetchProducts, fetchFeatured, products: ctxProducts, featured: ctxFeatured } = useProducts();
+  const [productsData, setProductsData] = useState<any[]>(INITIAL_PRODUCTS);
+  const [latestData, setLatestData] = useState<any[]>(INITIAL_LATEST);
+  const { fetchCategories, categories: ctxCategories } = useProducts();
+  const cats = (ctxCategories && ctxCategories.length) ? ctxCategories : categories;
 
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -78,11 +84,26 @@ export default function HomeScreen() {
   const headerScale = useRef(new Animated.Value(0.8)).current;
   const searchBarAnim = useRef(new Animated.Value(0)).current;
   const categoryAnims = useRef(categories.map(() => new Animated.Value(0))).current;
-  const productAnims = useRef(products.map(() => new Animated.Value(0))).current;
+  const productAnims = useRef(INITIAL_PRODUCTS.map(() => new Animated.Value(0))).current;
   const bannerAnim = useRef(new Animated.Value(0)).current;
-  const trendingAnims = useRef(latestRelease.map(() => new Animated.Value(0))).current;
+  const trendingAnims = useRef(INITIAL_LATEST.map(() => new Animated.Value(0))).current;
 
   useEffect(() => {
+    // fetch live products & featured
+    (async () => {
+      try {
+        const p = await fetchProducts();
+        if (p && Array.isArray(p)) setProductsData(p);
+      } catch {}
+      try {
+        const f = await fetchFeatured();
+        if (f && Array.isArray(f)) setLatestData(f);
+      } catch {}
+      try {
+        await fetchCategories();
+      } catch {}
+    })();
+
     // Sequence all animations
     Animated.sequence([
       // Header animations
@@ -239,24 +260,31 @@ export default function HomeScreen() {
               style={styles.categoryScroll}
               contentContainerStyle={{ paddingHorizontal: 16, gap: 12 }}
             >
-              {categories.map((c, idx) => {
-                const categoryScale = categoryAnims[idx].interpolate({
+              {cats.map((c, idx) => {
+                const anim = categoryAnims[idx % categoryAnims.length];
+                const categoryScale = anim.interpolate({
                   inputRange: [0, 1],
                   outputRange: [0.5, 1],
                 });
 
                 return (
-                  <TouchableOpacity key={c.id} onPress={() => openCategory(c.id)} activeOpacity={0.7}>
+                  <TouchableOpacity key={c.id || c.slug || String(idx)} onPress={() => openCategory(c.id || c.slug || c.name)} activeOpacity={0.7}>
                     <Animated.View
                       style={{
-                        opacity: categoryAnims[idx],
+                        opacity: anim,
                         transform: [{ scale: categoryScale }],
                       }}
                     >
                       <View style={[styles.categoryItem, idx === 0 && styles.categoryItemActive]}>
-                        <Image source={c.icon} style={styles.categoryIcon} />
+                        {c.icon ? (
+                          <Image source={typeof c.icon === 'string' ? { uri: c.icon } : c.icon} style={styles.categoryIcon} />
+                        ) : c.image ? (
+                          <Image source={{ uri: c.image }} style={styles.categoryIcon} />
+                        ) : (
+                          <View style={{ width: 32, height: 32 }} />
+                        )}
                       </View>
-                      <ThemedText style={[styles.catText, idx === 0 && styles.catTextActive]}>{c.title}</ThemedText>
+                      <ThemedText style={[styles.catText, idx === 0 && styles.catTextActive]}>{c.title || c.name}</ThemedText>
                     </Animated.View>
                   </TouchableOpacity>
                 );
@@ -274,28 +302,29 @@ export default function HomeScreen() {
             </View>
 
             <FlatList
-              data={products}
+              data={productsData}
               keyExtractor={(item: any) => item.id}
               numColumns={2}
               columnWrapperStyle={{ gap: 12, paddingHorizontal: 16, marginBottom: 16 }}
               scrollEnabled={false}
               renderItem={({ item, index }: { item: any; index: number }) => {
-                const productScale = productAnims[index].interpolate({
+                const anim = productAnims[index % productAnims.length];
+                const productScale = anim.interpolate({
                   inputRange: [0, 1],
                   outputRange: [0.8, 1],
                 });
 
-                const productTranslateY = productAnims[index].interpolate({
+                const productTranslateY = anim.interpolate({
                   inputRange: [0, 1],
                   outputRange: [30, 0],
                 });
 
                 return (
-                  <Animated.View
+                      <Animated.View
                     style={[
                       styles.productCard,
                       {
-                        opacity: productAnims[index],
+                        opacity: anim,
                         transform: [{ scale: productScale }, { translateY: productTranslateY }],
                       },
                     ]}
@@ -304,7 +333,7 @@ export default function HomeScreen() {
                       activeOpacity={0.85}
                       onPress={() => router.push({ pathname: '/product-details', params: { id: item.id } })}
                     >
-                      <Image source={item.image} style={styles.productImage} />
+                      <Image source={typeof item.image === 'string' ? { uri: item.image } : item.image} style={styles.productImage} />
                     </TouchableOpacity>
 
                     <View style={styles.productInfo}>
@@ -365,18 +394,19 @@ export default function HomeScreen() {
             </View>
 
             <FlatList
-              data={latestRelease}
+              data={latestData}
               keyExtractor={(item: any) => item.id}
               numColumns={2}
               columnWrapperStyle={{ gap: 12, paddingHorizontal: 16, marginBottom: 16 }}
               scrollEnabled={false}
               renderItem={({ item, index }: { item: any; index: number }) => {
-                const trendingScale = trendingAnims[index].interpolate({
+                const anim = trendingAnims[index % trendingAnims.length];
+                const trendingScale = anim.interpolate({
                   inputRange: [0, 1],
                   outputRange: [0.8, 1],
                 });
 
-                const trendingTranslateY = trendingAnims[index].interpolate({
+                const trendingTranslateY = anim.interpolate({
                   inputRange: [0, 1],
                   outputRange: [30, 0],
                 });

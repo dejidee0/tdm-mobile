@@ -1,9 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useProducts } from '../../context/ProductsContext';
 
 const { width } = Dimensions.get('window');
 
@@ -23,6 +24,18 @@ export default function CategoryScreen() {
   const params = useLocalSearchParams();
   const router = useRouter();
   const slug = (params.slug as string) || 'category';
+  const { fetchProducts, products } = useProducts();
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      if (!slug) return;
+      await fetchProducts(`category=${encodeURIComponent(slug)}`);
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [slug]);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -37,8 +50,8 @@ export default function CategoryScreen() {
       </View>
 
       <View style={styles.container}>
-        <FlatList
-          data={PRODUCTS}
+          <FlatList
+          data={products}
           keyExtractor={(i) => i.id}
           numColumns={2}
           columnWrapperStyle={{ justifyContent: 'space-between', paddingHorizontal: 16 }}
@@ -46,9 +59,9 @@ export default function CategoryScreen() {
           renderItem={({ item }) => (
             <View style={styles.productCard}>
               <TouchableOpacity activeOpacity={0.9} onPress={() => router.push({ pathname: '/product-details', params: { id: item.id } })}>
-                <Image source={item.image} style={styles.productImage} />
+                <Image source={typeof item.image === 'string' ? { uri: item.image } : item.image} style={styles.productImage} />
                 <Text style={styles.productTitle}>{item.title}</Text>
-                <Text style={styles.productPrice}>{item.price}</Text>
+                <Text style={styles.productPrice}>{item.price ?? item.priceText ?? ''}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity style={styles.heart}>

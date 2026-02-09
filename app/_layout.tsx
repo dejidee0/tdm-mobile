@@ -4,12 +4,18 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 import { AppProvider } from './context/AppContext';
 import { AuthProvider } from './context/AuthContext';
+import { CartProvider } from './context/CartContext';
+import { OrdersProvider } from './context/OrdersContext';
+import { ProductsProvider } from './context/ProductsContext';
 
 export default function RootLayout() {
   return (
     <ThemeProvider value={DefaultTheme}>
       <AuthProvider>
         <AppProvider>
+          <ProductsProvider>
+          <CartProvider>
+          <OrdersProvider>
           <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="onboarding-screen" options={{ headerShown: false }} />
@@ -31,6 +37,9 @@ export default function RootLayout() {
         <Stack.Screen name="(screens)/ar-view" options={{ headerShown: false }} />
           </Stack>
           <StatusBar style="auto" />
+          </OrdersProvider>
+          </CartProvider>
+          </ProductsProvider>
         </AppProvider>
       </AuthProvider>
     </ThemeProvider>
