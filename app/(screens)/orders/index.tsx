@@ -3,7 +3,7 @@ import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
 import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useOrders } from '../../context/OrdersContext';
+import { useOrders } from '../../../context/OrdersContext';
 
 export default function OrdersScreen() {
   const router = useRouter();
@@ -11,7 +11,7 @@ export default function OrdersScreen() {
 
   useEffect(() => {
     fetchMyOrders();
-  }, []);
+  }, [fetchMyOrders]);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -26,6 +26,10 @@ export default function OrdersScreen() {
       <View style={styles.container}>
         {loading ? (
           <ActivityIndicator style={{ marginTop: 24 }} />
+        ) : !orders || (Array.isArray(orders) && orders.length === 0) ? (
+          <View style={{ padding: 20, alignItems: 'center' }}>
+            <Text style={{ color: '#999' }}>You have no orders yet.</Text>
+          </View>
         ) : (
           <FlatList
             data={orders || []}

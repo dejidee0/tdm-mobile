@@ -15,6 +15,9 @@ export default function DeliveryAddressScreen() {
         const raw = await AsyncStorage.getItem('@app_addresses');
         const list = raw ? JSON.parse(raw) : [];
         setAddresses(list);
+        try {
+          if (list && list.length) console.log('[DeliveryAddress] first saved address', list[0]);
+        } catch {}
       } catch {
         setAddresses([]);
       }

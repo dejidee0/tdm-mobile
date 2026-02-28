@@ -4,16 +4,11 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
 import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useProducts } from '../../context/ProductsContext';
+import { useProducts } from '../../../context/ProductsContext';
+import { useSaved } from '../../../context/SavedContext';
 
 const { width } = Dimensions.get('window');
 
-const PRODUCTS = [
-  { id: '1', title: 'Sverom chair', price: 'N65,000', image: require('@/assets/images/products/chair1.jpg') },
-  { id: '2', title: 'Sverom chair', price: 'N65,000', image: require('@/assets/images/products/chair2.jpg') },
-  { id: '3', title: 'Sverom chair', price: 'N65,000', image: require('@/assets/images/products/chair3.jpg') },
-  { id: '4', title: 'Sverom chair', price: 'N65,000', image: require('@/assets/images/products/chair4.png') },
-];
 
 function capitalize(s?: string) {
   if (!s) return '';
@@ -25,6 +20,7 @@ export default function CategoryScreen() {
   const router = useRouter();
   const slug = (params.slug as string) || 'category';
   const { fetchProducts, products } = useProducts();
+  const { isSaved, toggleSaved } = useSaved();
 
   useEffect(() => {
     let mounted = true;
@@ -50,26 +46,32 @@ export default function CategoryScreen() {
       </View>
 
       <View style={styles.container}>
+        {products && products.length ? (
           <FlatList
-          data={products}
-          keyExtractor={(i) => i.id}
-          numColumns={2}
-          columnWrapperStyle={{ justifyContent: 'space-between', paddingHorizontal: 16 }}
-          scrollEnabled={true}
-          renderItem={({ item }) => (
-            <View style={styles.productCard}>
-              <TouchableOpacity activeOpacity={0.9} onPress={() => router.push({ pathname: '/product-details', params: { id: item.id } })}>
-                <Image source={typeof item.image === 'string' ? { uri: item.image } : item.image} style={styles.productImage} />
-                <Text style={styles.productTitle}>{item.title}</Text>
-                <Text style={styles.productPrice}>{item.price ?? item.priceText ?? ''}</Text>
-              </TouchableOpacity>
+            data={products}
+            keyExtractor={(i) => i.id}
+            numColumns={2}
+            columnWrapperStyle={{ justifyContent: 'space-between', paddingHorizontal: 16 }}
+            scrollEnabled={true}
+            renderItem={({ item }) => (
+              <View style={styles.productCard}>
+                <TouchableOpacity activeOpacity={0.9} onPress={() => router.push({ pathname: '/product-details', params: { id: item.id } })}>
+                  <Image source={typeof item.image === 'string' ? { uri: item.image } : item.image} style={styles.productImage} />
+                  <Text style={styles.productTitle}>{item.title}</Text>
+                  <Text style={styles.productPrice}>{item.price ?? item.priceText ?? ''}</Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity style={styles.heart}>
-                <Ionicons name="heart-outline" size={20} color="#e24a43" />
-              </TouchableOpacity>
-            </View>
-          )}
-        />
+                <TouchableOpacity style={styles.heart} onPress={() => toggleSaved(item.id)}>
+                  <Ionicons name={isSaved(item.id) ? "heart" : "heart-outline"} size={20} color={isSaved(item.id) ? "#e24a43" : "#273054"} />
+                </TouchableOpacity>
+              </View>
+            )}
+          />
+        ) : (
+          <View style={{ padding: 20, alignItems: 'center' }}>
+            <Text style={{ color: '#999' }}>No products found in this category.</Text>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );

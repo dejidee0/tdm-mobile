@@ -3,7 +3,7 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ActivityIndicator, Alert, Image, ImageBackground, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
@@ -21,20 +21,7 @@ export default function ForgotPasswordScreen() {
       }
       const response = await forgotPassword(email);
       console.log(response);
-      Alert.alert(
-        'Success',
-        response.data.message,
-        [
-          {
-            text: 'OK',
-            onPress: () => {
-              router.replace('/(auth)/password-reset');
-            },
-          },
-        ],
-        { cancelable: false }
-      );
-      // router.push('/(auth)/password-reset');
+      router.replace('/(auth)/password-reset');
     } catch (e: any) {
       console.warn(e);
       Alert.alert('Failed', e?.message ?? String(e));

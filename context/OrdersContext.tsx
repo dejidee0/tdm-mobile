@@ -38,11 +38,22 @@ export function OrdersProvider({ children }: { children: ReactNode }) {
   async function fetchMyOrders() {
     setLoading(true);
     try {
+      console.log('[OrdersContext] fetching my orders');
       const r = await api.getMyOrders();
       if (r.ok) {
         const data = r.data?.data ?? r.data ?? [];
+        console.log('[OrdersContext] fetched my orders count', Array.isArray(data) ? data.length : 0);
+        if (Array.isArray(data) && data.length) {
+          try {
+            console.log('[OrdersContext] first order', data[0]);
+          } catch {}
+        }
         setOrders(data);
         return data;
+      } else {
+        // ensure UI shows empty state when fetch fails
+        console.warn('[OrdersContext] fetchMyOrders failed', r.status, r.data);
+        setOrders([]);
       }
     } finally {
       setLoading(false);
@@ -75,9 +86,16 @@ export function OrdersProvider({ children }: { children: ReactNode }) {
   async function fetchOrders() {
     setLoading(true);
     try {
+      console.log('[OrdersContext] fetching orders');
       const r = await api.getOrders();
       if (r.ok) {
         const data = r.data?.data ?? r.data ?? [];
+        console.log('[OrdersContext] fetched orders count', Array.isArray(data) ? data.length : 0);
+        if (Array.isArray(data) && data.length) {
+          try {
+            console.log('[OrdersContext] first order (admin)', data[0]);
+          } catch {}
+        }
         setOrders(data);
         return data;
       }

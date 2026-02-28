@@ -5,13 +5,24 @@ import { useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import { FlatList, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useCart } from '../../context/CartContext';
-import { useOrders } from '../../context/OrdersContext';
+import { useCart } from '../../../context/CartContext';
+import { useOrders } from '../../../context/OrdersContext';
+
+function parsePrice(v: any) {
+  if (!v) return 0;
+  if (typeof v === 'number') return v;
+  if (typeof v === 'string') {
+    const n = v.replace(/[^0-9.]/g, '');
+    return parseFloat(n) || 0;
+  }
+  if (v.price) return parsePrice(v.price);
+  return 0;
+}
 
 export default function CheckoutScreen() {
   const router = useRouter();
   const [focusedInput, setFocusedInput] = useState<any>(null);
-  const { items, fetchCart } = useCart();
+  const { items, fetchCart, cart } = useCart();
   const { createOrder } = useOrders();
   const [addresses, setAddresses] = useState<any[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
@@ -19,7 +30,7 @@ export default function CheckoutScreen() {
 
   useEffect(() => {
     fetchCart();
-  }, []);
+  }, [fetchCart]);
 
   useEffect(() => {
     if (!isFocused) return;
@@ -33,20 +44,14 @@ export default function CheckoutScreen() {
         setAddresses([]);
       }
     })();
-  }, [isFocused]);
+  }, [isFocused, selectedAddressId]);
 
-  function parsePrice(v: any) {
-    if (!v) return 0;
-    if (typeof v === 'number') return v;
-    if (typeof v === 'string') {
-      const n = v.replace(/[^0-9.]/g, '');
-      return parseFloat(n) || 0;
-    }
-    if (v.price) return parsePrice(v.price);
-    return 0;
-  }
+  
 
-  const subtotal = useMemo(() => items.reduce((s: number, it: any) => s + (parsePrice(it.price) || parsePrice(it.product?.price) || 0) * (it.quantity ?? it.qty ?? 1), items), [items]);
+  const subtotal = useMemo(() => {
+    if (cart && (cart.subTotal !== undefined && cart.subTotal !== null)) return cart.subTotal;
+    return items.reduce((s: number, it: any) => s + ((parsePrice(it.unitPrice ?? it.price) || parsePrice(it.product?.price) || 0) * (it.quantity ?? it.qty ?? 1)), 0);
+  }, [cart, items]);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -115,13 +120,18 @@ export default function CheckoutScreen() {
           <TouchableOpacity
             style={styles.payBtn}
             onPress={async () => {
-              // create minimal order payload
+              // Build payload matching CreateOrderDto from Swagger
               const selected = addresses.find((a) => a.id === selectedAddressId) ?? null;
-              const payload = {
-                items: items?.map((it: any) => ({ productId: it.product?.id ?? it.productId, quantity: it.quantity ?? it.qty ?? 1 })),
-                shipping: { state: 'Lagos', amount: 5000, address: selected },
-                payment: { method: 'card' },
+              const payload: any = {
+                shippingFullName: selected?.name ?? '',
+                shippingPhone: selected?.phone ?? '',
+                shippingAddress: selected?.address ?? '',
+                shippingCity: selected?.city ?? '',
+                shippingState: 'Lagos',
+                shippingNotes: '',
+                customerNotes: '',
               };
+
               try {
                 const res = await createOrder(payload);
                 if (res?.ok) {

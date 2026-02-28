@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_BASE_URL } from '../config';
 
-const API_BASE = (process.env.EXPO_PUBLIC_API_BASE_URL || '').replace(/\/$/, '');
+const API_BASE = (API_BASE_URL as string).replace(/\/$/, '');
 const ACCESS_KEY = '@app_access_token';
 
 type ApiResult<T = any> = { ok: boolean; status: number; data: T | null };
@@ -25,9 +26,27 @@ export async function apiFetch(path: string, options: RequestInit = {}): Promise
 
   const url = path.startsWith('http') ? path : `${API_BASE}${path.startsWith('/') ? path : `/${path}`}`;
 
-  const res = await fetch(url, { ...options, headers });
-  const data = await parseResponse(res);
-  return { ok: res.ok, status: res.status, data };
+  const method = (options.method || 'GET').toUpperCase();
+  try {
+    console.log(`[apiFetch] => ${method} ${url}`);
+  } catch {}
+
+  try {
+    const res = await fetch(url, { ...options, headers });
+    const data = await parseResponse(res);
+
+    try {
+      const size = data && data.data && Array.isArray(data.data) ? data.data.length : undefined;
+      console.log(`[apiFetch] <= ${method} ${url} ${res.status}${size !== undefined ? ` items=${size}` : ''}`);
+    } catch {}
+
+    return { ok: res.ok, status: res.status, data };
+  } catch (err) {
+    console.warn(`[apiFetch] network error ${method} ${url}`, err);
+    // Return a safe ApiResult indicating failure without throwing, so callers can handle it.
+    // Use a valid HTTP status (503 Service Unavailable) rather than 0 to avoid RangeError
+    return { ok: false, status: 503, data: { error: 'network_error', message: String(err) } };
+  }
 }
 
 // Products helpers
@@ -160,6 +179,19 @@ export async function updateOrderStatus(orderId: string, payload: any) {
 
 export async function updateOrderPayment(orderId: string, payload: any) {
   return apiFetch(`/Orders/${orderId}/payment`, { method: 'PUT', body: JSON.stringify(payload) });
+}
+
+// Saved Items
+export async function getSavedItems() {
+  return apiFetch('/saved');
+}
+
+export async function saveItem(itemId: string) {
+  return apiFetch('/saved', { method: 'POST', body: JSON.stringify({ itemId }) });
+}
+
+export async function removeSavedItem(savedItemId: string) {
+  return apiFetch(`/saved/${savedItemId}`, { method: 'DELETE' });
 }
 
 export default { apiFetch };

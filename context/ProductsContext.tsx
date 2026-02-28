@@ -39,9 +39,16 @@ export function ProductsProvider({ children }: { children: ReactNode }) {
   async function fetchProducts(query = '') {
     setLoading(true);
     try {
+      console.log('[ProductsContext] fetching products', query || '(all)');
       const r = await api.getProducts(query);
       if (r.ok) {
         const data = r.data?.data ?? r.data ?? [];
+        console.log('[ProductsContext] fetched products count', Array.isArray(data) ? data.length : 0);
+        if (Array.isArray(data) && data.length) {
+          try {
+            console.log('[ProductsContext] first product', data[0]);
+          } catch {}
+        }
         setProducts(data);
         return data;
       }
@@ -54,8 +61,13 @@ export function ProductsProvider({ children }: { children: ReactNode }) {
   async function fetchProduct(id: string) {
     setLoading(true);
     try {
+      console.log('[ProductsContext] fetching product', id);
       const r = await api.getProductById(id);
-      if (r.ok) return r.data?.data ?? r.data ?? null;
+      if (r.ok) {
+        const data = r.data?.data ?? r.data ?? null;
+        console.log('[ProductsContext] fetched product', id, data ? (data.id ?? data) : null);
+        return data;
+      }
     } finally {
       setLoading(false);
     }
@@ -65,9 +77,16 @@ export function ProductsProvider({ children }: { children: ReactNode }) {
   async function fetchFeatured() {
     setLoading(true);
     try {
+      console.log('[ProductsContext] fetching featured products');
       const r = await api.getFeaturedProducts();
       if (r.ok) {
         const data = r.data?.data ?? r.data ?? [];
+        console.log('[ProductsContext] fetched featured count', Array.isArray(data) ? data.length : 0);
+        if (Array.isArray(data) && data.length) {
+          try {
+            console.log('[ProductsContext] first featured product', data[0]);
+          } catch {}
+        }
         setFeatured(data);
         return data;
       }
@@ -80,9 +99,16 @@ export function ProductsProvider({ children }: { children: ReactNode }) {
   async function fetchCategories() {
     setLoading(true);
     try {
+      console.log('[ProductsContext] fetching categories');
       const r = await api.getCategories();
       if (r.ok) {
         const data = r.data?.data ?? r.data ?? [];
+        console.log('[ProductsContext] fetched categories count', Array.isArray(data) ? data.length : 0);
+        if (Array.isArray(data) && data.length) {
+          try {
+            console.log('[ProductsContext] first category', data[0]);
+          } catch {}
+        }
         setCategories(data);
         return data;
       }

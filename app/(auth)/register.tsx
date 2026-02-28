@@ -9,7 +9,7 @@ import {
   View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 export default function RegisterScreen() {
   const router = useRouter();
@@ -39,19 +39,7 @@ export default function RegisterScreen() {
       }
       const response = await register({ firstName, lastName, email, phoneNumber, password, confirmPassword });
       console.log('Registration successful', response);
-      Alert.alert(
-        'Success',
-        response.data?.message,
-        [
-          {
-            text: 'OK',
-            onPress: () => {
-              router.replace('/(auth)/login');
-            },
-          },
-        ],
-        { cancelable: false }
-      );
+      router.replace('/(auth)/login');
     } catch (e: any) {
       console.warn(e.message);
       Alert.alert('Registration failed', e.message || 'An error occurred during registration');

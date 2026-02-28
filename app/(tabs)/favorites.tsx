@@ -3,27 +3,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
-import { Dimensions, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { useProducts } from '../context/ProductsContext';
+import { FlatList, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-const { width } = Dimensions.get('window');
-
-const PRODUCTS = [
-  { id: '1', title: 'Sverom chair', price: 'N65,000', image: require('@/assets/images/products/chair1.jpg') },
-  { id: '2', title: 'Sverom chair', price: 'N65,000', image: require('@/assets/images/products/chair2.jpg') },
-  { id: '3', title: 'Sverom chair', price: 'N65,000', image: require('@/assets/images/products/chair3.jpg') },
-  { id: '4', title: 'Sverom chair', price: 'N65,000', image: require('@/assets/images/products/chair4.png') },
-];
+import { useSaved } from '../../context/SavedContext';
 
 export default function FavoritesScreen() {
   const router = useRouter();
-  const { fetchFeatured, featured, products } = useProducts();
+  const { savedItems, toggleSaved, fetchSavedItems } = useSaved();
 
   useEffect(() => {
-    (async () => {
-      await fetchFeatured();
-    })();
+    fetchSavedItems();
   }, []);
 
   return (
@@ -38,38 +27,46 @@ export default function FavoritesScreen() {
       </View>
 
       {/* Products Grid */}
-      <View style={styles.container}>
-        <FlatList
-          data={featured && featured.length ? featured : products}
-          keyExtractor={(i) => i.id}
-          numColumns={2}
-          columnWrapperStyle={{ gap: 12, paddingHorizontal: 16, marginBottom: 16 }}
-          contentContainerStyle={{ paddingVertical: 16, paddingBottom: 20 }}
-          scrollEnabled={false}
-          renderItem={({ item }) => (
-            <View style={styles.productCard}>
-              <TouchableOpacity
-                activeOpacity={0.85}
-                onPress={() => router.push({ pathname: '/product-details', params: { id: item.id } })}
-              >
-                <Image source={typeof item.image === 'string' ? { uri: item.image } : item.image} style={styles.productImage} />
-              </TouchableOpacity>
+      <ScrollView style={styles.container}>
+        {savedItems && savedItems.length > 0 ? (
+          <FlatList
+            data={savedItems}
+            keyExtractor={(i) => i.id || i.productId || Math.random().toString()}
+            numColumns={2}
+            columnWrapperStyle={{ gap: 12, paddingHorizontal: 16, marginBottom: 16 }}
+            contentContainerStyle={{ paddingVertical: 16, paddingBottom: 20 }}
+            scrollEnabled={false}
+            renderItem={({ item }) => {
+              const product = item.product || item.item || item;
+              return (
+              <View style={styles.productCard}>
+                <TouchableOpacity
+                  activeOpacity={0.85}
+                  onPress={() => router.push({ pathname: '/product-details', params: { id: product.id } })}
+                >
+                  <Image source={typeof product.image === 'string' ? { uri: product.image } : (product.image?.[0] || product.primaryImageUrl || product.image || require('@/assets/images/placeholder.jpg'))} style={styles.productImage} />
+                </TouchableOpacity>
 
-              <View style={styles.productInfo}>
-                <ThemedText style={styles.productTitle}>{item.title}</ThemedText>
-                <ThemedText style={styles.productPrice}>{item.price}</ThemedText>
-                <TouchableOpacity onPress={() => router.push('/ar-view')}>
-                  <ThemedText style={styles.tryNowLink}>Try now →</ThemedText>
+                <View style={styles.productInfo}>
+                  <ThemedText style={styles.productTitle}>{product.brandName || product.name || product.title || 'Product'}</ThemedText>
+                  <ThemedText style={styles.productPrice}>{product.priceDisplay || product.price}</ThemedText>
+                  <TouchableOpacity onPress={() => router.push('/ar-view')}>
+                    <ThemedText style={styles.tryNowLink}>Try now →</ThemedText>
+                  </TouchableOpacity>
+                </View>
+
+                <TouchableOpacity style={styles.heart} onPress={() => toggleSaved(product.id)}>
+                  <Ionicons name="trash-outline" size={20} color="#e24a43" />
                 </TouchableOpacity>
               </View>
-
-              <TouchableOpacity style={styles.heart}>
-                <Ionicons name="trash-outline" size={20} color="#e24a43" />
-              </TouchableOpacity>
-            </View>
-          )}
-        />
-      </View>
+            )}}
+          />
+        ) : (
+          <View style={{ padding: 20, alignItems: 'center' }}>
+            <ThemedText style={{ color: '#999' }}>No favorites yet — add items to see them here.</ThemedText>
+          </View>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 }

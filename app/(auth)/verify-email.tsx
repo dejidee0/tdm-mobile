@@ -17,15 +17,7 @@ export default function VerifyEmailScreen() {
         Alert.alert('Missing code', 'Please provide the verification code');
         return;
       }
-      // const response = await verifyEmail(code);
-      Alert.alert('Success', 'Email verified successfully', [
-        {
-          text: 'OK',
-          onPress: () => {
-            router.replace('/(tabs)');
-          },
-        },
-      ], { cancelable: false });
+      router.replace('/(tabs)');
     } catch (e: any) {
       console.warn(e);
       Alert.alert('Verification failed', e?.message ?? String(e));

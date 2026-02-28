@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ActivityIndicator, Alert, Image, ImageBackground, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -22,20 +22,9 @@ export default function LoginScreen() {
         Alert.alert('Missing fields', 'Please provide email and password');
         return;
       }
-      const response = await login({ email, password });
-      Alert.alert(
-        'Success',
-        response.data?.message,
-        [
-          {
-            text: 'OK',
-            onPress: () => {
-              router.replace('/(tabs)');
-            },
-          },
-        ],
-        { cancelable: false }
-      );
+
+      await login({ email, password });
+      router.replace('/(tabs)');
     } catch (e: any) {
       console.warn(e);
       Alert.alert('Login failed', e?.message ?? String(e));
