@@ -3,12 +3,15 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ActivityIndicator, Alert, Image, ImageBackground, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuth } from '../../context/AuthContext';
 
 export default function VerifyEmailScreen() {
   const router = useRouter();
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [focusedInput, setFocusedInput] = useState<any>(null);
+
+  const { verifyEmail, resendVerification } = useAuth();
 
   async function handleVerify() {
     setLoading(true);
@@ -17,7 +20,8 @@ export default function VerifyEmailScreen() {
         Alert.alert('Missing code', 'Please provide the verification code');
         return;
       }
-      router.replace('/(tabs)');
+      await verifyEmail({ token: code });
+      router.replace('/(tabs)')
     } catch (e: any) {
       console.warn(e);
       Alert.alert('Verification failed', e?.message ?? String(e));
@@ -76,8 +80,8 @@ export default function VerifyEmailScreen() {
             </View>
           </TouchableOpacity>
         </View>
-      </View>
-    </SafeAreaView>
+        </View>
+      </SafeAreaView>
     </ImageBackground>
   );
 }

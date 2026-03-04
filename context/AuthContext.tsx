@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { API_BASE_URL } from '../config';
 
-const API_BASE = process.env.EXPO_PUBLIC_API_BASE_URL as string
-const BASE_URL = API_BASE.replace(/\/$/, '') + '/Auth';
+const BASE_URL = (API_BASE_URL as string || 'https://tbmbuild-001-site1.jtempurl.com/api/v1').replace(/\/$/, '') + '/Auth';
 
 type User = { id?: string; name?: string; firstName?: string; lastName?: string; email?: string; phoneNumber?: string } | null;
 

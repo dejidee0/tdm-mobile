@@ -1,13 +1,48 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuth } from '../../context/AuthContext';
+import { apiFetch } from '../../services/api';
 
 export default function MyDetailsScreen() {
   const router = useRouter();
+  const { user, fetchMe } = useAuth();
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phoneNumber: '' });
   const [focusedInput, setFocusedInput] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setForm({
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        email: user.email || '',
+        phoneNumber: user.phoneNumber || ''
+      });
+    }
+  }, [user]);
+
+  async function handleSave() {
+    setLoading(true);
+    try {
+      const res = await apiFetch('/account/profile', { method: 'PUT', body: JSON.stringify({ firstName: form.firstName, lastName: form.lastName }) });
+      if (form.phoneNumber !== user?.phoneNumber) {
+        await apiFetch('/account/phone', { method: 'PUT', body: JSON.stringify({ phoneNumber: form.phoneNumber }) });
+      }
+      if (res.ok) {
+        await fetchMe();
+        Alert.alert('Success', 'Profile updated successfully');
+      } else {
+        Alert.alert('Error', res.data?.message || 'Failed to update profile');
+      }
+    } catch (e: any) {
+      Alert.alert('Error', e.message);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -78,8 +113,12 @@ export default function MyDetailsScreen() {
           />
         </View>
 
-        <TouchableOpacity style={styles.saveBtn}>
-          <Text style={styles.saveText}>Save Changes</Text>
+        <TouchableOpacity style={styles.saveBtn} onPress={handleSave} activeOpacity={0.8} disabled={loading}>
+          {loading ? (
+             <ActivityIndicator color="#fff" size="small" />
+          ) : (
+            <Text style={styles.saveText}>Save Changes</Text>
+          )}
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

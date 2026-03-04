@@ -1,12 +1,45 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import { useRouter } from 'expo-router';
-import React from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { apiFetch } from '../../services/api';
 
 export default function EstimateResults() {
   const router = useRouter();
+  const params = useLocalSearchParams();
+  const [saving, setSaving] = useState(false);
+
+  // Example parameters that could have been mapped
+  const estimateRange = String(params.range || '$45k - $62k');
+  const timeline = String(params.timeline || '6-8 Weeks');
+  const complexity = String(params.complexity || 'Medium');
+
+  async function handleSaveProject() {
+    setSaving(true);
+    try {
+      // Hit the AI projects creation endpoint
+      const res = await apiFetch('/ai/projects', {
+        method: 'POST',
+        body: JSON.stringify({
+          title: 'New AI Estimate',
+          budgetRange: estimateRange,
+          timeline,
+          complexity,
+        }),
+      });
+      if (res.ok) {
+        Alert.alert('Saved!', 'Project has been saved successfully.');
+      } else {
+        throw new Error(res.data?.message || 'Failed to save project');
+      }
+    } catch (e: any) {
+      Alert.alert('Error', e.message);
+    } finally {
+      setSaving(false);
+    }
+  }
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -20,17 +53,17 @@ export default function EstimateResults() {
 
         <View style={styles.card}>
           <Text style={styles.small}>AI ANALYSIS COMPLETE</Text>
-          <Text style={styles.range}>$45k - $62k</Text>
+          <Text style={styles.range}>{estimateRange}</Text>
           <Text style={styles.note}>Estimated Total Budget Range</Text>
           <View style={styles.divider} />
           <View style={styles.row}> 
             <View style={styles.col}>
               <Text style={styles.muted}>Timeline</Text>
-              <Text style={styles.bold}>6-8 Weeks</Text>
+              <Text style={styles.bold}>{timeline}</Text>
             </View>
             <View style={styles.col}>
               <Text style={styles.muted}>Complexity</Text>
-              <Text style={styles.bold}>Medium</Text>
+              <Text style={styles.bold}>{complexity}</Text>
             </View>
           </View>
         </View>
@@ -52,7 +85,7 @@ export default function EstimateResults() {
           </View>
         </View>
 
-        <View style={styles.levelCardLocked}>
+        <TouchableOpacity style={styles.levelCardLocked} activeOpacity={0.8} onPress={() => router.push('/(screens)/detailed-estimate')}>
           <Image source={require('@/assets/images/placeholder.jpg')} style={[styles.levelImage, { opacity: 0.4 }]} />
           <View style={styles.lockOverlay}>
             <Text style={styles.lockText}>Unlock Estimate</Text>
@@ -61,17 +94,17 @@ export default function EstimateResults() {
             <Text style={styles.levelTitle}>Premium</Text>
             <Text style={[styles.levelText, { color: '#9aa0ae' }]}>High-end durable materials</Text>
           </View>
-        </View>
+        </TouchableOpacity>
 
         <View style={{ height: 40 }} />
       </ScrollView>
 
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.outlineBtn} onPress={() => router.back()}>
+        <TouchableOpacity style={styles.outlineBtn} onPress={() => router.back()} disabled={saving}>
           <Text style={styles.outlineText}>Back</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.primaryBtn} onPress={() => {}}>
-          <Text style={styles.primaryText}>Save to Projects</Text>
+        <TouchableOpacity style={styles.primaryBtn} onPress={handleSaveProject} disabled={saving}>
+          {saving ? <ActivityIndicator color="#fff" /> : <Text style={styles.primaryText}>Save to Projects</Text>}
         </TouchableOpacity>
       </View>
     </SafeAreaView>

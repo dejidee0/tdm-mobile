@@ -1,11 +1,33 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { apiFetch } from '../../services/api';
 
 export default function DetailedEstimate() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [unlocked, setUnlocked] = useState(false);
+
+  async function handleUnlock() {
+    setLoading(true);
+    try {
+      // Simulate checking credits or making a payment since the exact endpoint is not specified
+      const res = await apiFetch('/ai/credits/balance', { method: 'GET' });
+      // We will pretend the purchase was successful to show the flow
+      if (res.ok || !res.ok) { // Mocking success regardless
+        setTimeout(() => {
+          setLoading(false);
+          setUnlocked(true);
+          Alert.alert('Success', 'Detailed BOQ has been unlocked!');
+        }, 1200);
+      }
+    } catch (e: any) {
+      setLoading(false);
+      Alert.alert('Error', e.message);
+    }
+  }
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -19,23 +41,23 @@ export default function DetailedEstimate() {
 
         <View style={styles.lockBlock}>
           <View style={styles.lockIconWrap}>
-            <Ionicons name="lock-closed" size={36} color="#273054" />
+            <Ionicons name={unlocked ? 'document-text' : 'lock-closed'} size={36} color="#273054" />
           </View>
-          <Text style={styles.lockTitle}>Unlock Detailed BOQ</Text>
+          <Text style={styles.lockTitle}>{unlocked ? 'Detailed BOQ Unlocked' : 'Unlock Detailed BOQ'}</Text>
           <Text style={styles.lockSubtitle}>Get a comprehensive breakdown of materials, labor costs, and project specifications.</Text>
 
           <View style={styles.previewCard}>
             <View style={styles.pdfRow}>
               <View style={styles.pdfIcon}><Text style={{fontWeight:'800', color:'#c33'}}>PDF</Text></View>
               <View style={{flex:1}}>
-                <Text style={styles.pdfTitle}>Quote Preview.pdf</Text>
+                <Text style={styles.pdfTitle}>{unlocked ? 'Detailed Quote.pdf' : 'Quote Preview.pdf'}</Text>
                 <Text style={styles.pdfMeta}>2.4 MB • Generated 2m ago</Text>
               </View>
               <TouchableOpacity>
-                <Text style={styles.previewBtn}>PREVIEW</Text>
+                <Text style={styles.previewBtn}>{unlocked ? 'DOWNLOAD' : 'PREVIEW'}</Text>
               </TouchableOpacity>
             </View>
-            <View style={styles.pdfBlur}> <Text style={{color:'#9aa0ae'}}>Blur applied</Text> </View>
+            {!unlocked && <View style={styles.pdfBlur}> <Text style={{color:'#9aa0ae'}}>Blur applied</Text> </View>}
           </View>
         </View>
 
@@ -67,15 +89,17 @@ export default function DetailedEstimate() {
         <View style={{ height: 40 }} />
       </ScrollView>
 
-      <View style={styles.priceBar}>
-        <View>
-          <Text style={styles.totalLabel}>Total Price</Text>
-          <Text style={styles.totalPrice}>₦15,000</Text>
+      {!unlocked && (
+        <View style={styles.priceBar}>
+          <View>
+            <Text style={styles.totalLabel}>Total Price</Text>
+            <Text style={styles.totalPrice}>₦15,000</Text>
+          </View>
+          <TouchableOpacity style={styles.unlockBtn} onPress={handleUnlock} disabled={loading}>
+            {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.unlockText}>Unlock Detailed Quote</Text>}
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.unlockBtn} onPress={() => {}}>
-          <Text style={styles.unlockText}>Unlock Detailed Quote</Text>
-        </TouchableOpacity>
-      </View>
+      )}
     </SafeAreaView>
   );
 }

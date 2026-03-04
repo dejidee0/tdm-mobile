@@ -281,8 +281,8 @@ export default function HomeScreen() {
                         <View style={[styles.categoryItem, idx === 0 && styles.categoryItemActive]}>
                           {c.icon ? (
                             <Image source={typeof c.icon === 'string' ? { uri: c.icon } : c.icon} style={styles.categoryIcon} />
-                          ) : c.image ? (
-                            <Image source={{ uri: c.image }} style={styles.categoryIcon} />
+                          ) : c.imageUrl ? (
+                            <Image source={{ uri: c.imageUrl }} style={styles.categoryIcon} />
                           ) : (
                             <View style={{ width: 32, height: 32 }} />
                           )}
@@ -696,6 +696,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignSelf: 'flex-start',
     marginTop: 4,
+    width: 90,
   },
   bannerButtonText: {
     color: '#fff',

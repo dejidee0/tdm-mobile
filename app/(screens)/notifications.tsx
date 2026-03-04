@@ -1,19 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useRouter } from 'expo-router';
-import React from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { apiFetch } from '../../services/api';
 
 type Notification = { id: string; title: string; body: string; time: string; unread?: boolean; kind?: 'success' | 'reward' | 'info' | 'account' };
-
-const NOTIFICATIONS: Notification[] = [
-  { id: '1', title: 'Order Delivered', body: 'Your Order #1234 has been delivered successfully', time: '5 min ago', unread: true, kind: 'success' },
-  { id: '2', title: 'New Reward Unlocked!', body: 'You earned 20% off voucher. Use it on your next order', time: '2 hours ago', unread: true, kind: 'reward' },
-  { id: '3', title: 'Weekend Special', body: 'Get 25% on all orders this weekend', time: '1 day ago', kind: 'info' },
-  { id: '4', title: 'Order Confirmed', body: 'Your order #123 is being processed', time: '2 days ago', kind: 'info' },
-  { id: '5', title: 'Account Updated', body: 'Your delivery address has been updated', time: '5 min ago', kind: 'account' },
-];
 
 function IconBox({ kind }: { kind?: Notification['kind'] }) {
   const map: any = {
@@ -22,7 +15,7 @@ function IconBox({ kind }: { kind?: Notification['kind'] }) {
     info: { bg: '#eef7ef', fg: '#27ae60', name: 'tag' },
     account: { bg: '#f0e9ff', fg: '#6b46c1', name: 'account' },
   };
-  const cfg = kind ? map[kind] : map.info;
+  const cfg = kind && map[kind] ? map[kind] : map.info;
   return (
     <View style={[styles.iconBox, { backgroundColor: cfg.bg }]}>
       <MaterialCommunityIcons name={cfg.name} size={22} color={cfg.fg} />
@@ -38,7 +31,7 @@ function NotificationCard({ n }: { n: Notification }) {
       <View style={styles.cardBody}>
         <Text style={styles.cardTitle}>{n.title}</Text>
         <Text style={styles.cardText}>{n.body}</Text>
-        <Text style={styles.cardTime}>{n.time}</Text>
+        <Text style={styles.cardTime}>{n.time || 'recently'}</Text>
       </View>
 
       {n.unread ? <View style={styles.redDot} /> : null}
@@ -48,6 +41,32 @@ function NotificationCard({ n }: { n: Notification }) {
 
 export default function NotificationsScreen() {
   const router = useRouter();
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await apiFetch('/account/notifications');
+        if (res.ok && res.data) {
+          setNotifications(Array.isArray(res.data) ? res.data : (res.data.data || []));
+        }
+      } catch {
+        // Fallback to empty
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  async function markAllRead() {
+    try {
+      await apiFetch('/account/notifications', { method: 'PUT' });
+      setNotifications(notifications.map(n => ({ ...n, unread: false })));
+    } catch {
+      // ignore
+    }
+  }
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -57,21 +76,24 @@ export default function NotificationsScreen() {
             <Ionicons name="chevron-back" size={24} color="#273054" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Notifications</Text>
-          <TouchableOpacity style={styles.markBtn}>
+          <TouchableOpacity style={styles.markBtn} onPress={markAllRead}>
             <Ionicons name="checkmark" size={20} color="#273054" />
             <View style={styles.markDot} />
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.sectionTitle}>TODAY</Text>
-        {NOTIFICATIONS.filter((x, i) => i < 2).map((n) => (
-          <NotificationCard key={n.id} n={n} />
-        ))}
-
-        <Text style={[styles.sectionTitle, { marginTop: 20 }]}>EARLIER</Text>
-        {NOTIFICATIONS.filter((x, i) => i >= 2).map((n) => (
-          <NotificationCard key={n.id} n={n} />
-        ))}
+        {loading ? (
+          <ActivityIndicator style={{ marginTop: 20 }} />
+        ) : notifications.length === 0 ? (
+          <Text style={{ color: '#999', textAlign: 'center', marginTop: 20 }}>No notifications</Text>
+        ) : (
+          <>
+            <Text style={styles.sectionTitle}>ALL NOTIFICATIONS</Text>
+            {notifications.map((n) => (
+              <NotificationCard key={n.id} n={n} />
+            ))}
+          </>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
