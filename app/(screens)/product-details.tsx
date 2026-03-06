@@ -42,7 +42,7 @@ export default function ProductDetails() {
     return () => {
       mounted = false;
     };
-  }, [id, fetchProduct]);
+  }, [id]);
 
   const { addItem } = useCart();
 

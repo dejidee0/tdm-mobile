@@ -40,6 +40,10 @@ export async function apiFetch(path: string, options: RequestInit = {}): Promise
       console.log(`[apiFetch] <= ${method} ${url} ${res.status}${size !== undefined ? ` items=${size}` : ''}`);
     } catch {}
 
+    if (!res.ok) {
+      console.error(`[apiFetch] error response ${method} ${url} ${res.status}:`, JSON.stringify(data, null, 2));
+    }
+
     return { ok: res.ok, status: res.status, data };
   } catch (err) {
     console.warn(`[apiFetch] network error ${method} ${url}`, err);

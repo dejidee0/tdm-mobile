@@ -19,76 +19,25 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useProducts } from '../../context/ProductsContext';
 import { useSaved } from '../../context/SavedContext';
 
-const categories = [
-  { id: 'popular', title: 'Popular', icon: require('@/assets/images/icons/popular.png') },
-  { id: 'chair', title: 'Chair', icon: require('@/assets/images/icons/chair.png') },
-  { id: 'workstation', title: 'Workstation', icon: require('@/assets/images/icons/table.png') },
-  { id: 'living', title: 'Living room', icon: require('@/assets/images/icons/livingroom.png') },
-  { id: 'bed', title: 'Bedroom', icon: require('@/assets/images/icons/bedroom.png') },
-  { id: 'lamp', title: 'Lamp', icon: require('@/assets/images/icons/lamp.png') },
-];
-
-const INITIAL_PRODUCTS = [
-  {
-    id: '1',
-    title: 'Sverom chair',
-    price: 'N65,000',
-    image: require('@/assets/images/products/chair1.jpg'),
-  },
-  {
-    id: '2',
-    title: 'Sverom chair',
-    price: 'N65,000',
-    image: require('@/assets/images/products/chair2.jpg'),
-  },
-  {
-    id: '3',
-    title: 'Sverom chair',
-    price: 'N65,000',
-    image: require('@/assets/images/products/chair3.jpg'),
-  },
-  {
-    id: '4',
-    title: 'Sverom chair',
-    price: 'N65,000',
-    image: require('@/assets/images/products/chair4.png'),
-  },
-];
-
-const INITIAL_LATEST = [
-  {
-    id: '1',
-    title: 'Sverom chair',
-    price: 'N65,000',
-    image: require('@/assets/images/products/latest-release/release1.jpg'),
-  },
-  {
-    id: '2',
-    title: 'Sverom chair',
-    price: 'N65,000',
-    image: require('@/assets/images/products/latest-release/release2.jpg'),
-  },
-];
-
 export default function HomeScreen() {
   const router = useRouter();
   const [searchFocused, setSearchFocused] = useState(false);
   const { fetchProducts, fetchFeatured, products: ctxProducts, featured: ctxFeatured } = useProducts();
   const { isSaved, toggleSaved } = useSaved();
-  const [productsData, setProductsData] = useState<any[]>(INITIAL_PRODUCTS);
-  const [latestData, setLatestData] = useState<any[]>(INITIAL_LATEST);
+  const [productsData, setProductsData] = useState<any[]>([]);
+  const [latestData, setLatestData] = useState<any[]>([]);
   const { fetchCategories, categories: ctxCategories } = useProducts();
-  const cats = (ctxCategories && ctxCategories.length) ? ctxCategories : categories;
+  const cats = (ctxCategories && ctxCategories.length) ? ctxCategories : [];
 
   // Animation values
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
   const headerScale = useRef(new Animated.Value(0.8)).current;
   const searchBarAnim = useRef(new Animated.Value(0)).current;
-  const categoryAnims = useRef(categories.map(() => new Animated.Value(0))).current;
-  const productAnims = useRef(INITIAL_PRODUCTS.map(() => new Animated.Value(0))).current;
+  const categoryAnims = useRef(Array(20).fill(0).map(() => new Animated.Value(0))).current;
+  const productAnims = useRef(Array(20).fill(0).map(() => new Animated.Value(0))).current;
   const bannerAnim = useRef(new Animated.Value(0)).current;
-  const trendingAnims = useRef(INITIAL_LATEST.map(() => new Animated.Value(0))).current;
+  const trendingAnims = useRef(Array(20).fill(0).map(() => new Animated.Value(0))).current;
 
   useEffect(() => {
     // fetch live products & featured

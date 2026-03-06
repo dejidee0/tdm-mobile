@@ -94,7 +94,7 @@ export default function CartScreen() {
 
   useEffect(() => {
     fetchCart();
-  }, [fetchCart]);
+  }, []);
 
   return (
     <GestureHandlerRootView style={styles.safe}>

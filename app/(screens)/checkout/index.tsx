@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
-import { FlatList, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, FlatList, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useCart } from '../../../context/CartContext';
 import { useOrders } from '../../../context/OrdersContext';
@@ -30,7 +30,7 @@ export default function CheckoutScreen() {
 
   useEffect(() => {
     fetchCart();
-  }, [fetchCart]);
+  }, []);
 
   useEffect(() => {
     if (!isFocused) return;
@@ -133,15 +133,24 @@ export default function CheckoutScreen() {
               };
 
               try {
+                console.log('[Checkout] Creating order with payload:', JSON.stringify(payload, null, 2));
                 const res = await createOrder(payload);
+                console.log('[Checkout] Order creation response:', res);
                 if (res?.ok) {
-                  router.push('/order-placement/order-success');
+                  // Pass orderId to payment screen to complete the payment
+                  const orderId = res.data?.id ?? res.data?.data?.id ?? res.data;
+                  if (orderId && typeof orderId === 'string') {
+                    router.push({ pathname: '/payment', params: { orderId } });
+                  } else {
+                    router.push('/payment');
+                  }
                 } else {
-                  // fallback to payment screen if order creation needs payment step
-                  router.push('/payment');
+                  console.error('[Checkout] Order creation failed:', res);
+                  Alert.alert('Order Creation Failed', `Status: ${res?.status}\nError: ${res?.data?.title || res?.data?.message || JSON.stringify(res?.data)}`);
                 }
-              } catch {
-                router.push('/payment');
+              } catch (e: any) {
+                console.error('[Checkout] Order creation error:', e);
+                Alert.alert('Error', `Order creation threw an error: ${e?.message || JSON.stringify(e)}`);
               }
             }}
             activeOpacity={0.8}

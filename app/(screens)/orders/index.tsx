@@ -11,7 +11,7 @@ export default function OrdersScreen() {
 
   useEffect(() => {
     fetchMyOrders();
-  }, [fetchMyOrders]);
+  }, []);
 
   return (
     <SafeAreaView style={styles.safe}>
