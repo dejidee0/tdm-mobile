@@ -9,7 +9,7 @@ import {
   View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 export default function RegisterScreen() {
   const router = useRouter();
@@ -39,19 +39,7 @@ export default function RegisterScreen() {
       }
       const response = await register({ firstName, lastName, email, phoneNumber, password, confirmPassword });
       console.log('Registration successful', response);
-      Alert.alert(
-        'Success',
-        response.data?.message,
-        [
-          {
-            text: 'OK',
-            onPress: () => {
-              router.replace('/(auth)/login');
-            },
-          },
-        ],
-        { cancelable: false }
-      );
+      router.replace('/(auth)/login');
     } catch (e: any) {
       console.warn(e.message);
       Alert.alert('Registration failed', e.message || 'An error occurred during registration');
@@ -163,7 +151,7 @@ export default function RegisterScreen() {
                 accessibilityLabel={showPassword ? "Hide password" : "Show password"}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <Ionicons name={showPassword ? "eye-off" : "eye"} size={22} color="#222a44" />
+                <Ionicons name={showPassword ? "eye-off" : "eye"} size={22} color="#273054" />
               </TouchableOpacity>
             </View>
           </View>
@@ -192,7 +180,7 @@ export default function RegisterScreen() {
                 accessibilityLabel={showConfirmPassword ? "Hide password" : "Show password"}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <Ionicons name={showConfirmPassword ? "eye-off" : "eye"} size={22} color="#222a44" />
+                <Ionicons name={showConfirmPassword ? "eye-off" : "eye"} size={22} color="#273054" />
               </TouchableOpacity>
             </View>
           </View>
@@ -226,7 +214,7 @@ export default function RegisterScreen() {
           <TouchableOpacity onPress={() => router.push('/(auth)/login')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
             <View style={styles.loginContainer}>
               <ThemedText style={styles.loginText}>Already have an account? </ThemedText>
-              <ThemedText style={styles.loginLink}>Login</ThemedText>
+              <ThemedText style={styles.loginLink}>Login Here</ThemedText>
             </View>
           </TouchableOpacity>
         </View>
@@ -281,8 +269,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: '700',
-    color: '#222a44',
+    fontWeight: '900',
+    color: '#273054',
     marginBottom: 8,
   },
   subtitle: {
@@ -300,7 +288,7 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#222a44',
+    color: '#273054',
     marginLeft: 2,
   },
   input: {
@@ -311,10 +299,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: '#fafafa',
     fontSize: 15,
-    color: '#222a44',
+    color: '#273054',
   },
   inputFocused: {
-    borderColor: '#222a44',
+    borderColor: '#273054',
     borderWidth: 2,
     backgroundColor: '#fff',
   },
@@ -332,7 +320,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingRight: 48,
     fontSize: 15,
-    color: '#222a44',
+    color: '#273054',
   },
   passwordIconButton: {
     position: 'absolute',
@@ -367,13 +355,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   createButton: {
-    backgroundColor: '#222a44',
+    backgroundColor: '#273054',
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 12,
-    shadowColor: '#222a44',
+    shadowColor: '#273054',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 8,
@@ -381,7 +369,7 @@ const styles = StyleSheet.create({
   },
   createButtonText: {
     color: '#fff',
-    fontWeight: '700',
+    fontWeight: '900',
     fontSize: 15,
   },
   divider: {
@@ -401,7 +389,7 @@ const styles = StyleSheet.create({
   },
   loginLink: {
     color: '#e24a43',
-    fontWeight: '700',
+    fontWeight: '900',
     fontSize: 13,
   },
 });

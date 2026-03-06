@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ActivityIndicator, Alert, Image, ImageBackground, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 
 export default function PasswordResetScreen() {
   const router = useRouter();
@@ -71,7 +71,7 @@ export default function PasswordResetScreen() {
                 accessibilityLabel={showPassword ? "Hide password" : "Show password"}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <Ionicons name={showPassword ? "eye-off" : "eye"} size={22} color="#222a44" />
+                <Ionicons name={showPassword ? "eye-off" : "eye"} size={22} color="#273054" />
               </TouchableOpacity>
             </View>
           </View>
@@ -100,7 +100,7 @@ export default function PasswordResetScreen() {
                 accessibilityLabel={showConfirmPassword ? "Hide password" : "Show password"}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <Ionicons name={showConfirmPassword ? "eye-off" : "eye"} size={22} color="#222a44" />
+                <Ionicons name={showConfirmPassword ? "eye-off" : "eye"} size={22} color="#273054" />
               </TouchableOpacity>
             </View>
           </View>
@@ -200,8 +200,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: '700',
-    color: '#222a44',
+    fontWeight: '900',
+    color: '#273054',
     marginBottom: 8,
   },
   subtitle: {
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#222a44',
+    color: '#273054',
     marginLeft: 2,
   },
   input: {
@@ -230,10 +230,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: '#fafafa',
     fontSize: 15,
-    color: '#222a44',
+    color: '#273054',
   },
   inputFocused: {
-    borderColor: '#222a44',
+    borderColor: '#273054',
     borderWidth: 2,
     backgroundColor: '#fff',
   },
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingRight: 48,
     fontSize: 15,
-    color: '#222a44',
+    color: '#273054',
   },
   passwordIconButton: {
     position: 'absolute',
@@ -259,13 +259,13 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   resetButton: {
-    backgroundColor: '#222a44',
+    backgroundColor: '#273054',
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 12,
-    shadowColor: '#222a44',
+    shadowColor: '#273054',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 8,
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
   },
   resetButtonText: {
     color: '#fff',
-    fontWeight: '700',
+    fontWeight: '900',
     fontSize: 15,
   },
   divider: {
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
   },
   backLink: {
     color: '#e24a43',
-    fontWeight: '700',
+    fontWeight: '900',
     fontSize: 13,
   },
 });

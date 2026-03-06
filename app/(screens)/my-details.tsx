@@ -1,20 +1,55 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuth } from '../../context/AuthContext';
+import { apiFetch } from '../../services/api';
 
 export default function MyDetailsScreen() {
   const router = useRouter();
+  const { user, fetchMe } = useAuth();
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phoneNumber: '' });
   const [focusedInput, setFocusedInput] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setForm({
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        email: user.email || '',
+        phoneNumber: user.phoneNumber || ''
+      });
+    }
+  }, [user]);
+
+  async function handleSave() {
+    setLoading(true);
+    try {
+      const res = await apiFetch('/account/profile', { method: 'PUT', body: JSON.stringify({ firstName: form.firstName, lastName: form.lastName }) });
+      if (form.phoneNumber !== user?.phoneNumber) {
+        await apiFetch('/account/phone', { method: 'PUT', body: JSON.stringify({ phoneNumber: form.phoneNumber }) });
+      }
+      if (res.ok) {
+        await fetchMe();
+        Alert.alert('Success', 'Profile updated successfully');
+      } else {
+        Alert.alert('Error', res.data?.message || 'Failed to update profile');
+      }
+    } catch (e: any) {
+      Alert.alert('Error', e.message);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <SafeAreaView style={styles.safe}>
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBack}>
-          <Ionicons name="chevron-back" size={24} color="#222a44" />
+          <Ionicons name="chevron-back" size={24} color="#273054" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>My Details</Text>
         <View style={{ width: 40 }} />
@@ -78,8 +113,12 @@ export default function MyDetailsScreen() {
           />
         </View>
 
-        <TouchableOpacity style={styles.saveBtn}>
-          <Text style={styles.saveText}>Save Changes</Text>
+        <TouchableOpacity style={styles.saveBtn} onPress={handleSave} activeOpacity={0.8} disabled={loading}>
+          {loading ? (
+             <ActivityIndicator color="#fff" size="small" />
+          ) : (
+            <Text style={styles.saveText}>Save Changes</Text>
+          )}
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -90,14 +129,14 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: '#fff' },
   header: { height: 60, paddingHorizontal: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
   headerBack: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { fontWeight: '600', fontSize: 18, color: '#222a44' },
+  headerTitle: { fontWeight: '600', fontSize: 18, color: '#273054' },
   container: { flex: 1, padding: 20, paddingBottom: 40 },
-  sectionTitle: { fontSize: 20, fontWeight: '700', color: '#222a44', marginBottom: 20 },
+  sectionTitle: { fontSize: 20, fontWeight: '900', color: '#273054', marginBottom: 20 },
   row: { flexDirection: 'row', marginBottom: 12 },
   formGroup: { marginBottom: 18 },
-  label: { fontSize: 14, fontWeight: '600', color: '#222a44', marginBottom: 8 },
-  input: { backgroundColor: '#f5f5f5', borderRadius: 10, paddingHorizontal: 14, paddingVertical: 12, fontSize: 14, color: '#222a44', borderWidth: 1, borderColor: '#f0f0f0' },
-  inputFocused: { borderColor: '#222a44', borderWidth: 2, backgroundColor: '#fff' },
-  saveBtn: { backgroundColor: '#222a44', paddingVertical: 14, borderRadius: 10, alignItems: 'center', marginTop: 10, marginBottom: 30, shadowColor: '#222a44', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 5 },
-  saveText: { color: '#fff', fontWeight: '700', fontSize: 15 },
+  label: { fontSize: 14, fontWeight: '600', color: '#273054', marginBottom: 8 },
+  input: { backgroundColor: '#f5f5f5', borderRadius: 10, paddingHorizontal: 14, paddingVertical: 12, fontSize: 14, color: '#273054', borderWidth: 1, borderColor: '#f0f0f0' },
+  inputFocused: { borderColor: '#273054', borderWidth: 2, backgroundColor: '#fff' },
+  saveBtn: { backgroundColor: '#273054', paddingVertical: 14, borderRadius: 10, alignItems: 'center', marginTop: 10, marginBottom: 30, shadowColor: '#273054', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 5 },
+  saveText: { color: '#fff', fontWeight: '900', fontSize: 15 },
 });

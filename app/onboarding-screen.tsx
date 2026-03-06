@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: '900',
-    color: '#222a44',
+    color: '#273054',
     textAlign: 'center',
     lineHeight: 26.5,
   },
@@ -102,12 +102,12 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   loginButton: {
-    backgroundColor: '#222a44',
+    backgroundColor: '#273054',
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#222a44',
+    shadowColor: '#273054',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 8,
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   loginButtonText: {
     color: '#fff',
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: '900',
   },
   registerButton: {
     backgroundColor: '#f0f0f0',
@@ -128,9 +128,9 @@ const styles = StyleSheet.create({
     borderColor: '#e8e8e8',
   },
   registerButtonText: {
-    color: '#222a44',
+    color: '#273054',
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: '900',
   },
   guestText: {
     color: '#000000',
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
   disclaimerLink: {
-    color: '#222a44',
+    color: '#273054',
     fontSize: 11,
     fontWeight: '900',
   },

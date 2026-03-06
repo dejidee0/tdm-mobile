@@ -34,7 +34,7 @@ function TabIcon({
   return (
     <Image
       source={focused ? active : inactive}
-      style={{ width: 26, height: 26 }}
+      style={{ width: 30, height: 30 }}
       contentFit="contain"
     />
   );
@@ -48,6 +48,16 @@ export default function TabLayout() {
         tabBarInactiveTintColor: '#9AA3A7',
         headerShown: false,
         tabBarButton: HapticTab,
+        tabBarStyle: {
+          height: 85,
+          paddingBottom: 12,
+          paddingTop: 8,
+        },
+        tabBarLabelStyle: {
+          fontSize: 15,
+          fontWeight: '500',
+          marginTop: 4,
+        },
       }}
     >
       <Tabs.Screen

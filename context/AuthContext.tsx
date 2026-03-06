@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { API_BASE_URL } from '../config';
 
-const API_BASE = process.env.EXPO_PUBLIC_API_BASE_URL as string
-const BASE_URL = API_BASE.replace(/\/$/, '') + '/Auth';
+const BASE_URL = (API_BASE_URL as string || 'https://tbmbuild-001-site1.jtempurl.com/api/v1').replace(/\/$/, '') + '/Auth';
 
 type User = { id?: string; name?: string; firstName?: string; lastName?: string; email?: string; phoneNumber?: string } | null;
 
@@ -22,6 +22,8 @@ export type AuthContextType = {
   refreshToken: () => Promise<boolean>;
   forgotPassword: (email: string) => Promise<any>;
   resetPassword: (payload: { token: string; password: string }) => Promise<void>;
+  resendVerification: (email: string) => Promise<any>;
+  verifyEmail: (payload: { token: string }) => Promise<any>;
 };
 
 const STORAGE_KEYS = {
@@ -40,6 +42,8 @@ const defaultValue: AuthContextType = {
   refreshToken: async () => false,
   forgotPassword: async () => undefined,
   resetPassword: async () => undefined,
+  resendVerification: async () => undefined,
+  verifyEmail: async () => undefined,
 };
 
 const AuthContext = createContext<AuthContextType>(defaultValue);
@@ -175,9 +179,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return r;
   }
 
+  async function resendVerification(email: string) {
+    const r = await callApi('/resend-verification', { method: 'POST', body: JSON.stringify({ email }) });
+    if (!r.ok) throw new Error(r.data?.message || `Resend verification failed (${r.status})`);
+    return r;
+  }
+
   async function resetPassword(payload: { token: string; password: string }) {
     const r = await callApi('/reset-password', { method: 'POST', body: JSON.stringify(payload) });
     if (!r.ok) throw new Error(r.data?.message || `Reset password failed (${r.status})`);
+  }
+
+  async function verifyEmail(payload: { token: string }) {
+    const r = await callApi('/verify-email', { method: 'POST', body: JSON.stringify(payload) });
+    if (!r.ok) throw new Error(r.data?.message || `Verify email failed (${r.status})`);
+    return r;
   }
 
   // on mount load tokens and try to validate
@@ -209,7 +225,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, fetchMe, tokens, loading, login, register, logout, refreshToken, forgotPassword, resetPassword }}>
+    <AuthContext.Provider value={{ user, fetchMe, tokens, loading, login, register, logout, refreshToken, forgotPassword, resetPassword, resendVerification, verifyEmail }}>
       {children}
     </AuthContext.Provider>
   );
