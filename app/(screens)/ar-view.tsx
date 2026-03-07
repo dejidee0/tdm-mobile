@@ -1,64 +1,149 @@
 import { Ionicons } from '@expo/vector-icons';
-import { CameraView, useCameraPermissions } from 'expo-camera';
-import { useRouter } from 'expo-router';
-import React, { useEffect } from 'react';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React, { useState } from 'react';
 import {
+  ActivityIndicator,
   Dimensions,
+  Linking,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { WebView } from 'react-native-webview';
+import { useCart } from '../../context/CartContext';
 
 const { width } = Dimensions.get('window');
 
 export default function ARView() {
   const router = useRouter();
-  const [permission, requestPermission] = useCameraPermissions();
+  const params = useLocalSearchParams();
+  const { addItem } = useCart();
+  
+  const modelUrl = (params.model as string) || 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/Chair/glTF/Chair.gltf';
+  const iosModelUrl = (params.iosModel as string) || 'https://developer.apple.com/augmented-reality/quick-look/models/chair/chair.usdz';
+  const id = (params.id as string) || undefined;
 
-  useEffect(() => {
-    if (!permission?.granted) {
-      requestPermission();
-    }
-  }, [permission]);
+  const [loading, setLoading] = useState(true);
 
   const handleBack = () => {
     router.back();
   };
 
-  const handleAddToCart = () => {
-    // Handle add to cart logic
-    console.log('Add to cart');
+  const handleAddToCart = async () => {
+    if (id) {
+      try {
+        await addItem({ productId: id, quantity: 1 });
+        router.back();
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      console.log('Add to cart');
+    }
   };
 
-  if (!permission) {
-    return <View style={styles.container} />;
-  }
-
-  if (!permission.granted) {
-    return (
-      <View style={styles.permissionContainer}>
-        <Ionicons name="camera-outline" size={64} color="#9CA3AF" />
-        <Text style={styles.permissionText}>Camera access is required</Text>
-        <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
-          <Text style={styles.permissionButtonText}>Grant Permission</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+        <style>
+          body, html { width: 100%; height: 100%; margin: 0; padding: 0; background-color: #000; overflow: hidden; }
+          model-viewer { 
+            width: 100%; 
+            height: 100%; 
+            --poster-color: transparent; 
+          }
+          /* Custom AR button styling */
+          #ar-button {
+            position: absolute;
+            top: 250px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #273054;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            z-index: 100;
+          }
+        </style>
+      </head>
+      <body>
+        <model-viewer 
+          src="${modelUrl}" 
+          ios-src="${iosModelUrl}" 
+          ar 
+          ar-scale="auto"
+          ar-placement="floor"
+          ar-modes="scene-viewer webxr quick-look" 
+          camera-controls 
+          auto-rotate
+          shadow-intensity="1"
+          alt="A 3D model of the product"
+          autoplay>
+          <button slot="ar-button" id="ar-button">
+            Launch AR Engine
+          </button>
+        </model-viewer>
+      </body>
+    </html>
+  `;
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
       
-      {/* Camera View */}
-      <CameraView
-        style={styles.camera}
-        facing="back"
-      >
+      {/* 3D Model View */}
+      <View style={styles.camera}>
+        <WebView
+          source={{ html: htmlContent }}
+          style={styles.webview}
+          originWhitelist={['*']}
+          allowsInlineMediaPlayback
+          javaScriptEnabled
+          domStorageEnabled
+          onLoadEnd={() => setLoading(false)}
+          onShouldStartLoadWithRequest={(request) => {
+            if (
+              request.url.startsWith('intent://') || 
+              request.url.endsWith('.usdz') ||
+              (!request.url.startsWith('http') && !request.url.startsWith('about:blank'))
+            ) {
+              let urlToOpen = request.url;
+              if (urlToOpen.startsWith('intent://')) {
+                // Convert intent:// arvr.google.com/scene-viewer...#Intent... to standard HTTPS deep link
+                const intentRegex = /^intent:\/\/([^\#]+)/;
+                const match = urlToOpen.match(intentRegex);
+                if (match && match[1]) {
+                  urlToOpen = 'https://' + match[1];
+                }
+              }
+              Linking.openURL(urlToOpen).catch(err => console.error("Couldn't load page", err));
+              return false;
+            }
+            return true;
+          }}
+        />
+        {loading && (
+          <View style={styles.loadingContainer} pointerEvents="none">
+            <ActivityIndicator size="large" color="#FFFFFF" />
+          </View>
+        )}
+
         {/* Instruction Banner */}
-        <View style={styles.instructionBanner}>
+        <View style={styles.instructionBanner} pointerEvents="none">
           <View style={styles.instructionContainer}>
             <View style={styles.iconContainer}>
               <View style={styles.scanIcon}>
@@ -77,7 +162,7 @@ export default function ARView() {
         </View>
 
         {/* Corner Frames */}
-        <View style={styles.frameOverlay}>
+        <View style={styles.frameOverlay} pointerEvents="none">
           {/* Top Left */}
           <View style={[styles.corner, styles.topLeft]}>
             <View style={[styles.horizontalLine, { top: 0, left: 0, width: 64 }]} />
@@ -122,7 +207,7 @@ export default function ARView() {
             <Text style={styles.addToCartButtonText}>Add to cart</Text>
           </TouchableOpacity>
         </View>
-      </CameraView>
+      </View>
     </View>
   );
 }
@@ -134,6 +219,16 @@ const styles = StyleSheet.create({
   },
   camera: {
     flex: 1,
+  },
+  webview: {
+    flex: 1,
+    backgroundColor: '#000000',
+  },
+  loadingContainer: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 5,
   },
   permissionContainer: {
     flex: 1,
@@ -270,6 +365,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     flexDirection: 'row',
     padding: 16,
+    paddingBottom: 32,
     gap: 12,
     zIndex: 20,
   },
@@ -301,69 +397,5 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
-  },
-});
-
-// Add corner line positioning
-StyleSheet.create({
-  topLeft: {
-    ...StyleSheet.absoluteFillObject,
-    horizontalLine: {
-      ...StyleSheet.flatten(styles.horizontalLine),
-      top: 0,
-      left: 0,
-      width: '100%',
-    },
-    verticalLine: {
-      ...StyleSheet.flatten(styles.verticalLine),
-      top: 0,
-      left: 0,
-      height: '100%',
-    },
-  },
-  topRight: {
-    ...StyleSheet.absoluteFillObject,
-    horizontalLine: {
-      ...StyleSheet.flatten(styles.horizontalLine),
-      top: 0,
-      right: 0,
-      width: '100%',
-    },
-    verticalLine: {
-      ...StyleSheet.flatten(styles.verticalLine),
-      top: 0,
-      right: 0,
-      height: '100%',
-    },
-  },
-  bottomLeft: {
-    ...StyleSheet.absoluteFillObject,
-    horizontalLine: {
-      ...StyleSheet.flatten(styles.horizontalLine),
-      bottom: 0,
-      left: 0,
-      width: '100%',
-    },
-    verticalLine: {
-      ...StyleSheet.flatten(styles.verticalLine),
-      bottom: 0,
-      left: 0,
-      height: '100%',
-    },
-  },
-  bottomRight: {
-    ...StyleSheet.absoluteFillObject,
-    horizontalLine: {
-      ...StyleSheet.flatten(styles.horizontalLine),
-      bottom: 0,
-      right: 0,
-      width: '100%',
-    },
-    verticalLine: {
-      ...StyleSheet.flatten(styles.verticalLine),
-      bottom: 0,
-      right: 0,
-      height: '100%',
-    },
   },
 });

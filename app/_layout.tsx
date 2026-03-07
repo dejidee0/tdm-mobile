@@ -39,6 +39,7 @@ export default function RootLayout() {
                     <Stack.Screen name="(screens)/ai-estimator" options={{ headerShown: false }} />
                     <Stack.Screen name="(screens)/detailed-estimate" options={{ headerShown: false }} />
                     <Stack.Screen name="(screens)/estimate-results" options={{ headerShown: false }} />
+                    <Stack.Screen name="(screens)/ar-view" options={{ headerShown: false }} />
                   </Stack>
                   <StatusBar style="auto" />
                 </OrdersProvider>
