@@ -130,6 +130,10 @@ export default function CheckoutScreen() {
                 shippingState: 'Lagos',
                 shippingNotes: '',
                 customerNotes: '',
+                promoCode: '',
+                shippingCost: 5000,
+                tax: 0,
+                discount: 0
               };
 
               try {

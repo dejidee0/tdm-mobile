@@ -150,39 +150,47 @@ export async function removeCartItem(itemId: string) {
 
 // Orders
 export async function getMyOrders() {
-  return apiFetch('/Orders/my-orders');
+  return apiFetch('/orders/my-orders');
 }
 
 export async function getOrderById(orderId: string) {
-  return apiFetch(`/Orders/${orderId}`);
+  return apiFetch(`/orders/${orderId}`);
 }
 
 export async function getOrderByNumber(orderNumber: string) {
-  return apiFetch(`/Orders/number/${encodeURIComponent(orderNumber)}`);
+  return apiFetch(`/orders/number/${encodeURIComponent(orderNumber)}`);
 }
 
 export async function createOrder(payload: any) {
-  return apiFetch('/Orders', { method: 'POST', body: JSON.stringify(payload) });
+  return apiFetch('/orders', { method: 'POST', body: JSON.stringify(payload) });
 }
 
 export async function cancelOrder(orderId: string, payload?: any) {
-  return apiFetch(`/Orders/${orderId}/cancel`, { method: 'POST', body: JSON.stringify(payload ?? {}) });
+  return apiFetch(`/orders/${orderId}/cancel`, { method: 'POST', body: JSON.stringify(payload ?? {}) });
 }
 
 export async function getOrders() {
-  return apiFetch('/Orders');
+  return apiFetch('/orders');
 }
 
 export async function getAdminOrder(orderId: string) {
-  return apiFetch(`/Orders/admin/${orderId}`);
+  return apiFetch(`/orders/admin/${orderId}`);
 }
 
 export async function updateOrderStatus(orderId: string, payload: any) {
-  return apiFetch(`/Orders/${orderId}/status`, { method: 'PUT', body: JSON.stringify(payload) });
+  return apiFetch(`/orders/${orderId}/status`, { method: 'PUT', body: JSON.stringify(payload) });
 }
 
 export async function updateOrderPayment(orderId: string, payload: any) {
-  return apiFetch(`/Orders/${orderId}/payment`, { method: 'PUT', body: JSON.stringify(payload) });
+  return apiFetch(`/orders/${orderId}/payment`, { method: 'PUT', body: JSON.stringify(payload) });
+}
+
+export async function checkoutPayment(payload: any) {
+  return apiFetch('/Checkout/payment', { method: 'POST', body: JSON.stringify(payload) });
+}
+
+export async function verifyPaystackPayment(reference: string) {
+  return apiFetch(`/Checkout/payment/paystack/verify/${encodeURIComponent(reference)}`);
 }
 
 // Saved Items
