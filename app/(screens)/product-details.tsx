@@ -172,7 +172,15 @@ export default function ProductDetails() {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.primaryBtn}
-          onPress={() => router.push('/(screens)/ar-view')}
+          onPress={() => {
+             const mUrl = product?.modelUrl || 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/Chair/glTF/Chair.gltf';
+             const iosMUrl = product?.iosModelUrl || 'https://developer.apple.com/augmented-reality/quick-look/models/chair/chair.usdz';
+             const imgUrl = (product && (product.images?.[0] || product.image)) ? (typeof (product.images?.[0] || product.image) === 'string' ? (product.images?.[0] || product.image) : (product.images?.[0]?.url || product.image)) : '';
+             router.push({
+               pathname: '/(screens)/ar-view',
+               params: { id: product?.id || id, image: imgUrl, model: mUrl, iosModel: iosMUrl }
+             });
+          }}
         >
           <Image source={require('@/assets/images/icons/vr.png')} style={{ width: 20, height: 20 }} />
           <Text style={styles.primaryText}>Set in your space</Text>
