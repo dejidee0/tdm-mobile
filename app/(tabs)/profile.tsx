@@ -68,49 +68,64 @@ export default function ProfileScreen() {
       </View>
 
       <View style={styles.container}>
-        <View style={styles.profileSection}>
-          <Image source={require('@/assets/images/profile.jpg')} style={styles.avatar} />
-          <View style={styles.profileInfo}>
-            <Text style={styles.userName}>{user?.name || 'Andrea Hirata'}</Text>
-            <Text style={styles.userEmail}>{user?.email || 'hirata@gmail.com'}</Text>
-          </View>
-        </View>
-
-        <View style={styles.list}>
-          {profileActions.map((item) => (
-            <TouchableOpacity
-              key={item.id}
-              style={styles.listItem}
-              onPress={() => item.route && router.push(item.route)}
-              activeOpacity={0.7}
-            >
-              <View style={styles.iconContainer}>
-                {item.type === 'image' ? (
-                  <Image source={item.icon} style={styles.iconImage} />
-                ) : (
-                  <Ionicons name={item.icon} size={20} color="#273054" />
-                )}
+        {user ? (
+          <>
+            <View style={styles.profileSection}>
+              <Image source={require('@/assets/images/profile.jpg')} style={styles.avatar} />
+              <View style={styles.profileInfo}>
+                <Text style={styles.userName}>{user?.name || 'Andrea Hirata'}</Text>
+                <Text style={styles.userEmail}>{user?.email || 'hirata@gmail.com'}</Text>
               </View>
-              <Text style={styles.listText}>{item.label}</Text>
-              <Ionicons name="chevron-forward" size={18} color="#ccc" />
+            </View>
+
+            <View style={styles.list}>
+              {profileActions.map((item) => (
+                <TouchableOpacity
+                  key={item.id}
+                  style={styles.listItem}
+                  onPress={() => item.route && router.push(item.route)}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.iconContainer}>
+                    {item.type === 'image' ? (
+                      <Image source={item.icon} style={styles.iconImage} />
+                    ) : (
+                      <Ionicons name={item.icon as any} size={20} color="#273054" />
+                    )}
+                  </View>
+                  <Text style={styles.listText}>{item.label}</Text>
+                  <Ionicons name="chevron-forward" size={18} color="#ccc" />
+                </TouchableOpacity>
+              ))}
+            </View>
+          </>
+        ) : (
+          <View style={styles.guestSection}>
+            <Image source={require('@/assets/images/icons/id.png')} style={styles.guestIcon} />
+            <Text style={styles.guestTitle}>You are not logged in</Text>
+            <Text style={styles.guestSubTitle}>Sign in to view your profile, track your orders and manage your details.</Text>
+            <TouchableOpacity style={styles.loginBtn} onPress={() => router.push('/(auth)/login')}>
+              <Text style={styles.loginBtnText}>Log In</Text>
             </TouchableOpacity>
-          ))}
-        </View>
+          </View>
+        )}
       </View>
 
-      <View style={styles.logoutWrap}>
-        <TouchableOpacity
-          style={styles.logoutButton}
-          activeOpacity={0.8}
-          onPress={async () => {
-            await logout();
-            return router.replace('/(auth)/login');
-          }}
-        >
-          <Ionicons name="log-out-outline" size={20} color="#273054" />
-          <Text style={styles.logoutText}>Log Out</Text>
-        </TouchableOpacity>
-      </View>
+      {user && (
+        <View style={styles.logoutWrap}>
+          <TouchableOpacity
+            style={styles.logoutButton}
+            activeOpacity={0.8}
+            onPress={async () => {
+              await logout();
+              return router.replace('/(auth)/login');
+            }}
+          >
+            <Ionicons name="log-out-outline" size={20} color="#273054" />
+            <Text style={styles.logoutText}>Log Out</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -232,5 +247,48 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
     color: '#273054',
+  },
+  guestSection: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    marginTop: 40,
+  },
+  guestIcon: {
+    width: 80,
+    height: 80,
+    marginBottom: 20,
+    opacity: 0.8,
+    tintColor: '#273054',
+  },
+  guestTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#273054',
+    marginBottom: 8,
+  },
+  guestSubTitle: {
+    fontSize: 15,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 30,
+    lineHeight: 22,
+  },
+  loginBtn: {
+    backgroundColor: '#273054',
+    paddingVertical: 14,
+    paddingHorizontal: 50,
+    borderRadius: 12,
+    shadowColor: '#273054',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  loginBtnText: {
+    color: '#fff',
+    fontWeight: '800',
+    fontSize: 16,
   },
 });

@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Alert, FlatList, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, FlatList, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useCart } from '../../../context/CartContext';
 import { useOrders } from '../../../context/OrdersContext';
@@ -19,6 +19,14 @@ function parsePrice(v: any) {
   return 0;
 }
 
+const NIGERIAN_STATES = [
+  'Abia', 'Adamawa', 'Akwa Ibom', 'Anambra', 'Bauchi', 'Bayelsa', 'Benue', 'Borno',
+  'Cross River', 'Delta', 'Ebonyi', 'Edo', 'Ekiti', 'Enugu', 'FCT - Abuja', 'Gombe',
+  'Imo', 'Jigawa', 'Kaduna', 'Kano', 'Katsina', 'Kebbi', 'Kogi', 'Kwara', 'Lagos',
+  'Nasarawa', 'Niger', 'Ogun', 'Ondo', 'Osun', 'Oyo', 'Plateau', 'Rivers', 'Sokoto',
+  'Taraba', 'Yobe', 'Zamfara'
+];
+
 export default function CheckoutScreen() {
   const router = useRouter();
   const [focusedInput, setFocusedInput] = useState<any>(null);
@@ -26,6 +34,15 @@ export default function CheckoutScreen() {
   const { createOrder } = useOrders();
   const [addresses, setAddresses] = useState<any[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [city, setCity] = useState('');
+  const [address, setAddress] = useState('');
+  const [saveAddress, setSaveAddress] = useState(false);
+  const [selectedState, setSelectedState] = useState('Lagos');
+  const [showStateModal, setShowStateModal] = useState(false);
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -63,25 +80,30 @@ export default function CheckoutScreen() {
         <View style={{ width: 40 }} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <View style={styles.selectBox}>
           <Text style={styles.label}>Select Delivery State</Text>
-          <View style={styles.dropdown}>
-            <Text style={styles.dropdownText}>Lagos - N5000</Text>
-            <Ionicons name="chevron-forward" size={18} color="#ccc" />
-          </View>
+          <TouchableOpacity 
+            style={styles.dropdown}
+            onPress={() => setShowStateModal(true)}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.dropdownText}>{selectedState} - N5000</Text>
+            <Ionicons name="chevron-down" size={18} color="#ccc" />
+          </TouchableOpacity>
         </View>
 
         <Text style={[styles.label, { marginTop: 20 }]}>Delivery Details</Text>
         <View style={styles.formBox}>
-          <TextInput placeholder="Full Name" style={[styles.input, focusedInput === 'fullName' && styles.inputFocused]} placeholderTextColor="#ccc" onFocus={() => setFocusedInput('fullName')} onBlur={() => setFocusedInput(null)} />
-          <TextInput placeholder="Email Address" style={[styles.input, focusedInput === 'email' && styles.inputFocused]} placeholderTextColor="#ccc" keyboardType="email-address" onFocus={() => setFocusedInput('email')} onBlur={() => setFocusedInput(null)} />
-          <TextInput placeholder="Phone Number" style={[styles.input, focusedInput === 'phone' && styles.inputFocused]} placeholderTextColor="#ccc" keyboardType="phone-pad" onFocus={() => setFocusedInput('phone')} onBlur={() => setFocusedInput(null)} />
-          <TextInput placeholder="Address" style={[styles.input, { minHeight: 80 }, focusedInput === 'address' && styles.inputFocused]} placeholderTextColor="#ccc" multiline onFocus={() => setFocusedInput('address')} onBlur={() => setFocusedInput(null)} />
-          <View style={styles.checkboxRow}>
-            <View style={styles.checkbox} />
+          <TextInput placeholder="Full Name" value={fullName} onChangeText={setFullName} style={[styles.input, focusedInput === 'fullName' && styles.inputFocused]} placeholderTextColor="#ccc" onFocus={() => setFocusedInput('fullName')} onBlur={() => setFocusedInput(null)} />
+          <TextInput placeholder="Email Address" value={email} onChangeText={setEmail} style={[styles.input, focusedInput === 'email' && styles.inputFocused]} placeholderTextColor="#ccc" keyboardType="email-address" onFocus={() => setFocusedInput('email')} onBlur={() => setFocusedInput(null)} />
+          <TextInput placeholder="Phone Number" value={phone} onChangeText={setPhone} style={[styles.input, focusedInput === 'phone' && styles.inputFocused]} placeholderTextColor="#ccc" keyboardType="phone-pad" onFocus={() => setFocusedInput('phone')} onBlur={() => setFocusedInput(null)} />
+          <TextInput placeholder="City" value={city} onChangeText={setCity} style={[styles.input, focusedInput === 'city' && styles.inputFocused]} placeholderTextColor="#ccc" onFocus={() => setFocusedInput('city')} onBlur={() => setFocusedInput(null)} />
+          <TextInput placeholder="Address" value={address} onChangeText={setAddress} style={[styles.input, { minHeight: 80 }, focusedInput === 'address' && styles.inputFocused]} placeholderTextColor="#ccc" multiline onFocus={() => setFocusedInput('address')} onBlur={() => setFocusedInput(null)} />
+          <TouchableOpacity style={styles.checkboxRow} onPress={() => setSaveAddress(!saveAddress)} activeOpacity={0.7}>
+            <View style={[styles.checkbox, saveAddress && { backgroundColor: '#e24a43' }]} />
             <Text style={styles.checkboxLabel}>Save Address</Text>
-          </View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.summaryCard}>
@@ -91,7 +113,13 @@ export default function CheckoutScreen() {
               data={addresses}
               keyExtractor={(a) => a.id}
               renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => setSelectedAddressId(item.id)} style={{ padding: 10, borderRadius: 8, backgroundColor: selectedAddressId === item.id ? '#F0F4FF' : '#fff', marginBottom: 8, borderWidth: 1, borderColor: '#f0f0f0' }}>
+                <TouchableOpacity onPress={() => {
+                  setSelectedAddressId(item.id);
+                  setFullName(item.name || '');
+                  setPhone(item.phone || '');
+                  setCity(item.city || '');
+                  setAddress(item.address || '');
+                }} style={{ padding: 10, borderRadius: 8, backgroundColor: selectedAddressId === item.id ? '#F0F4FF' : '#fff', marginBottom: 8, borderWidth: 1, borderColor: '#f0f0f0' }}>
                   <Text style={{ fontWeight: '600', color: '#273054' }}>{item.name}</Text>
                   <Text style={{ color: '#999' }}>{item.address}</Text>
                 </TouchableOpacity>
@@ -120,14 +148,14 @@ export default function CheckoutScreen() {
           <TouchableOpacity
             style={styles.payBtn}
             onPress={async () => {
-              // Build payload matching CreateOrderDto from Swagger
               const selected = addresses.find((a) => a.id === selectedAddressId) ?? null;
+              // Build payload matching CreateOrderDto from Swagger
               const payload: any = {
-                shippingFullName: selected?.name ?? '',
-                shippingPhone: selected?.phone ?? '',
-                shippingAddress: selected?.address ?? '',
-                shippingCity: selected?.city ?? '',
-                shippingState: 'Lagos',
+                shippingFullName: fullName,
+                shippingPhone: phone,
+                shippingAddress: address,
+                shippingCity: city,
+                shippingState: selectedState,
                 shippingNotes: '',
                 customerNotes: '',
                 promoCode: '',
@@ -136,12 +164,13 @@ export default function CheckoutScreen() {
                 discount: 0
               };
 
+              console.log({ payload });
+
               try {
                 console.log('[Checkout] Creating order with payload:', JSON.stringify(payload, null, 2));
                 const res = await createOrder(payload);
                 console.log('[Checkout] Order creation response:', res);
                 if (res?.ok) {
-                  // Pass orderId to payment screen to complete the payment
                   const orderId = res.data?.id ?? res.data?.data?.id ?? res.data;
                   if (orderId && typeof orderId === 'string') {
                     router.push({ pathname: '/payment', params: { orderId } });
@@ -163,6 +192,50 @@ export default function CheckoutScreen() {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      <Modal 
+        visible={showStateModal} 
+        animationType="slide" 
+        transparent={true}
+        onRequestClose={() => setShowStateModal(false)}
+      >
+        <TouchableOpacity 
+          style={styles.modalOverlay} 
+          activeOpacity={1} 
+          onPress={() => setShowStateModal(false)}
+        >
+          <View 
+            style={styles.modalContent} 
+            onStartShouldSetResponder={() => true}
+          >
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Select State</Text>
+              <TouchableOpacity onPress={() => setShowStateModal(false)}>
+                <Ionicons name="close" size={24} color="#273054" />
+              </TouchableOpacity>
+            </View>
+            <FlatList
+              data={NIGERIAN_STATES}
+              keyExtractor={(item) => item}
+              keyboardShouldPersistTaps="handled"
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={[styles.stateRow, selectedState === item && styles.stateRowSelected]}
+                  onPress={() => {
+                    setSelectedState(item);
+                    setShowStateModal(false);
+                  }}
+                >
+                  <Text style={[styles.stateText, selectedState === item && styles.stateTextSelected]}>
+                    {item}
+                  </Text>
+                  {selectedState === item && <Ionicons name="checkmark-circle" size={20} color="#e24a43" />}
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -190,4 +263,12 @@ const styles = StyleSheet.create({
   summaryTotal: { fontSize: 16, fontWeight: '900', color: '#273054' },
   payBtn: { marginTop: 20, height: 48, borderRadius: 10, backgroundColor: '#273054', alignItems: 'center', justifyContent: 'center', shadowColor: '#273054', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 5 },
   payBtnText: { color: '#fff', fontWeight: '900', fontSize: 15 },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
+  modalContent: { backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20, maxHeight: '80%', paddingBottom: 20 },
+  modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
+  modalTitle: { fontSize: 16, fontWeight: '600', color: '#273054' },
+  stateRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 20, borderBottomWidth: 1, borderBottomColor: '#f9f9f9' },
+  stateRowSelected: { backgroundColor: '#FFF5F5' },
+  stateText: { fontSize: 15, color: '#333' },
+  stateTextSelected: { fontWeight: '600', color: '#e24a43' },
 });
