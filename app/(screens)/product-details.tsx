@@ -53,7 +53,6 @@ export default function ProductDetails() {
   function showToast(message: string) {
     setToastMsg(message);
     setToastVisible(true);
-    // Trigger haptic feedback on success
     Vibration.vibrate(100);
     Animated.timing(toastAnim, { toValue: 1, duration: 220, useNativeDriver: true }).start(() => {
       setTimeout(hideToast, 2000);
@@ -70,12 +69,12 @@ export default function ProductDetails() {
   async function handleAddToCart() {
     if (!product) return;
     try {
-      const payload = { productId: product.id ?? product.productId ?? product._id, quantity: qty };
+      const payload = { productId: product.id ?? product.productId ?? product._id, quantity: qty, product };
       const r = await addItem(payload);
       console.log('[ProductDetails] addToCart result', r);
       // show a short toast on success
       try {
-        if (r && (r.ok || r.success || r === true)) {
+        if (r && (r.ok || r.success || r === true || r.data)) {
           // prefer a friendly message from server if present
           const msg = typeof r === 'object' && r?.message ? String(r.message) : 'Product added to cart';
           if (Platform.OS === 'android') {
