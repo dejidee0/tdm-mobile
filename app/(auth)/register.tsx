@@ -1,26 +1,30 @@
 import { ThemedText } from '@/components/themed-text';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  Image,
-  StyleSheet,
+  ActivityIndicator, Alert, Image, ImageBackground, ScrollView, StyleSheet,
   TextInput,
   TouchableOpacity,
-  View,
-  ActivityIndicator,
-  ImageBackground,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../../context/AuthContext';
 
 export default function RegisterScreen() {
   const router = useRouter();
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [focusedInput, setFocusedInput] = useState<any>(null);
+  const { register } = useAuth();
 
   async function handleCreate() {
     if (!acceptedTerms) {
@@ -29,70 +33,156 @@ export default function RegisterScreen() {
 
     setLoading(true);
     try {
-      router.replace('/(tabs)');
-    } catch (e) {
-      console.warn(e);
+      if (!email || !password) {
+        Alert.alert('Missing fields', 'Please provide email and password');
+        return;
+      }
+      const response = await register({ firstName, lastName, email, phoneNumber, password, confirmPassword });
+      console.log('Registration successful', response);
+      router.replace('/(auth)/login');
+    } catch (e: any) {
+      console.warn(e.message);
+      Alert.alert('Registration failed', e.message || 'An error occurred during registration');
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <ImageBackground
-      source={require('../../assets/images/bg.jpg')}
-      style={styles.bg}
-      imageStyle={styles.bgImage}
-    >
+    <ImageBackground source={require('../../assets/images/bg.jpg')} style={styles.background}>
+      <View style={styles.overlay} />
       <SafeAreaView style={styles.container}>
-        <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <View style={styles.logoContainer}>
+          <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
+        </View>
 
-        <View style={styles.content}>
-          <ThemedText type="title" style={styles.title}>
-            Create Account
-          </ThemedText>
-          <ThemedText type="subtitle" style={{ marginTop: 8, marginBottom: 18, color: '#000' }}>
-            Enter your details for a new account
-          </ThemedText>
+        <View style={styles.headerSection}>
+          <ThemedText type="title" style={styles.title}>Create Account</ThemedText>
+          <ThemedText style={styles.subtitle}>Enter your details for a new account</ThemedText>
+        </View>
 
-          <TextInput
-            placeholder="Full name"
-            value={name}
-            onChangeText={setName}
-            style={styles.input}
-            autoCapitalize="words"
-          />
-
-          <TextInput
-            placeholder="Enter Email Address"
-            value={email}
-            onChangeText={setEmail}
-            style={styles.input}
-            autoCapitalize="none"
-            keyboardType="email-address"
-            autoCorrect={false}
-          />
-
-          <View style={styles.inputWrapper}>
+        <View style={styles.formContent}>
+          <View style={styles.inputGroup}>
+            <ThemedText style={styles.inputLabel}>First Name</ThemedText>
             <TextInput
-              placeholder="Password"
-              secureTextEntry={!showPassword}
-              value={password}
-              onChangeText={setPassword}
-              style={[styles.input, { flex: 1 }]}
-              autoCapitalize="none"
-              autoCorrect={false}
-              textContentType="password"
+              placeholder="John"
+              value={firstName}
+              onChangeText={setFirstName}
+              style={[styles.input, focusedInput === 'firstName' && styles.inputFocused]}
+              placeholderTextColor="#999"
+              autoCapitalize="words"
+              editable={!loading}
+              onFocus={() => setFocusedInput('firstName')}
+              onBlur={() => setFocusedInput(null)}
             />
+          </View>
 
-            <TouchableOpacity
-              onPress={() => setShowPassword((s) => !s)}
-              style={styles.iconButton}
-              accessibilityRole="button"
-              accessibilityLabel={showPassword ? 'Hide password' : 'Show password'}
-              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-            >
-              <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={20} />
-            </TouchableOpacity>
+          <View style={styles.inputGroup}>
+            <ThemedText style={styles.inputLabel}>Last Name</ThemedText>
+            <TextInput
+              placeholder="Doe"
+              value={lastName}
+              onChangeText={setLastName}
+              style={[styles.input, focusedInput === 'lastName' && styles.inputFocused]}
+              placeholderTextColor="#999"
+              autoCapitalize="words"
+              editable={!loading}
+              onFocus={() => setFocusedInput('lastName')}
+              onBlur={() => setFocusedInput(null)}
+            />
+          </View>
+
+          <View style={styles.inputGroup}>
+            <ThemedText style={styles.inputLabel}>Email Address</ThemedText>
+            <TextInput
+              placeholder="you@example.com"
+              value={email}
+              onChangeText={setEmail}
+              style={[styles.input, focusedInput === 'email' && styles.inputFocused]}
+              placeholderTextColor="#999"
+              autoCapitalize="none"
+              keyboardType="email-address"
+              autoCorrect={false}
+              editable={!loading}
+              onFocus={() => setFocusedInput('email')}
+              onBlur={() => setFocusedInput(null)}
+            />
+          </View>
+
+          <View style={styles.inputGroup}>
+            <ThemedText style={styles.inputLabel}>Phone Number</ThemedText>
+            <TextInput
+              placeholder="+1 (555) 000-0000"
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}
+              style={[styles.input, focusedInput === 'phoneNumber' && styles.inputFocused]}
+              placeholderTextColor="#999"
+              autoCapitalize="none"
+              keyboardType="number-pad"
+              autoCorrect={false}
+              editable={!loading}
+              onFocus={() => setFocusedInput('phoneNumber')}
+              onBlur={() => setFocusedInput(null)}
+            />
+          </View>
+
+          <View style={styles.inputGroup}>
+            <ThemedText style={styles.inputLabel}>Password</ThemedText>
+            <View style={[styles.passwordInputWrapper, focusedInput === 'password' && styles.inputFocused]}>
+              <TextInput
+                placeholder="Enter your password"
+                secureTextEntry={!showPassword}
+                value={password}
+                onChangeText={setPassword}
+                style={styles.passwordInput}
+                placeholderTextColor="#999"
+                autoCapitalize="none"
+                autoCorrect={false}
+                textContentType="password"
+                editable={!loading}
+                onFocus={() => setFocusedInput('password')}
+                onBlur={() => setFocusedInput(null)}
+              />
+              <TouchableOpacity
+                onPress={() => setShowPassword((s) => !s)}
+                style={styles.passwordIconButton}
+                accessibilityRole="button"
+                accessibilityLabel={showPassword ? "Hide password" : "Show password"}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
+                <Ionicons name={showPassword ? "eye-off" : "eye"} size={22} color="#273054" />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.inputGroup}>
+            <ThemedText style={styles.inputLabel}>Confirm Password</ThemedText>
+            <View style={[styles.passwordInputWrapper, focusedInput === 'confirmPassword' && styles.inputFocused]}>
+              <TextInput
+                placeholder="Confirm your password"
+                secureTextEntry={!showConfirmPassword}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                style={styles.passwordInput}
+                placeholderTextColor="#999"
+                autoCapitalize="none"
+                autoCorrect={false}
+                textContentType="password"
+                editable={!loading}
+                onFocus={() => setFocusedInput('confirmPassword')}
+                onBlur={() => setFocusedInput(null)}
+              />
+              <TouchableOpacity
+                onPress={() => setShowConfirmPassword((s) => !s)}
+                style={styles.passwordIconButton}
+                accessibilityRole="button"
+                accessibilityLabel={showConfirmPassword ? "Hide password" : "Show password"}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
+                <Ionicons name={showConfirmPassword ? "eye-off" : "eye"} size={22} color="#273054" />
+              </TouchableOpacity>
+            </View>
           </View>
 
           <TouchableOpacity
@@ -101,86 +191,205 @@ export default function RegisterScreen() {
             activeOpacity={0.8}
           >
             <View style={[styles.checkbox, acceptedTerms && styles.checkboxChecked]}>
-              {acceptedTerms && <Ionicons name="checkmark" size={14} />}
+              {acceptedTerms && <Ionicons name="checkmark" size={16} color="#fff" />}
             </View>
-            <ThemedText style={{ marginLeft: 8, color: '#000' }}>
-              I accept the Terms of Service & Privacy Policy
-            </ThemedText>
+            <ThemedText style={styles.termsText}>I accept the Terms of Service & Privacy Policy</ThemedText>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.primary}
+            style={styles.createButton}
             onPress={handleCreate}
-            activeOpacity={0.85}
+            activeOpacity={0.8}
             disabled={loading}
           >
             {loading ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color="#fff" size="small" />
             ) : (
-              <ThemedText style={styles.primaryText}>Create Account</ThemedText>
+              <ThemedText style={styles.createButtonText}>Create Account</ThemedText>
             )}
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => router.push('/(auth)/login')} style={{ alignSelf: 'center', marginTop: 18 }}>
-            <ThemedText style={{ color: '#000' }}>
-              Already have an account? <ThemedText style={{ color: '#e24a43' }}>Login Here</ThemedText>
-            </ThemedText>
+          <View style={styles.divider} />
+
+          <TouchableOpacity onPress={() => router.push('/(auth)/login')} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <View style={styles.loginContainer}>
+              <ThemedText style={styles.loginText}>Already have an account? </ThemedText>
+              <ThemedText style={styles.loginLink}>Login Here</ThemedText>
+            </View>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </ScrollView>
+    </SafeAreaView>
     </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  bg: { flex: 1, backgroundColor: '#fff' },
-  bgImage: { opacity: 0.06, resizeMode: 'cover' },
-  container: { flex: 1, backgroundColor: '#fff' },
-  logo: { width: 70, height: 70, margin: 16 },
-  content: { paddingHorizontal: 20, paddingTop: 6 },
-  title: { fontSize: 34, color: '#222a44' },
-
-  inputWrapper: {
-    position: 'relative',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'row',
+  background: {
+    flex: 1,
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(255, 255, 255, 0.93)',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+  scrollContent: {
+    paddingHorizontal: 24,
+    paddingVertical: 20,
+  },
+  logoContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 16,
+    backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 2,
+    alignSelf: 'center',
+    marginBottom: 28,
+  },
+  logo: {
+    width: 70,
+    height: 70,
+  },
+  headerSection: {
+    marginBottom: 32,
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '900',
+    color: '#273054',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#999',
+    marginBottom: 8,
+    lineHeight: 20,
+  },
+  formContent: {
+    gap: 18,
+  },
+  inputGroup: {
+    gap: 8,
+  },
+  inputLabel: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#273054',
+    marginLeft: 2,
   },
   input: {
-    height: 48,
+    height: 52,
+    paddingHorizontal: 16,
+    borderWidth: 1.5,
+    borderColor: '#e8e8e8',
+    borderRadius: 12,
+    backgroundColor: '#fafafa',
+    fontSize: 15,
+    color: '#273054',
+  },
+  inputFocused: {
+    borderColor: '#273054',
+    borderWidth: 2,
+    backgroundColor: '#fff',
+  },
+  passwordInputWrapper: {
+    position: 'relative',
+    width: '100%',
+    justifyContent: 'center',
+    borderWidth: 1.5,
+    borderColor: '#e8e8e8',
+    borderRadius: 12,
+    backgroundColor: '#fafafa',
+  },
+  passwordInput: {
+    height: 52,
     paddingHorizontal: 16,
     paddingRight: 48,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    backgroundColor: '#fff',
-    marginTop: 12,
+    fontSize: 15,
+    color: '#273054',
   },
-  iconButton: {
+  passwordIconButton: {
     position: 'absolute',
-    right: 8,
-    top: '50%',
-    transform: [{ translateY: -10 }],
-    padding: 6,
+    right: 14,
+    padding: 8,
   },
-
-  termsRow: { flexDirection: 'row', alignItems: 'center', marginTop: 12 },
+  termsRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginTop: 8,
+    gap: 10,
+  },
   checkbox: {
-    width: 18,
-    height: 18,
-    borderRadius: 4,
-    borderWidth: 1,
-    borderColor: '#c6d0cf',
+    width: 20,
+    height: 20,
+    borderRadius: 6,
+    borderWidth: 1.5,
+    borderColor: '#d0d0d0',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#fafafa',
+    marginTop: 2,
   },
   checkboxChecked: {
     backgroundColor: '#e24a43',
     borderColor: '#e24a43',
   },
-
-  primary: { backgroundColor: '#222a44', paddingVertical: 16, borderRadius: 10, alignItems: 'center', marginTop: 20 },
-  primaryDisabled: { opacity: 0.7 },
-  primaryText: { color: '#fff', fontWeight: '700' },
+  termsText: {
+    fontSize: 13,
+    color: '#666',
+    lineHeight: 18,
+    flex: 1,
+  },
+  createButton: {
+    backgroundColor: '#273054',
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 12,
+    shadowColor: '#273054',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  createButtonText: {
+    color: '#fff',
+    fontWeight: '900',
+    fontSize: 15,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#e8e8e8',
+    marginVertical: 4,
+  },
+  loginContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  loginText: {
+    color: '#999',
+    fontSize: 13,
+  },
+  loginLink: {
+    color: '#e24a43',
+    fontWeight: '900',
+    fontSize: 13,
+  },
 });
