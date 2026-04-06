@@ -22,7 +22,7 @@ import { useSaved } from '../../context/SavedContext';
 export default function HomeScreen() {
   const router = useRouter();
   const [searchFocused, setSearchFocused] = useState(false);
-  const { fetchProducts, fetchFeatured, products: ctxProducts, featured: ctxFeatured } = useProducts();
+  const { fetchProducts, fetchFeatured } = useProducts();
   const { isSaved, toggleSaved } = useSaved();
   const [productsData, setProductsData] = useState<any[]>([]);
   const [latestData, setLatestData] = useState<any[]>([]);
@@ -437,6 +437,13 @@ export default function HomeScreen() {
           )}
         </Animated.View>
       </ScrollView>
+      <TouchableOpacity 
+        style={styles.floatingLogo} 
+        activeOpacity={0.8}
+        onPress={() => router.push('/(ai)')}
+      >
+        <Image source={require('@/assets/images/ziora.png')} style={styles.zioraLogo} />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -656,5 +663,25 @@ const styles = StyleSheet.create({
     width: 100,
     height: 80,
     resizeMode: 'contain',
+  },
+  floatingLogo: {
+    position: 'absolute',
+    bottom: 30,
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#273054',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+    zIndex: 99,
+  },
+  zioraLogo: {
+    width: 50,
+    height: 50,
   },
 });

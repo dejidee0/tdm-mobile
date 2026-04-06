@@ -16,7 +16,13 @@ async function parseResponse(res: Response): Promise<any> {
 }
 
 export async function apiFetch(path: string, options: RequestInit = {}): Promise<ApiResult> {
-  const headers: Record<string, string> = { 'Content-Type': 'application/json', ...(options.headers as any) };
+  const headers: Record<string, string> = { ...(options.headers as any) };
+
+  // Only set application/json if body is not FormData
+  if (!(options.body instanceof FormData) && !headers['Content-Type']) {
+    headers['Content-Type'] = 'application/json';
+  }
+
   try {
     const token = await AsyncStorage.getItem(ACCESS_KEY);
     if (token) headers.Authorization = `Bearer ${token}`;
@@ -47,10 +53,108 @@ export async function apiFetch(path: string, options: RequestInit = {}): Promise
     return { ok: res.ok, status: res.status, data };
   } catch (err) {
     console.warn(`[apiFetch] network error ${method} ${url}`, err);
-    // Return a safe ApiResult indicating failure without throwing, so callers can handle it.
-    // Use a valid HTTP status (503 Service Unavailable) rather than 0 to avoid RangeError
     return { ok: false, status: 503, data: { error: 'network_error', message: String(err) } };
   }
+}
+
+// AI - Project & Visualizer
+export async function createAIProject(payload: any) {
+  return apiFetch('/ai/projects', { method: 'POST', body: JSON.stringify(payload) });
+}
+
+export async function uploadRoomImage(formData: FormData) {
+  return apiFetch('/ai/upload-room', { method: 'POST', body: formData });
+}
+
+export async function getAIProjects() {
+  return apiFetch('/ai/projects');
+}
+
+export async function generateAIImage(payload: any) {
+  return apiFetch('/ai/generate/image', { method: 'POST', body: JSON.stringify(payload) });
+}
+
+export async function transformAIImage(payload: any) {
+  return apiFetch('/ai/transform/image', { method: 'POST', body: JSON.stringify(payload) });
+}
+
+// AI - Renovation Estimator
+export async function createRenovationEstimate(payload: any) {
+  return apiFetch('/ai/renovation/estimate', { method: 'POST', body: JSON.stringify(payload) });
+}
+
+export async function getRenovationEstimates() {
+  return apiFetch('/ai/renovation/estimates');
+}
+
+export async function getRenovationEstimateById(estimateId: string) {
+  return apiFetch(`/ai/renovation/estimates/${estimateId}`);
+}
+
+// AI - Design Sessions
+export async function createDesignSession(payload: any) {
+  return apiFetch('/designs/sessions', { method: 'POST', body: JSON.stringify(payload) });
+}
+
+export async function getDesignSessions() {
+  return apiFetch('/designs/sessions');
+}
+
+export async function uploadSessionImage(sessionId: string, formData: FormData) {
+  return apiFetch(`/designs/sessions/${sessionId}/upload`, {
+    method: 'POST',
+    body: formData,
+  });
+}
+
+export async function generateSessionDesign(sessionId: string, payload: any) {
+  return apiFetch(`/designs/sessions/${sessionId}/generate`, { method: 'POST', body: JSON.stringify(payload) });
+}
+
+export async function getSessionStatus(sessionId: string) {
+  return apiFetch(`/designs/sessions/${sessionId}/status`);
+}
+
+// Designs Catalog
+export async function getDesigns(query = '') {
+  return apiFetch(`/designs${query ? `?${query}` : ''}`);
+}
+
+// Projects
+// --- AI Visualizer & Image Generation ---
+export async function generateAIImageV2(data: { prompt: string; roomType?: string; style?: string; aspect_ratio?: string }) {
+  return apiFetch('/ai/generate/image', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function transformAIImageV2(formData: FormData) {
+  return apiFetch('/ai/transform/image', {
+    method: 'POST',
+    body: formData,
+  });
+}
+
+export async function getAIUsageSummary(year?: number, month?: number) {
+  let url = '/ai/usage/summary';
+  const params = new URLSearchParams();
+  if (year) params.append('year', year.toString());
+  if (month) params.append('month', month.toString());
+  if (params.toString()) url += `?${params.toString()}`;
+  return apiFetch(url);
+}
+
+export async function getAICreditsBalance() {
+  return apiFetch('/ai/credits/balance');
+}
+
+export async function getProjects() {
+  return apiFetch('/projects');
+}
+
+export async function getProjectById(projectId: string) {
+  return apiFetch(`/projects/${projectId}`);
 }
 
 // Products helpers
@@ -129,23 +233,41 @@ export async function deleteCategory(id: string) {
 
 // Cart
 export async function getCart() {
-  return apiFetch('/Cart');
+  return apiFetch('/cart');
 }
 
 export async function clearCart() {
-  return apiFetch('/Cart', { method: 'DELETE' });
+  return apiFetch('/cart', { method: 'DELETE' });
 }
 
 export async function addCartItem(payload: any) {
-  return apiFetch('/Cart/items', { method: 'POST', body: JSON.stringify(payload) });
+  return apiFetch('/cart/items', { method: 'POST', body: JSON.stringify(payload) });
 }
 
 export async function updateCartItem(itemId: string, payload: any) {
-  return apiFetch(`/Cart/items/${itemId}`, { method: 'PUT', body: JSON.stringify(payload) });
+  return apiFetch(`/cart/items/${itemId}`, { method: 'PUT', body: JSON.stringify(payload) });
 }
 
 export async function removeCartItem(itemId: string) {
-  return apiFetch(`/Cart/items/${itemId}`, { method: 'DELETE' });
+  return apiFetch(`/cart/items/${itemId}`, { method: 'DELETE' });
+}
+
+// Checkout
+export async function getCheckoutSummary(promoCode?: string) {
+  return apiFetch(`/checkout${promoCode ? `?promoCode=${encodeURIComponent(promoCode)}` : ''}`);
+}
+
+export async function initiatePayment(payload: any) {
+  return apiFetch('/checkout/payment', { method: 'POST', body: JSON.stringify(payload) });
+}
+
+export async function verifyPaystackPayment(ref: string) {
+  return apiFetch(`/checkout/payment/paystack/verify/${encodeURIComponent(ref)}`);
+}
+
+// AI Assistant
+export async function sendAIAssistantMessage(payload: { sessionId?: string | null, message: string, enableToolPlanning: boolean }) {
+  return apiFetch('/ai/assistant/message', { method: 'POST', body: JSON.stringify(payload) });
 }
 
 // Orders
@@ -185,14 +307,7 @@ export async function updateOrderPayment(orderId: string, payload: any) {
   return apiFetch(`/orders/${orderId}/payment`, { method: 'PUT', body: JSON.stringify(payload) });
 }
 
-export async function checkoutPayment(payload: any) {
-  return apiFetch('/Checkout/payment', { method: 'POST', body: JSON.stringify(payload) });
-}
-
-export async function verifyPaystackPayment(reference: string) {
-  return apiFetch(`/Checkout/payment/paystack/verify/${encodeURIComponent(reference)}`);
-}
-
+// Removed duplicate checkout stuff
 // Saved Items
 export async function getSavedItems() {
   return apiFetch('/saved');

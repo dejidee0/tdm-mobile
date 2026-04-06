@@ -115,6 +115,14 @@ export default function TabLayout() {
           ),
         }}
       />
+
+      <Tabs.Screen
+        name="(ai)"
+        options={{
+          href: null,
+          headerShown: false,
+        }}
+      />
     </Tabs>
   );
 }
