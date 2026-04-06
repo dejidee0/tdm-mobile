@@ -1,15 +1,14 @@
-import { API_BASE_URL } from '@/config';
+// API_BASE_URL removed; using service helpers in services/api
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ActivityIndicator, Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAuth } from '../../context/AuthContext';
+import { createRenovationEstimate, uploadRoomImage } from '../../services/api';
 
 export default function AIEstimator() {
   const router = useRouter();
-  const { tokens } = useAuth();
   const [propType, setPropType] = useState('Apartment');
   const [area, setArea] = useState('');
   const [style, setStyle] = useState('');
@@ -40,38 +39,53 @@ export default function AIEstimator() {
 
     setLoading(true);
     try {
-      const formData = new FormData();
-      images.forEach((img, i) => {
-        const file = {
-          uri: img.uri,
-          name: img.fileName || `room_${i}.jpg`,
-          type: img.mimeType || 'image/jpeg',
-        } as any;
-        formData.append('file', file);
-      });
-      formData.append('Title', 'Room Scan');
-      formData.append('RoomType', propType);
+      // Upload images first (optional) - server may use uploaded photos to improve estimate
+      if (images.length) {
+        const formData = new FormData();
+        images.forEach((img, i) => {
+          const file = {
+            uri: img.uri,
+            name: img.fileName || `room_${i}.jpg`,
+            type: img.mimeType || 'image/jpeg',
+          } as any;
+          formData.append('file', file);
+        });
+        formData.append('Title', 'Room Scan');
+        formData.append('RoomType', propType);
 
-      const res = await fetch(`${API_BASE_URL}/ai/upload-room`, {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Authorization': `Bearer ${tokens?.accessToken}`,
-        },
-      });
-      
-      if (!res.ok) {
-        const txt = await res.text();
-        throw new Error(`Upload failed (${res.status}): ${txt}`);
+        await uploadRoomImage(formData);
       }
-      
-      const data = await res.json();
-      
-      // Navigate to results with generated data if any, or just go to results screen
-      router.push('/(screens)/estimate-results');
-      
+
+      // Convert area (sq ft) -> meters and infer dimensions
+      const areaSqFt = Number(area || 0);
+      const areaSqM = isNaN(areaSqFt) ? 0 : areaSqFt * 0.092903;
+      const lengthMeters = areaSqM > 0 ? Math.sqrt(areaSqM) : 3.0;
+      const widthMeters = areaSqM > 0 ? Math.sqrt(areaSqM) : 3.0;
+      const heightMeters = 2.7;
+
+      const payload = {
+        projectName: `AI Estimate - ${propType}`,
+        roomType: propType,
+        lengthMeters: parseFloat(lengthMeters.toFixed(2)),
+        widthMeters: parseFloat(widthMeters.toFixed(2)),
+        heightMeters: parseFloat(heightMeters.toFixed(2)),
+        finishLevel: style || 'Standard',
+        includeFlooring: true,
+        includePainting: true,
+        includeElectrical: true,
+        includePlumbing: true,
+        contingencyPercent: 10,
+      };
+
+      const res = await createRenovationEstimate(payload);
+      if (res.ok) {
+        // navigate to results list; detailed view may be opened from there
+        router.push('/(screens)/estimate-results');
+      } else {
+        throw new Error(res.data?.message || 'Failed to create renovation estimate');
+      }
     } catch (e: any) {
-      Alert.alert('Error', e.message);
+      Alert.alert('Error', e.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }

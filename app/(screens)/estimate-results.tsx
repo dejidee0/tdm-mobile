@@ -1,20 +1,42 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { apiFetch } from '../../services/api';
+import { apiFetch, getRenovationEstimates } from '../../services/api';
 
 export default function EstimateResults() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [estimates, setEstimates] = useState<any[]>([]);
 
-  // Example parameters that could have been mapped
+  // Example parameters fallback
   const estimateRange = String(params.range || '$45k - $62k');
   const timeline = String(params.timeline || '6-8 Weeks');
   const complexity = String(params.complexity || 'Medium');
+
+  async function fetchEstimates() {
+    setLoading(true);
+    try {
+      const res = await getRenovationEstimates();
+      if (res.ok && res.data) {
+        const data = res.data.estimates || [];
+        setEstimates(data);
+      } else {
+        throw new Error(res.data?.message || 'Failed to fetch estimates');
+      }
+    } catch (e: any) {
+      Alert.alert('Error', e.message || 'Could not load estimates');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchEstimates();
+  }, []);
 
   async function handleSaveProject() {
     setSaving(true);
@@ -51,51 +73,58 @@ export default function EstimateResults() {
           <Text style={styles.header}>Estimate Results</Text>
         </View>
 
-        <View style={styles.card}>
-          <Text style={styles.small}>AI ANALYSIS COMPLETE</Text>
-          <Text style={styles.range}>{estimateRange}</Text>
-          <Text style={styles.note}>Estimated Total Budget Range</Text>
-          <View style={styles.divider} />
-          <View style={styles.row}> 
-            <View style={styles.col}>
-              <Text style={styles.muted}>Timeline</Text>
-              <Text style={styles.bold}>{timeline}</Text>
-            </View>
-            <View style={styles.col}>
-              <Text style={styles.muted}>Complexity</Text>
-              <Text style={styles.bold}>{complexity}</Text>
-            </View>
-          </View>
-        </View>
+        <Text style={styles.section}>Your Estimates</Text>
 
-        <Text style={styles.section}>Finish Levels</Text>
-
-        <View style={styles.levelCardSelected}>
-          <Image source={require('@/assets/images/placeholder.jpg')} style={styles.levelImage} />
-          <View style={styles.levelContent}>
-            <Text style={styles.badge}>Selected</Text>
-            <Text style={styles.levelTitle}>Economy</Text>
-            <Text style={styles.levelPrice}>$45,000</Text>
-            <View style={{ height: 8 }} />
-            <Text style={styles.levelText}>Standard materials & finishes</Text>
-            <View style={{ height: 8 }} />
-            <Text style={styles.check}>• Laminate countertops</Text>
-            <Text style={styles.check}>• Standard appliances</Text>
-            <Text style={styles.check}>• Vinyl flooring</Text>
+        {loading ? (
+          <View style={styles.centerPlaceholder}>
+            <ActivityIndicator size="large" color="#fff" />
           </View>
-        </View>
-
-        <TouchableOpacity style={styles.levelCardLocked} activeOpacity={0.8} onPress={() => router.push('/(screens)/detailed-estimate')}>
-          <Image source={require('@/assets/images/placeholder.jpg')} style={[styles.levelImage, { opacity: 0.4 }]} />
-          <View style={styles.lockOverlay}>
-            <Text style={styles.lockText}>Unlock Estimate</Text>
+        ) : estimates.length === 0 ? (
+          <View style={styles.emptyStateWrap}>
+            <Text style={styles.emptyTitle}>No estimates yet</Text>
+            <Text style={styles.emptySub}>Create a new project to generate an AI-powered estimate.</Text>
+            <TouchableOpacity style={styles.startButtonPrimary} onPress={() => router.push('/(screens)/ai-estimator') }>
+              <Text style={styles.startButtonText}>Create Estimate</Text>
+            </TouchableOpacity>
           </View>
-          <View style={styles.levelContentLocked}>
-            <Text style={styles.levelTitle}>Premium</Text>
-            <Text style={[styles.levelText, { color: '#9aa0ae' }]}>High-end durable materials</Text>
-          </View>
-        </TouchableOpacity>
+        ) : (
+          estimates.map((est: any) => {
+            const id = est.estimateId || est.id;
+            const created = new Date(est.createdAtUtc || est.createdAt || Date.now());
+            const total = Number(est.totalEstimate ?? est.totalEstimate ?? 0);
+            const currency = est.currency || '';
+            return (
+              <TouchableOpacity
+                key={id}
+                style={styles.estimateCard}
+                onPress={() => router.push({ pathname: '/(screens)/detailed-estimate', params: { estimateId: id } })}
+                activeOpacity={0.9}
+              >
+                <View style={styles.cardRow}>
+                  <View style={styles.cardBody}>
+                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                      <View style={styles.cardHeaderLeft}>
+                        <Text style={styles.cardProjectName}>{est.projectName || 'Unnamed Project'}</Text>
+                        <Text style={styles.cardDate}>{created.toLocaleDateString()}</Text>
+                      </View>
+                      <Text style={{ color: '#FFF' }}>{currency} {total.toLocaleString()}</Text>
+                    </View>
 
+                    <View style={styles.chipsRow}>
+                      <View style={styles.chip}><Ionicons name="home-outline" size={12} color="#cfe0ff" /><Text style={styles.chipText}>{est.roomType || '—'}</Text></View>
+                      <View style={styles.chip}><Ionicons name="pricetag-outline" size={12} color="#cfe0ff" /><Text style={styles.chipText}>{id.split('-')[0]}</Text></View>
+                    </View>
+
+                    <View style={styles.cardFooterRight}>
+                      <Text style={styles.viewDetailsText}>View Detailed BOQ</Text>
+                      <Ionicons name="chevron-forward" size={16} color="#dfeaff" />
+                    </View>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            );
+          })
+        )}
         <View style={{ height: 40 }} />
       </ScrollView>
 
@@ -127,6 +156,94 @@ const styles = StyleSheet.create({
   muted: { color: '#cfe0ff', fontWeight: '700' },
   bold: { color: '#fff', fontWeight: '900', marginTop: 6 },
   section: { marginTop: 22, color: '#273054', fontWeight: '800', marginBottom: 8 },
+  estimateCard: {
+    backgroundColor: '#243b8a',
+    borderRadius: 18,
+    padding: 18,
+    marginBottom: 14,
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: 8 },
+    shadowRadius: 16,
+    elevation: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(207,224,255,0.08)',
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+  },
+  cardProjectName: {
+    fontSize: 18,
+    fontWeight: '900',
+    color: '#fff',
+    marginBottom: 6,
+    letterSpacing: -0.3,
+  },
+  cardDate: {
+    fontSize: 12,
+    color: '#b5cff0',
+    fontWeight: '600',
+    letterSpacing: 0.2,
+  },
+  priceBadge: {
+    backgroundColor: 'transparent',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+  },
+  priceText: {
+    fontSize: 20,
+    fontWeight: '900',
+    color: '#fff',
+  },
+  cardDetails: {
+    flexDirection: 'row',
+    gap: 16,
+    marginBottom: 12,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#2f4fa8',
+  },
+  detailItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  detailText: {
+    fontSize: 13,
+    color: '#dfeaff',
+    fontWeight: '700',
+  },
+  cardFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  viewDetailsText: {
+    fontSize: 14,
+    fontWeight: '900',
+    color: '#fff',
+    letterSpacing: 0.3,
+  },
+  centerPlaceholder: { padding: 26, alignItems: 'center', justifyContent: 'center', backgroundColor: '#243b8a', borderRadius: 12, marginBottom: 16 },
+  emptyStateWrap: { alignItems: 'center', padding: 24 },
+  emptyTitle: { fontSize: 20, fontWeight: '900', color: '#273054', marginBottom: 8 },
+  emptySub: { color: '#7B809A', textAlign: 'center', marginBottom: 12 },
+  startButtonPrimary: { backgroundColor: '#273054', paddingHorizontal: 20, paddingVertical: 12, borderRadius: 12 },
+  startButtonText: { color: '#fff', fontWeight: '800' },
+  cardRow: { flexDirection: 'row', gap: 14, alignItems: 'flex-start' },
+  priceCurrency: { color: '#cfe0ff', fontWeight: '800', fontSize: 11, letterSpacing: 0.5, marginBottom: 2 },
+  priceAmount: { color: '#fff', fontWeight: '900', fontSize: 20, marginTop: 6, letterSpacing: -0.5 },
+  cardBody: { flex: 1, justifyContent: 'space-between' },
+  cardHeaderLeft: { marginBottom: 10 },
+  chipsRow: { flexDirection: 'row', gap: 8, marginBottom: 10 },
+  chip: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: 'rgba(79,157,255,0.08)', paddingVertical: 8, paddingHorizontal: 12, borderRadius: 20, borderWidth: 1, borderColor: 'rgba(207,224,255,0.25)' },
+  chipText: { color: '#dfeaff', fontSize: 13, fontWeight: '700' },
+  cardFooterRight: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 10, borderTopWidth: 1, borderTopColor: 'rgba(207,224,255,0.1)' },
   levelCardSelected: { borderRadius: 12, borderWidth: 2, borderColor: '#22346f', overflow: 'hidden', marginBottom: 12 },
   levelCardLocked: { borderRadius: 12, overflow: 'hidden', marginBottom: 12, position: 'relative' },
   levelImage: { width: '100%', height: 140, backgroundColor: '#eee' },

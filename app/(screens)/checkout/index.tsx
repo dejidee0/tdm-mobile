@@ -148,7 +148,7 @@ export default function CheckoutScreen() {
           <TouchableOpacity
             style={styles.payBtn}
             onPress={async () => {
-              const selected = addresses.find((a) => a.id === selectedAddressId) ?? null;
+              // const selected = addresses.find((a) => a.id === selectedAddressId) ?? null;
               // Build payload matching CreateOrderDto from Swagger
               const payload: any = {
                 shippingFullName: fullName,
