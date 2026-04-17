@@ -1,4 +1,4 @@
-import { sendAIAssistantMessage, uploadRoomImage } from '@/services/api';
+import { createAIProject, generateAIImage, generateAIVideo, uploadRoomImage } from '@/services/api';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
@@ -39,6 +39,9 @@ export default function AIHomeScreen() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const [outputType, setOutputType] = useState<number>(2); // 2 = Video (default)
+  const [contextLabel, setContextLabel] = useState<string>('');
+  const [durationSeconds, setDurationSeconds] = useState<number>(9);
 
   const handlePickImage = async () => {
     const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -65,8 +68,9 @@ export default function AIHomeScreen() {
 
         const res = await uploadRoomImage(formData);
         if (res.ok) {
-           const finalUrl = res.data?.url || res.data?.data?.url || res.data || '';
-           setImageUrl(typeof finalUrl === 'string' ? finalUrl : finalUrl?.url || finalUrl?.fileUrl || '');
+           const finalUrl = res.data?.imageUrl || res.data?.image || res.data?.url || res.data?.data?.imageUrl || res.data?.data?.url || res.data;
+           const resolved = typeof finalUrl === 'string' ? finalUrl : finalUrl?.url || finalUrl?.fileUrl || '';
+           setImageUrl(resolved);
            Alert.alert('Upload successful', 'Image attached to prompt!');
         } else {
            Alert.alert('Upload Failed', 'Could not upload image.');
@@ -80,22 +84,68 @@ export default function AIHomeScreen() {
   };
 
   const handleGenerate = async () => {
-    if (!prompt.trim() && !imageUrl) return;
-    
+    // QA validations: require uploaded image and prompt
+    if (!imageUrl) {
+      Alert.alert('Missing image', 'Please upload a source image before generating.');
+      return;
+    }
+    if (!prompt.trim()) {
+      Alert.alert('Missing prompt', 'Please enter a prompt to generate from.');
+      return;
+    }
+
     setIsGenerating(true);
     try {
-      const messageWithUrl = imageUrl ? `${prompt}\n[Attached Image: ${imageUrl}]` : prompt;
-      const res = await sendAIAssistantMessage({ message: messageWithUrl, enableToolPlanning: false });
-      console.log({ res });
-      if (res.ok) {
-        setPrompt('');
-        setImageUrl('');
-        router.push('/(ai)/visualizer');
-      } else {
-        router.push('/(ai)/visualizer');
+      // 1. Create project
+      const createRes = await createAIProject({
+        sourceImageUrl: imageUrl,
+        outputType,
+        prompt,
+        contextLabel: contextLabel || undefined,
+      });
+
+      if (!createRes.ok) {
+        const msg = createRes.data?.message || 'Failed to create AI project';
+        Alert.alert('Project Error', msg);
+        return;
       }
-    } catch {
-      router.push('/(ai)/visualizer'); 
+
+      const project = createRes.data || createRes.data?.data || {};
+      const projectId = project.id || project.projectId || (project.data && project.data.id);
+      if (!projectId) {
+        Alert.alert('Project Error', 'Could not read project id from response.');
+        return;
+      }
+
+      // 2. Generate
+      if (outputType === 1) {
+        const genRes = await generateAIImage({ projectId });
+        if (!genRes.ok) {
+          const message = genRes.data?.message || 'Image generation failed.';
+          Alert.alert('Generation Error', message);
+          return;
+        }
+        Alert.alert('Generation started', 'Image generation completed.');
+      } else {
+        const genRes = await generateAIVideo({ projectId, durationSeconds });
+        if (!genRes.ok) {
+          const data = genRes.data || {};
+          const message = data.message || data?.error || 'Video generation failed.';
+          if (data.code === 'subscription_quota_exceeded') {
+            Alert.alert('Quota exceeded', message);
+          } else {
+            Alert.alert('Generation Error', message);
+          }
+          return;
+        }
+        Alert.alert('Generation started', 'Video generation completed.');
+      }
+
+      // Navigate to designs list (refresh will pick up new project)
+      router.push('/(ai)/designs');
+    } catch (err) {
+      console.error('[AI] generate error', err);
+      Alert.alert('Error', 'AI generation failed.');
     } finally {
       setIsGenerating(false);
     }
@@ -131,14 +181,45 @@ export default function AIHomeScreen() {
               <Text style={styles.subGreeting}>What shall we build today?</Text>
             </View>
 
-            {/* Dropdown/Selector */}
-            <TouchableOpacity style={styles.selector}>
-              <Text style={styles.selectorText}>Text to Image</Text>
-              <Ionicons name="chevron-down" size={20} color={COLORS.white} />
-            </TouchableOpacity>
+            {/* Output controls */}
+            <View style={styles.controlsRow}>
+              <View style={styles.outputToggle}>
+                <TouchableOpacity
+                  onPress={() => setOutputType(2)}
+                  style={[styles.outputButton, outputType === 2 && styles.outputActive]}
+                >
+                  <Text style={outputType === 2 ? styles.outputActiveText : styles.outputText}>Video</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setOutputType(1)}
+                  style={[styles.outputButton, outputType === 1 && styles.outputActive]}
+                >
+                  <Text style={outputType === 1 ? styles.outputActiveText : styles.outputText}>Image</Text>
+                </TouchableOpacity>
+              </View>
+
+              <TextInput
+                placeholder="Room label (optional)"
+                placeholderTextColor="#9AA3A7"
+                style={styles.contextInput}
+                value={contextLabel}
+                onChangeText={setContextLabel}
+              />
+
+              {outputType === 2 && (
+                <TextInput
+                  placeholder="Duration (s)"
+                  placeholderTextColor="#9AA3A7"
+                  keyboardType="numeric"
+                  style={styles.durationInput}
+                  value={String(durationSeconds)}
+                  onChangeText={(t) => setDurationSeconds(Number(t) || 9)}
+                />
+              )}
+            </View>
 
             {/* Recent Generations Card */}
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.cardContainer}
               onPress={() => router.push('/(ai)/designs')}
             >
@@ -177,7 +258,7 @@ export default function AIHomeScreen() {
               <TouchableOpacity 
                 style={styles.sendButton} 
                 onPress={handleGenerate}
-                disabled={isGenerating || (!prompt.trim() && !imageUrl)}
+                disabled={isGenerating || !prompt.trim() || !imageUrl}
               >
                 {isGenerating ? (
                   <ActivityIndicator color={COLORS.white} size="small" />
@@ -288,6 +369,55 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     marginRight: 10,
+  },
+  controlsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 18,
+  },
+  outputToggle: {
+    flexDirection: 'row',
+    backgroundColor: '#F1F5F9',
+    borderRadius: 12,
+    padding: 4,
+  },
+  outputButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  outputActive: {
+    backgroundColor: COLORS.primary,
+  },
+  outputText: {
+    color: '#374151',
+    fontWeight: '600',
+  },
+  outputActiveText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+  },
+  contextInput: {
+    flex: 1,
+    backgroundColor: '#F7FAFC',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#EDF2F7',
+    color: COLORS.textHeader,
+  },
+  durationInput: {
+    width: 86,
+    backgroundColor: '#F7FAFC',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#EDF2F7',
+    color: COLORS.textHeader,
+    textAlign: 'center',
   },
   cardContainer: {
     width: '100%',

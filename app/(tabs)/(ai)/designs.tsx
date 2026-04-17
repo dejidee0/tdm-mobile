@@ -1,5 +1,5 @@
 import { useAuth } from '@/context/AuthContext';
-import { getDesigns } from '@/services/api';
+import { getAIProjects } from '@/services/api';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -38,11 +38,12 @@ export default function AIDesignsScreen() {
   const fetchDesigns = React.useCallback(async () => {
     setLoading(true);
     try {
-      console.log('[AIDesigns] Fetching designs...');
-      const res = await getDesigns();
+      console.log('[AIDesigns] Fetching AI projects...');
+      const res = await getAIProjects();
       console.log('[AIDesigns] Response:', JSON.stringify(res, null, 2));
 
       if (res.ok && res.data) {
+        // API returns an array of projects
         const data = Array.isArray(res.data) ? res.data : (res.data.items || res.data.data || []);
         setDesigns(data);
       }

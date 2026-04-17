@@ -12,6 +12,9 @@ export default function AIEstimator() {
   const [propType, setPropType] = useState('Apartment');
   const [area, setArea] = useState('');
   const [style, setStyle] = useState('');
+  const [length, setLength] = useState('');
+  const [width, setWidth] = useState('');
+  const [height, setHeight] = useState('');
   const [images, setImages] = useState<ImagePicker.ImagePickerAsset[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -34,7 +37,7 @@ export default function AIEstimator() {
 
   async function handleGenerate() {
     if (!images.length) return Alert.alert('Photos required', 'Please upload at least one photo of the room');
-    if (!area) return Alert.alert('Area required', 'Please provide the approximate area');
+    if (!area && !(length && width)) return Alert.alert('Area or dimensions required', 'Please provide the approximate area or both length and width');
     if (!style) return Alert.alert('Style required', 'Please provide a design style');
 
     setLoading(true);
@@ -56,12 +59,25 @@ export default function AIEstimator() {
         await uploadRoomImage(formData);
       }
 
-      // Convert area (sq ft) -> meters and infer dimensions
-      const areaSqFt = Number(area || 0);
-      const areaSqM = isNaN(areaSqFt) ? 0 : areaSqFt * 0.092903;
-      const lengthMeters = areaSqM > 0 ? Math.sqrt(areaSqM) : 3.0;
-      const widthMeters = areaSqM > 0 ? Math.sqrt(areaSqM) : 3.0;
-      const heightMeters = 2.7;
+      // Determine dimensions: prefer explicit length/width if provided, otherwise infer from area (sq ft)
+      let lengthMeters = 0;
+      let widthMeters = 0;
+      let heightMeters = 2.7;
+
+      if (length && width) {
+        lengthMeters = Number(length) || 0;
+        widthMeters = Number(width) || 0;
+      } else {
+        console.log('Input area (sq ft):', area);
+        const areaSqFt = Number(area || 0);
+        const areaSqM = isNaN(areaSqFt) ? 0 : areaSqFt * 0.092903;
+        lengthMeters = areaSqM > 0 ? Math.sqrt(areaSqM) : 3.0;
+        widthMeters = areaSqM > 0 ? Math.sqrt(areaSqM) : 3.0;
+      }
+
+      if (height) {
+        heightMeters = Number(height) || 2.7;
+      }
 
       const payload = {
         projectName: `AI Estimate - ${propType}`,
@@ -146,6 +162,11 @@ export default function AIEstimator() {
 
         <Text style={styles.section}>PROJECT DETAILS</Text>
         <TextInput placeholder="Approx. Area (sq ft)" style={styles.input} keyboardType="numeric" value={area} onChangeText={setArea} />
+        <View style={styles.dimRow}>
+          <TextInput placeholder="Length (m)" style={[styles.input, styles.dimInput]} keyboardType="numeric" value={length} onChangeText={setLength} />
+          <TextInput placeholder="Width (m)" style={[styles.input, styles.dimInput]} keyboardType="numeric" value={width} onChangeText={setWidth} />
+          <TextInput placeholder="Height (m)" style={[styles.input, styles.dimInput]} keyboardType="numeric" value={height} onChangeText={setHeight} />
+        </View>
         <TextInput placeholder="Select Design Style (e.g. Modern, Minimalist)" style={styles.input} value={style} onChangeText={setStyle} />
 
         <View style={{ height: 40 }} />
@@ -186,6 +207,8 @@ const styles = StyleSheet.create({
   thumb: { width: 60, height: 60, borderRadius: 8, backgroundColor: '#eee' },
   removeBtn: { position: 'absolute', top: -6, right: -6, backgroundColor: 'red', borderRadius: 10, width: 20, height: 20, alignItems: 'center', justifyContent: 'center' },
   input: { marginTop: 12, backgroundColor: '#fff', borderRadius: 12, padding: 14, borderWidth: 1, borderColor: '#f0f0f0' },
+  dimRow: { flexDirection: 'row', gap: 8, marginTop: 12 },
+  dimInput: { flex: 1, paddingHorizontal: 12, paddingVertical: 10 },
   footer: { position: 'absolute', left: 16, right: 16, bottom: 16, flexDirection: 'row', gap: 12 },
   outlineBtn: { flex: 1, height: 50, borderRadius: 12, borderWidth: 1.5, borderColor: '#ccc', alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' },
   outlineText: { color: '#273054', fontWeight: '700' },
