@@ -151,7 +151,7 @@ export default function RegisterScreen() {
                 accessibilityLabel={showPassword ? "Hide password" : "Show password"}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <Ionicons name={showPassword ? "eye-off" : "eye"} size={22} color="#273054" />
+                <Ionicons name={showPassword ? "eye-off" : "eye"} size={22} color="#D4AF37" />
               </TouchableOpacity>
             </View>
           </View>
@@ -180,7 +180,7 @@ export default function RegisterScreen() {
                 accessibilityLabel={showConfirmPassword ? "Hide password" : "Show password"}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <Ionicons name={showConfirmPassword ? "eye-off" : "eye"} size={22} color="#273054" />
+                <Ionicons name={showConfirmPassword ? "eye-off" : "eye"} size={22} color="#D4AF37" />
               </TouchableOpacity>
             </View>
           </View>
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.93)',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
   },
   container: {
     flex: 1,
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 16,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#252523',
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: '900',
-    color: '#273054',
+    color: '#D4AF37',
     marginBottom: 8,
   },
   subtitle: {
@@ -288,21 +288,21 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#273054',
+    color: '#D4AF37',
     marginLeft: 2,
   },
   input: {
     height: 52,
     paddingHorizontal: 16,
     borderWidth: 1.5,
-    borderColor: '#e8e8e8',
+    borderColor: '#494845',
     borderRadius: 12,
-    backgroundColor: '#fafafa',
+    backgroundColor: '#494845',
     fontSize: 15,
-    color: '#273054',
+    color: '#D4AF37',
   },
   inputFocused: {
-    borderColor: '#273054',
+    borderColor: '#D4AF37',
     borderWidth: 2,
     backgroundColor: '#fff',
   },
@@ -311,16 +311,16 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     borderWidth: 1.5,
-    borderColor: '#e8e8e8',
+    borderColor: '#494845',
     borderRadius: 12,
-    backgroundColor: '#fafafa',
+    backgroundColor: '#494845',
   },
   passwordInput: {
     height: 52,
     paddingHorizontal: 16,
     paddingRight: 48,
     fontSize: 15,
-    color: '#273054',
+    color: '#D4AF37',
   },
   passwordIconButton: {
     position: 'absolute',
@@ -350,18 +350,18 @@ const styles = StyleSheet.create({
   },
   termsText: {
     fontSize: 13,
-    color: '#666',
+    color: '#fff',
     lineHeight: 18,
     flex: 1,
   },
   createButton: {
-    backgroundColor: '#273054',
+    backgroundColor: '#D4AF37',
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 12,
-    shadowColor: '#273054',
+    shadowColor: '#D4AF37',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 8,

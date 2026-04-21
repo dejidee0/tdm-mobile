@@ -2,23 +2,23 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import React from 'react';
 import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const COLORS = {
-  primary: '#1A2138',
+  primary: '#D4AF37',
   white: '#FFFFFF',
-  textHeader: '#11181C',
-  textSubHeader: '#7B818C',
-  accent: '#263A63',
+  textHeader: '#D4AF37',
+  textSubHeader: '#8e98a9',
+  accent: '#D4AF37',
   inactive: '#9AA3A7',
-  border: '#E2E8F0',
+  border: '#494845',
 };
 
 export default function EditDeliveryDetailsScreen() {
@@ -141,7 +141,7 @@ export default function EditDeliveryDetailsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#000000',
   },
   header: {
     flexDirection: 'row',
@@ -149,14 +149,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     height: 70,
-    backgroundColor: COLORS.white,
+    backgroundColor: '#000000',
     borderBottomWidth:1,
-    borderBottomColor: '#F0F4F8',
+    borderBottomColor: COLORS.border,
   },
   headerTitle: {
     fontSize: 19,
     fontWeight: '700',
-    color: '#2D3748',
+    color: COLORS.textHeader,
   },
   scrollContent: {
     paddingHorizontal: 20,
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 14,
     fontWeight: '800',
-    color: '#4A5568',
+    color: COLORS.textSubHeader,
     letterSpacing: 0.5,
   },
   countBadge: {
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   addressCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: '#252523',
     borderRadius: 20,
     padding: 24,
     flexDirection: 'row',
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
   },
   addressCardInactive: {
     borderColor: 'transparent',
-    backgroundColor: '#F0F2F5',
+    backgroundColor: '#252523',
   },
   radioSelected: {
     width: 24,
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     height: 24,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: '#CBD5E0',
+    borderColor: COLORS.border,
   },
   addressInfo: {
     flex: 1,
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   newAddressForm: {
-    backgroundColor: COLORS.white,
+    backgroundColor: '#252523',
     borderRadius: 24,
     padding: 24,
     marginTop: 16,
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   inputField: {
-    backgroundColor: '#EDF2F7',
+    backgroundColor: '#494845',
     height: 56,
     borderRadius: 12,
     paddingHorizontal: 16,
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   selectField: {
-    backgroundColor: '#EDF2F7',
+    backgroundColor: '#494845',
     height: 56,
     borderRadius: 12,
     paddingHorizontal: 16,
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
     color: COLORS.textSubHeader,
   },
   instructionsWrapper: {
-    backgroundColor: '#EDF2F7',
+    backgroundColor: '#494845',
     borderRadius: 16,
     padding: 20,
     marginTop: 16,
@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
     opacity: 0.4,
   },
   trackingBadge: {
-    backgroundColor: COLORS.white,
+    backgroundColor: '#252523',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
@@ -348,11 +348,11 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
-    backgroundColor: COLORS.white,
+    backgroundColor: '#000000',
     height: 90,
     paddingBottom: 25,
     borderTopWidth: 1,
-    borderTopColor: '#F0F2F5',
+    borderTopColor: COLORS.border,
     position: 'absolute',
     bottom: 0,
     left: 0,

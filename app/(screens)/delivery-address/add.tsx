@@ -35,7 +35,7 @@ export default function AddAddressScreen() {
     <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBack}>
-          <Ionicons name="chevron-back" size={24} color="#273054" />
+          <Ionicons name="chevron-back" size={24} color="#D4AF37" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Add New Address</Text>
         <View style={{ width: 40 }} />
@@ -60,14 +60,14 @@ export default function AddAddressScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#fff' },
-  header: { height: 60, paddingHorizontal: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
+  safe: { flex: 1, backgroundColor: '#000000' },
+  header: { height: 60, paddingHorizontal: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#000000', borderBottomWidth: 0, borderBottomColor: 'transparent' },
   headerBack: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { fontWeight: '600', fontSize: 18, color: '#273054' },
+  headerTitle: { fontWeight: '600', fontSize: 18, color: '#D4AF37' },
   container: { padding: 20, paddingBottom: 40 },
-  label: { fontSize: 14, fontWeight: '600', color: '#273054', marginBottom: 16 },
-  input: { backgroundColor: '#f5f5f5', height: 48, borderRadius: 10, paddingHorizontal: 14, marginBottom: 12, fontSize: 14, color: '#273054', borderWidth: 1, borderColor: '#f0f0f0' },
-  inputFocused: { borderColor: '#273054', borderWidth: 2, backgroundColor: '#fff' },
-  submitBtn: { height: 48, borderRadius: 10, backgroundColor: '#273054', alignItems: 'center', justifyContent: 'center', marginTop: 20, shadowColor: '#273054', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 5 },
-  submitBtnText: { color: '#fff', fontWeight: '900', fontSize: 15 },
+  label: { fontSize: 14, fontWeight: '600', color: '#D4AF37', marginBottom: 16 },
+  input: { backgroundColor: '#494845', height: 48, borderRadius: 10, paddingHorizontal: 14, marginBottom: 12, fontSize: 14, color: '#FFFFFF', borderWidth: 1, borderColor: '#494845' },
+  inputFocused: { borderColor: '#D4AF37', borderWidth: 2, backgroundColor: '#494845' },
+  submitBtn: { height: 48, borderRadius: 10, backgroundColor: '#D4AF37', alignItems: 'center', justifyContent: 'center', marginTop: 20, shadowColor: '#D4AF37', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 5 },
+  submitBtnText: { color: '#FFFFFF', fontWeight: '900', fontSize: 15 },
 });

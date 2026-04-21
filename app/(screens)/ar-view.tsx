@@ -2,14 +2,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
-  Dimensions,
-  Image,
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    Dimensions,
+    Image,
+    SafeAreaView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 
 const { width } = Dimensions.get('window');
@@ -27,7 +27,7 @@ export default function ARView() {
           onPress={() => router.back()}
           style={styles.backBtn}
         >
-          <Ionicons name="chevron-back" size={24} color="#273054" />
+            <Ionicons name="chevron-back" size={24} color="#D4AF37" />
         </TouchableOpacity>
       </View>
 
@@ -52,7 +52,7 @@ export default function ARView() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#000000',
   },
   header: {
     height: 60,
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: '#f5f5f5',
+      backgroundColor: '#252523',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: '#f0f4f8',
+      backgroundColor: '#252523',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 32,
@@ -91,37 +91,37 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     resizeMode: 'contain',
-    tintColor: '#273054',
+    tintColor: '#D4AF37',
   },
   title: {
     fontSize: 24,
     fontWeight: '900',
-    color: '#273054',
+      color: '#D4AF37',
     marginBottom: 16,
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
-    color: '#64748b',
+      color: '#FFFFFF',
     lineHeight: 24,
     textAlign: 'center',
     marginBottom: 40,
   },
   primaryBtn: {
-    backgroundColor: '#273054',
+    backgroundColor: '#D4AF37',
     paddingVertical: 16,
     paddingHorizontal: 32,
     borderRadius: 12,
     width: '100%',
     alignItems: 'center',
-    shadowColor: '#273054',
+    shadowColor: '#D4AF37',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.15,
     shadowRadius: 12,
     elevation: 8,
   },
   primaryText: {
-    color: '#fff',
+      color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '800',
   },

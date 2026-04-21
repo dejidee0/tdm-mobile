@@ -74,7 +74,7 @@ export default function CheckoutScreen() {
     <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBack}>
-          <Ionicons name="chevron-back" size={24} color="#273054" />
+          <Ionicons name="chevron-back" size={24} color="#D4AF37" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Checkout</Text>
         <View style={{ width: 40 }} />
@@ -89,7 +89,7 @@ export default function CheckoutScreen() {
             activeOpacity={0.7}
           >
             <Text style={styles.dropdownText}>{selectedState} - N5000</Text>
-            <Ionicons name="chevron-down" size={18} color="#ccc" />
+            <Ionicons name="chevron-down" size={18} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
 
@@ -120,14 +120,14 @@ export default function CheckoutScreen() {
                   setCity(item.city || '');
                   setAddress(item.address || '');
                 }} style={{ padding: 10, borderRadius: 8, backgroundColor: selectedAddressId === item.id ? '#F0F4FF' : '#fff', marginBottom: 8, borderWidth: 1, borderColor: '#f0f0f0' }}>
-                  <Text style={{ fontWeight: '600', color: '#273054' }}>{item.name}</Text>
+                  <Text style={{ fontWeight: '600', color: '#D4AF37' }}>{item.name}</Text>
                   <Text style={{ color: '#999' }}>{item.address}</Text>
                 </TouchableOpacity>
               )}
             />
           ) : (
             <TouchableOpacity style={{ marginBottom: 12 }} onPress={() => router.push('/delivery-address/add')}>
-              <Text style={{ color: '#273054', fontWeight: '600' }}>Add a delivery address</Text>
+              <Text style={{ color: '#D4AF37', fontWeight: '600' }}>Add a delivery address</Text>
             </TouchableOpacity>
           )}
 
@@ -145,7 +145,7 @@ export default function CheckoutScreen() {
             <Text style={styles.summaryTotal}>N{(subtotal + 5000).toFixed(2)}</Text>
           </View>
 
-          <TouchableOpacity
+            <TouchableOpacity
             style={styles.payBtn}
             onPress={async () => {
               // const selected = addresses.find((a) => a.id === selectedAddressId) ?? null;
@@ -211,7 +211,7 @@ export default function CheckoutScreen() {
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Select State</Text>
               <TouchableOpacity onPress={() => setShowStateModal(false)}>
-                <Ionicons name="close" size={24} color="#273054" />
+                <Ionicons name="close" size={24} color="#D4AF37" />
               </TouchableOpacity>
             </View>
             <FlatList
@@ -241,34 +241,34 @@ export default function CheckoutScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#fff' },
-  header: { height: 60, paddingHorizontal: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
+  safe: { flex: 1, backgroundColor: '#000000' },
+  header: { height: 60, paddingHorizontal: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#000000', borderBottomWidth: 0, borderBottomColor: 'transparent' },
   headerBack: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { fontWeight: '600', fontSize: 18, color: '#273054' },
+  headerTitle: { fontWeight: '600', fontSize: 18, color: '#D4AF37' },
   container: { padding: 20, paddingBottom: 40 },
   selectBox: { marginBottom: 20 },
-  label: { fontSize: 14, fontWeight: '600', color: '#273054', marginBottom: 8 },
-  dropdown: { height: 48, borderRadius: 10, backgroundColor: '#f5f5f5', paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderWidth: 1, borderColor: '#f0f0f0' },
-  dropdownText: { color: '#273054', fontWeight: '500' },
+  label: { fontSize: 14, fontWeight: '600', color: '#D4AF37', marginBottom: 8 },
+  dropdown: { height: 48, borderRadius: 10, backgroundColor: '#494845', paddingHorizontal: 14, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderWidth: 0, borderColor: '#494845' },
+  dropdownText: { color: '#FFFFFF', fontWeight: '500' },
   formBox: { marginTop: 8, gap: 10 },
-  input: { height: 48, backgroundColor: '#f5f5f5', borderRadius: 10, paddingHorizontal: 14, fontSize: 14, color: '#273054', borderWidth: 1, borderColor: '#f0f0f0' },
-  inputFocused: { borderColor: '#273054', borderWidth: 2, backgroundColor: '#fff' },
+  input: { height: 48, backgroundColor: '#494845', borderRadius: 10, paddingHorizontal: 14, fontSize: 14, color: '#FFFFFF', borderWidth: 1, borderColor: '#494845' },
+  inputFocused: { borderColor: '#D4AF37', borderWidth: 2, backgroundColor: '#494845' },
   checkboxRow: { marginTop: 14, flexDirection: 'row', alignItems: 'center' },
-  checkbox: { width: 20, height: 20, borderRadius: 4, borderWidth: 1.5, borderColor: '#e24a43', backgroundColor: '#fff' },
-  checkboxLabel: { marginLeft: 10, fontSize: 14, color: '#273054', fontWeight: '500' },
-  summaryCard: { marginTop: 40, backgroundColor: '#fff', padding: 18, borderRadius: 12, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
+  checkbox: { width: 20, height: 20, borderRadius: 4, borderWidth: 1.5, borderColor: '#D4AF37', backgroundColor: '#000000' },
+  checkboxLabel: { marginLeft: 10, fontSize: 14, color: '#FFFFFF', fontWeight: '500' },
+  summaryCard: { marginTop: 40, backgroundColor: '#252523', padding: 18, borderRadius: 12, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
   summaryRow: { flexDirection: 'row', justifyContent: 'space-between' },
-  summaryLabel: { fontSize: 14, color: '#999' },
-  summaryValue: { fontSize: 14, fontWeight: '600', color: '#273054' },
-  summaryTotal: { fontSize: 16, fontWeight: '900', color: '#273054' },
-  payBtn: { marginTop: 20, height: 48, borderRadius: 10, backgroundColor: '#273054', alignItems: 'center', justifyContent: 'center', shadowColor: '#273054', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 5 },
-  payBtnText: { color: '#fff', fontWeight: '900', fontSize: 15 },
+  summaryLabel: { fontSize: 14, color: '#FFFFFF' },
+  summaryValue: { fontSize: 14, fontWeight: '600', color: '#D4AF37' },
+  summaryTotal: { fontSize: 16, fontWeight: '900', color: '#D4AF37' },
+  payBtn: { marginTop: 20, height: 48, borderRadius: 10, backgroundColor: '#D4AF37', alignItems: 'center', justifyContent: 'center', shadowColor: '#D4AF37', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 5 },
+  payBtnText: { color: '#FFFFFF', fontWeight: '900', fontSize: 15 },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
-  modalContent: { backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20, maxHeight: '80%', paddingBottom: 20 },
-  modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
-  modalTitle: { fontSize: 16, fontWeight: '600', color: '#273054' },
+  modalContent: { backgroundColor: '#252523', borderTopLeftRadius: 20, borderTopRightRadius: 20, maxHeight: '80%', paddingBottom: 20 },
+  modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, borderBottomWidth: 0, borderBottomColor: 'transparent' },
+  modalTitle: { fontSize: 16, fontWeight: '600', color: '#D4AF37' },
   stateRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 20, borderBottomWidth: 1, borderBottomColor: '#f9f9f9' },
-  stateRowSelected: { backgroundColor: '#FFF5F5' },
-  stateText: { fontSize: 15, color: '#333' },
-  stateTextSelected: { fontWeight: '600', color: '#e24a43' },
+  stateRowSelected: { backgroundColor: '#494845' },
+  stateText: { fontSize: 15, color: '#FFFFFF' },
+  stateTextSelected: { fontWeight: '600', color: '#D4AF37' },
 });

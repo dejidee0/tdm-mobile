@@ -102,7 +102,7 @@ export default function CartScreen() {
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => router.back()} style={styles.headerBack}>
-            <Ionicons name="chevron-back" size={28} color="#273054" />
+            <Ionicons name="chevron-back" size={28} color="#D4AF37" />
           </TouchableOpacity>
           <ThemedText style={styles.headerTitle}>Cart</ThemedText>
           <View style={{ width: 40 }} />
@@ -166,7 +166,7 @@ export default function CartScreen() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#000000',
   },
   header: {
     height: 60,
@@ -174,9 +174,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#fff',
+    backgroundColor: '#000000',
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: 'transparent',
   },
   headerBack: {
     width: 40,
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontWeight: '600',
     fontSize: 18,
-    color: '#273054',
+    color: '#D4AF37',
   },
   container: {
     flex: 1,
@@ -200,10 +200,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 14,
     padding: 14,
-    backgroundColor: '#fff',
+    backgroundColor: '#252523',
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#f0f0f0',
+    borderColor: '#494845',
     zIndex: 1,
     position: 'relative',
   },
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 10,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#494845',
   },
   itemDetails: {
     flex: 1,
@@ -220,16 +220,16 @@ const styles = StyleSheet.create({
   itemTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#273054',
+    color: '#FFFFFF',
   },
   itemDelivery: {
     fontSize: 12,
-    color: '#999',
+    color: '#FFFFFF',
   },
   itemPrice: {
     fontWeight: '900',
     fontSize: 14,
-    color: '#273054',
+    color: '#D4AF37',
   },
   swipeContainer: {
     marginBottom: 20,
@@ -270,34 +270,34 @@ const styles = StyleSheet.create({
   },
   totalLabel: {
     fontSize: 13,
-    color: '#999',
+    color: '#FFFFFF',
     marginBottom: 4,
   },
   totalPrice: {
     fontWeight: '900',
     fontSize: 20,
-    color: '#273054',
+    color: '#D4AF37',
     marginBottom: 4,
   },
   deliveryNote: {
     fontSize: 11,
-    color: '#999',
+    color: '#FFFFFF',
   },
   checkoutBtn: {
-    backgroundColor: '#273054',
+    backgroundColor: '#D4AF37',
     paddingVertical: 14,
     paddingHorizontal: 20,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#273054',
+    shadowColor: '#D4AF37',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 8,
     elevation: 5,
   },
   checkoutText: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontWeight: '900',
     fontSize: 14,
   },

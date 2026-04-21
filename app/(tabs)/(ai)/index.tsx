@@ -6,29 +6,29 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  Dimensions,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Alert,
+    Dimensions,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { useAuth } from '../../../context/AuthContext';
 
 const { width } = Dimensions.get('window');
 
 const COLORS = {
-  primary: '#1A2138',
-  textHeader: '#1A2138',
-  textSubHeader: '#7B809A',
+  primary: '#D4AF37',
+  textHeader: '#D4AF37',
+  textSubHeader: '#8e98a9',
   white: '#FFFFFF',
-  inputBg: '#FFFFFF',
+  inputBg: '#494845',
   shadow: '#000000',
-  accent: '#263A63',
+  accent: '#D4AF37',
   inactive: '#9AA3A7',
 };
 
@@ -157,7 +157,7 @@ export default function AIHomeScreen() {
         <View style={styles.guestSection}>
           <View style={styles.guestCenter}>
             <View style={styles.guestIconWrap}>
-              <Ionicons name="lock-closed" size={48} color="#273054" />
+              <Ionicons name="lock-closed" size={48} color="#D4AF37" />
             </View>
             <Text style={styles.guestTitle}>Sign in to continue</Text>
             <Text style={styles.guestSubTitle}>Access AI-powered design tools, save projects, and manage your estimates.</Text>
@@ -277,7 +277,7 @@ export default function AIHomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#000000',
   },
   scrollContent: {
     paddingHorizontal: 24,
@@ -293,20 +293,20 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F7FAFC',
+    backgroundColor: '#494845',
     justifyContent: 'center',
     alignItems: 'center',
   },
   greeting: {
     fontSize: 48,
     fontWeight: '800',
-    color: '#2D3748',
+    color: COLORS.textHeader,
     letterSpacing: -1,
   },
   subGreeting: {
     fontSize: 48,
     fontWeight: '600',
-    color: '#8289A5',
+    color: COLORS.textSubHeader,
     lineHeight: 52,
     letterSpacing: -1,
   },
@@ -378,7 +378,7 @@ const styles = StyleSheet.create({
   },
   outputToggle: {
     flexDirection: 'row',
-    backgroundColor: '#F1F5F9',
+    backgroundColor: '#494845',
     borderRadius: 12,
     padding: 4,
   },
@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
   },
   outputText: {
-    color: '#374151',
+    color: COLORS.textSubHeader,
     fontWeight: '600',
   },
   outputActiveText: {
@@ -400,23 +400,23 @@ const styles = StyleSheet.create({
   },
   contextInput: {
     flex: 1,
-    backgroundColor: '#F7FAFC',
+    backgroundColor: COLORS.inputBg,
     paddingHorizontal: 12,
     paddingVertical: 10,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#EDF2F7',
-    color: COLORS.textHeader,
+    borderColor: COLORS.border,
+    color: COLORS.white,
   },
   durationInput: {
     width: 86,
-    backgroundColor: '#F7FAFC',
+    backgroundColor: COLORS.inputBg,
     paddingHorizontal: 12,
     paddingVertical: 10,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#EDF2F7',
-    color: COLORS.textHeader,
+    borderColor: COLORS.border,
+    color: COLORS.white,
     textAlign: 'center',
   },
   cardContainer: {
@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
     height: 240,
     borderRadius: 24,
     overflow: 'hidden',
-    backgroundColor: '#F7FAFC',
+    backgroundColor: '#252523',
   },
   cardImage: {
     width: '100%',
@@ -449,7 +449,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   inputWrapper: {
-    backgroundColor: COLORS.white,
+    backgroundColor: '#252523',
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
@@ -462,7 +462,7 @@ const styles = StyleSheet.create({
     shadowRadius: 20,
     elevation: 8,
     borderWidth: 1,
-    borderColor: '#F0F2F5',
+    borderColor: COLORS.border,
   },
   addIcon: {
     marginRight: 16,
@@ -470,7 +470,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 19,
-    color: COLORS.textHeader,
+    color: COLORS.white,
     fontWeight: '400',
   },
   sendButton: {
@@ -483,11 +483,11 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
-    backgroundColor: COLORS.white,
+    backgroundColor: '#000000',
     height: 100,
     paddingBottom: 30,
     borderTopWidth: 1,
-    borderTopColor: '#F7FAFC',
+    borderTopColor: COLORS.border,
     position: 'absolute',
     bottom: 0,
     left: 0,
@@ -513,7 +513,7 @@ const styles = StyleSheet.create({
   guestSection: {
     flex: 1,
     paddingHorizontal: 24,
-    backgroundColor: '#F7FAFC',
+    backgroundColor: '#000000',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -526,13 +526,13 @@ const styles = StyleSheet.create({
     height: 80,
     marginBottom: 20,
     opacity: 0.8,
-    tintColor: '#273054',
+    tintColor: '#D4AF37',
   },
   guestIconWrap: {
     width: 90,
     height: 90,
     borderRadius: 45,
-    backgroundColor: '#EDF2F7',
+    backgroundColor: '#494845',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 24,
@@ -540,20 +540,20 @@ const styles = StyleSheet.create({
   guestTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#273054',
+    color: '#D4AF37',
     marginBottom: 12,
     textAlign: 'center',
   },
   guestSubTitle: {
     fontSize: 16,
-    color: '#7B809A',
+    color: COLORS.textSubHeader,
     textAlign: 'center',
     marginBottom: 32,
     lineHeight: 24,
   },
   loginBtn: {
     width: '100%',
-    backgroundColor: '#1A2138',
+    backgroundColor: COLORS.primary,
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
@@ -572,13 +572,13 @@ const styles = StyleSheet.create({
   signupBtn: {
     width: '100%',
     borderWidth: 1.5,
-    borderColor: '#E0E7FF',
+    borderColor: COLORS.border,
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
   },
   signupBtnText: {
-    color: '#1A2138',
+    color: COLORS.white,
     fontSize: 16,
     fontWeight: '600',
   },

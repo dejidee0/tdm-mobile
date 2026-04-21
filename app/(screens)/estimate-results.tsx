@@ -99,7 +99,7 @@ export default function EstimateResults() {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.headerRow}>
           <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-            <Ionicons name="chevron-back" size={22} color="#273054" />
+            <Ionicons name="chevron-back" size={22} color="#D4AF37" />
           </TouchableOpacity>
           <Text style={styles.header}>Estimate Results</Text>
         </View>
@@ -204,9 +204,9 @@ const styles = StyleSheet.create({
   container: { padding: 20, paddingBottom: 120 },
   headerRow: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 6, height: 50 },
   backBtn: { padding: 6 },
-  header: { flex: 1, textAlign: 'center', fontSize: 18, fontWeight: '800', color: '#273054', marginRight: 36 },
+  header: { flex: 1, textAlign: 'center', fontSize: 18, fontWeight: '800', color: '#D4AF37', marginRight: 36 },
   card: { backgroundColor: '#243b8a', borderRadius: 14, padding: 20, marginTop: 10, shadowColor: '#243b8a', shadowOpacity: 0.12, shadowOffset: { width: 0, height: 6 }, shadowRadius: 12, elevation: 6 },
-  section: { marginTop: 22, color: '#273054', fontWeight: '800', marginBottom: 8 },
+  section: { marginTop: 22, color: '#D4AF37', fontWeight: '800', marginBottom: 8 },
   topCard: { backgroundColor: '#243b8a', borderRadius: 14, padding: 20, shadowColor: '#243b8a', shadowOpacity: 0.12, shadowOffset: { width: 0, height: 6 }, shadowRadius: 12, elevation: 6 },
   small: { color: '#cfe0ff', fontWeight: '700', marginBottom: 8, fontSize: 12 },
   range: { color: '#fff', fontSize: 28, fontWeight: '900' },
@@ -224,10 +224,10 @@ const styles = StyleSheet.create({
   levelContent: { padding: 14, backgroundColor: '#fff' },
   badgeWrap: { position: 'absolute', left: 14, top: 110 },
   badgeText: { backgroundColor: '#fff', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, fontWeight: '700', color: '#243b8a' },
-  levelTitle: { fontSize: 20, fontWeight: '900', color: '#273054' },
+  levelTitle: { fontSize: 20, fontWeight: '900', color: '#D4AF37' },
   levelPrice: { color: '#1f3b82', fontWeight: '900', fontSize: 18 },
   levelText: { color: '#8e98a9' },
-  selectBtn: { marginTop: 10, backgroundColor: '#273054', paddingHorizontal: 14, paddingVertical: 10, borderRadius: 12, alignSelf: 'flex-start' },
+  selectBtn: { marginTop: 10, backgroundColor: '#D4AF37', paddingHorizontal: 14, paddingVertical: 10, borderRadius: 12, alignSelf: 'flex-start' },
   selectBtnText: { color: '#fff', fontWeight: '900' },
   estimateCard: {
     backgroundColor: '#243b8a',
@@ -304,9 +304,9 @@ const styles = StyleSheet.create({
   },
   centerPlaceholder: { padding: 26, alignItems: 'center', justifyContent: 'center', backgroundColor: '#243b8a', borderRadius: 12, marginBottom: 16 },
   emptyStateWrap: { alignItems: 'center', padding: 24 },
-  emptyTitle: { fontSize: 20, fontWeight: '900', color: '#273054', marginBottom: 8 },
+  emptyTitle: { fontSize: 20, fontWeight: '900', color: '#D4AF37', marginBottom: 8 },
   emptySub: { color: '#7B809A', textAlign: 'center', marginBottom: 12 },
-  startButtonPrimary: { backgroundColor: '#273054', paddingHorizontal: 20, paddingVertical: 12, borderRadius: 12 },
+  startButtonPrimary: { backgroundColor: '#D4AF37', paddingHorizontal: 20, paddingVertical: 12, borderRadius: 12 },
   startButtonText: { color: '#fff', fontWeight: '800' },
   cardRow: { flexDirection: 'row', gap: 14, alignItems: 'flex-start' },
   priceCurrency: { color: '#cfe0ff', fontWeight: '800', fontSize: 11, letterSpacing: 0.5, marginBottom: 2 },
@@ -322,8 +322,8 @@ const styles = StyleSheet.create({
   lockText: { color: '#fff', fontWeight: '700' },
   footer: { position: 'absolute', left: 16, right: 16, bottom: 16, flexDirection: 'row', gap: 12 },
   outlineBtn: { flex: 1, height: 50, borderRadius: 12, borderWidth: 1.5, borderColor: '#ccc', alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' },
-  outlineText: { color: '#273054', fontWeight: '700' },
-  primaryBtn: { flex: 2, height: 50, borderRadius: 12, backgroundColor: '#273054', alignItems: 'center', justifyContent: 'center' },
+  outlineText: { color: '#D4AF37', fontWeight: '700' },
+  primaryBtn: { flex: 2, height: 50, borderRadius: 12, backgroundColor: '#D4AF37', alignItems: 'center', justifyContent: 'center' },
   primaryText: { color: '#fff', fontWeight: '900' },
 });
 
