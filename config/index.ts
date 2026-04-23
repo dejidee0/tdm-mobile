@@ -1,1 +1,1 @@
-export const API_BASE_URL = "https://tbmbuild-001-site1.jtempurl.com/api/v1"
+export const API_BASE_URL = "https://tbmbuilding123-001-site1.qtempurl.com/api/v1"

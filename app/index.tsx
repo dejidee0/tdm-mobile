@@ -38,7 +38,7 @@ export default function SplashScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F7F9F8', height: '100%', position: 'relative' },
+  container: { flex: 1, backgroundColor: '#000000', height: '100%', position: 'relative' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   logo: { width: 140, height: 140 },
   vector1: {

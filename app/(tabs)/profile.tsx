@@ -21,36 +21,31 @@ export default function ProfileScreen() {
     {
       id: 'orders',
       label: 'Orders',
-      icon: require('@/assets/images/icons/orders.png'),
-      type: 'image',
+      icon: 'receipt-outline',
       route: '/orders',
     },
     {
       id: 'details',
       label: 'My Details',
-      icon: require('@/assets/images/icons/id.png'),
-      type: 'image',
+      icon: 'person-outline',
       route: '/my-details',
     },
     {
       id: 'delivery-address',
       label: 'Delivery Address',
-      icon: require('@/assets/images/icons/location.png'),
-      type: 'image',
+      icon: 'location-outline',
       route: '/delivery-address',
     },
     {
       id: 'rewards',
       label: 'Rewards',
-      icon: require('@/assets/images/icons/rewards.png'),
-      type: 'image',
+      icon: 'gift-outline',
       route: '/rewards',
     },
     {
       id: 'contact-us',
       label: 'Contact Us',
       icon: 'call-outline',
-      type: 'ionicon',
       route: '/contact-us',
     },
   ];
@@ -59,11 +54,11 @@ export default function ProfileScreen() {
     <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBack}>
-          <Ionicons name="chevron-back" size={24} color="#273054" />
+          <Ionicons name="chevron-back" size={24} color="#D4AF37" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Profile</Text>
         <TouchableOpacity onPress={() => router.push('/notifications')} style={styles.headerNotification}>
-          <Ionicons name="notifications" size={24} color="#273054" />
+          <Ionicons name="notifications" size={24} color="#D4AF37" />
         </TouchableOpacity>
       </View>
 
@@ -87,11 +82,7 @@ export default function ProfileScreen() {
                   activeOpacity={0.7}
                 >
                   <View style={styles.iconContainer}>
-                    {item.type === 'image' ? (
-                      <Image source={item.icon} style={styles.iconImage} />
-                    ) : (
-                      <Ionicons name={item.icon as any} size={20} color="#273054" />
-                    )}
+                    <Ionicons name={item.icon as any} size={20} color="#D4AF37" />
                   </View>
                   <Text style={styles.listText}>{item.label}</Text>
                   <Ionicons name="chevron-forward" size={18} color="#ccc" />
@@ -121,7 +112,7 @@ export default function ProfileScreen() {
               return router.replace('/(auth)/login');
             }}
           >
-            <Ionicons name="log-out-outline" size={20} color="#273054" />
+            <Ionicons name="log-out-outline" size={20} color="#D4AF37" />
             <Text style={styles.logoutText}>Log Out</Text>
           </TouchableOpacity>
         </View>
@@ -133,7 +124,7 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#000000',
   },
   header: {
     height: 60,
@@ -141,9 +132,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#fff',
+    backgroundColor: '#000000',
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: 'transparent',
   },
   headerBack: {
     width: 40,
@@ -160,12 +151,12 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontWeight: '600',
     fontSize: 18,
-    color: '#273054',
+    color: '#D4AF37',
   },
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#000000',
   },
   profileSection: {
     flexDirection: 'row',
@@ -173,7 +164,7 @@ const styles = StyleSheet.create({
     marginBottom: 28,
     paddingBottom: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: 'transparent',
   },
   avatar: {
     width: 70,
@@ -188,14 +179,14 @@ const styles = StyleSheet.create({
   userName: {
     fontWeight: '600',
     fontSize: 16,
-    color: '#273054',
+    color: '#D4AF37',
   },
   userEmail: {
     fontSize: 13,
-    color: '#999',
+    color: '#FFFFFF',
   },
   list: {
-    backgroundColor: '#fff',
+    backgroundColor: '#252523',
     borderRadius: 12,
     overflow: 'hidden',
     shadowColor: '#000',
@@ -210,7 +201,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#f5f5f5',
+    borderBottomColor: '#494845',
   },
   iconContainer: {
     width: 40,
@@ -228,7 +219,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 15,
     fontWeight: '500',
-    color: '#273054',
+    color: '#FFFFFF',
   },
   logoutWrap: {
     paddingHorizontal: 20,
@@ -240,13 +231,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: 50,
     borderRadius: 12,
-    backgroundColor: '#F2F3F2',
+    backgroundColor: '#252523',
   },
   logoutText: {
     marginLeft: 10,
     fontSize: 15,
     fontWeight: '600',
-    color: '#273054',
+    color: '#D4AF37',
   },
   guestSection: {
     flex: 1,
@@ -260,34 +251,34 @@ const styles = StyleSheet.create({
     height: 80,
     marginBottom: 20,
     opacity: 0.8,
-    tintColor: '#273054',
+    tintColor: '#D4AF37',
   },
   guestTitle: {
     fontSize: 22,
     fontWeight: '800',
-    color: '#273054',
+    color: '#D4AF37',
     marginBottom: 8,
   },
   guestSubTitle: {
     fontSize: 15,
-    color: '#666',
+    color: '#FFFFFF',
     textAlign: 'center',
     marginBottom: 30,
     lineHeight: 22,
   },
   loginBtn: {
-    backgroundColor: '#273054',
+    backgroundColor: '#D4AF37',
     paddingVertical: 14,
     paddingHorizontal: 50,
     borderRadius: 12,
-    shadowColor: '#273054',
+    shadowColor: '#D4AF37',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 4,
   },
   loginBtnText: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontWeight: '800',
     fontSize: 16,
   },

@@ -3,12 +3,12 @@ import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useCart } from '../../../context/CartContext';
@@ -25,13 +25,13 @@ function parsePrice(v: any) {
   return 0;
 }
 const COLORS = {
-  primary: '#1A2138',
+  primary: '#D4AF37',
   white: '#FFFFFF',
-  textHeader: '#11181C',
-  textSubHeader: '#7B818C',
-  accent: '#263A63',
+  textHeader: '#D4AF37',
+  textSubHeader: '#9aa3b0',
+  accent: '#D4AF37',
   inactive: '#9AA3A7',
-  border: '#E2E8F0',
+  border: '#494845',
   green: '#38A169',
 };
 
@@ -247,7 +247,7 @@ export default function CheckoutScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#000000',
   },
   header: {
     flexDirection: 'row',
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     height: 60,
-    backgroundColor: COLORS.white,
+    backgroundColor: '#000000',
   },
   headerTitle: {
     fontSize: 18,
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   addressCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: '#252523',
     borderRadius: 20,
     padding: 24,
     flexDirection: 'row',
@@ -292,10 +292,10 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 2,
     borderWidth: 1,
-    borderColor: '#F0F4F8',
+    borderColor: COLORS.border,
   },
   addressIconWrapper: {
-    backgroundColor: '#F0F4F8',
+    backgroundColor: '#494845',
     width: 60,
     height: 60,
     borderRadius: 14,
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   noteInputWrapper: {
-    backgroundColor: '#EDF2F7',
+    backgroundColor: '#494845',
     borderRadius: 12,
     padding: 16,
     minHeight: 100,
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
   },
   paymentSelector: {
     flexDirection: 'row',
-    backgroundColor: '#EDF2F7',
+    backgroundColor: '#494845',
     borderRadius: 14,
     padding: 6,
     gap: 6,
@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   activePaymentTab: {
-    backgroundColor: COLORS.white,
+    backgroundColor: '#252523',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -361,12 +361,12 @@ const styles = StyleSheet.create({
     color: COLORS.accent,
   },
   cardForm: {
-    backgroundColor: COLORS.white,
+    backgroundColor: '#252523',
     borderRadius: 24,
     padding: 24,
     marginTop: 24,
     borderWidth: 1,
-    borderColor: '#F0F4F8',
+    borderColor: COLORS.border,
   },
   inputLabel: {
     fontSize: 11,
@@ -375,14 +375,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   inputField: {
-    backgroundColor: '#EDF2F7',
+    backgroundColor: '#494845',
     height: 56,
     borderRadius: 10,
     paddingHorizontal: 16,
     fontSize: 15,
     fontWeight: '500',
     marginBottom: 20,
-    color: COLORS.textHeader,
+    color: COLORS.white,
   },
   cardNumberWrapper: {
     flexDirection: 'row',
@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
   cardTypeIcon: {
     width: 40,
     height: 24,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: COLORS.border,
     borderRadius: 4,
     marginRight: 16,
   },
@@ -492,11 +492,11 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
-    backgroundColor: COLORS.white,
+    backgroundColor: '#000000',
     height: 90,
     paddingBottom: 25,
     borderTopWidth: 1,
-    borderTopColor: '#F0F2F5',
+    borderTopColor: COLORS.border,
     position: 'absolute',
     bottom: 0,
     left: 0,

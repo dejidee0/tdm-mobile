@@ -74,6 +74,10 @@ export async function generateAIImage(payload: any) {
   return apiFetch('/ai/generate/image', { method: 'POST', body: JSON.stringify(payload) });
 }
 
+export async function generateAIVideo(payload: any) {
+  return apiFetch('/ai/generate/video', { method: 'POST', body: JSON.stringify(payload) });
+}
+
 export async function transformAIImage(payload: any) {
   return apiFetch('/ai/transform/image', { method: 'POST', body: JSON.stringify(payload) });
 }

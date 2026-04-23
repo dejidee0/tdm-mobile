@@ -3,22 +3,22 @@ import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const COLORS = {
-  primary: '#1A2138',
+  primary: '#D4AF37',
   white: '#FFFFFF',
-  textHeader: '#11181C',
-  textSubHeader: '#7B818C',
-  accent: '#263A63',
+  textHeader: '#D4AF37',
+  textSubHeader: '#8e98a9',
+  accent: '#D4AF37',
   inactive: '#9AA3A7',
-  border: '#E2E8F0',
+  border: '#494845',
 };
 
 export default function AIVisualizerScreen() {
@@ -56,7 +56,7 @@ export default function AIVisualizerScreen() {
                 <Text style={styles.tagTextSmall}>ECONOMIC</Text>
               </View>
               <TouchableOpacity style={styles.viewMaterialBtn}>
-                <Text style={styles.viewMaterialText}>View Material</Text>
+                <Text style={[styles.viewMaterialText, { color: COLORS.accent }]}>View Material</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.rightView}>
@@ -67,8 +67,8 @@ export default function AIVisualizerScreen() {
               <View style={styles.tagLuxury}>
                 <Text style={styles.tagTextSmall}>LUXURY</Text>
               </View>
-              <TouchableOpacity style={[styles.viewMaterialBtn, { backgroundColor: COLORS.white }]}>
-                <Text style={[styles.viewMaterialText, { color: COLORS.accent }]}>View Material</Text>
+              <TouchableOpacity style={[styles.viewMaterialBtn, { backgroundColor: COLORS.accent }]}> 
+                <Text style={[styles.viewMaterialText, { color: COLORS.white }]}>View Material</Text>
               </TouchableOpacity>
             </View>
             {/* Slider Handle */}
@@ -142,7 +142,7 @@ export default function AIVisualizerScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#000000',
   },
   navbar: {
     flexDirection: 'row',
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 20,
     left: 20,
-    backgroundColor: 'rgba(255,255,255,0.4)',
+    backgroundColor: 'rgba(255,255,255,0.08)',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     alignSelf: 'center',
-    backgroundColor: COLORS.accent,
+    backgroundColor: COLORS.white,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 10,
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     marginTop: -20,
     width: 30,
     height: 40,
-    backgroundColor: COLORS.white,
+    backgroundColor: '#252523',
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -268,14 +268,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   contactBtn: {
-    backgroundColor: COLORS.white,
+    backgroundColor: '#252523',
     height: 60,
     borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: COLORS.border,
     marginBottom: 24,
   },
   contactBtnText: {
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   metricsCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: '#252523',
     borderRadius: 24,
     padding: 24,
     flexDirection: 'row',
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   integrityIcon: {
-    backgroundColor: '#F0F4F8',
+    backgroundColor: '#252523',
     width: 50,
     height: 50,
     borderRadius: 25,
@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   blendCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: '#252523',
     borderRadius: 24,
     padding: 24,
     marginBottom: 20,
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
   },
   progressBarBg: {
     height: 8,
-    backgroundColor: '#EDF2F7',
+    backgroundColor: '#494845',
     borderRadius: 4,
     overflow: 'hidden',
   },
@@ -383,14 +383,14 @@ const styles = StyleSheet.create({
     color: COLORS.accent,
   },
   lightingCard: {
-    backgroundColor: '#F7FAFC',
+    backgroundColor: '#252523',
     borderRadius: 20,
     padding: 20,
     flexDirection: 'row',
     alignItems: 'center',
   },
   lightingIconWrapper: {
-    backgroundColor: COLORS.white,
+    backgroundColor: '#252523',
     width: 48,
     height: 48,
     borderRadius: 14,
@@ -420,11 +420,11 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
-    backgroundColor: COLORS.white,
+    backgroundColor: '#000000',
     height: 90,
     paddingBottom: 25,
     borderTopWidth: 1,
-    borderTopColor: '#F0F2F5',
+    borderTopColor: COLORS.border,
     position: 'absolute',
     bottom: 0,
     left: 0,

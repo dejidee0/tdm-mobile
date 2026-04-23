@@ -4,23 +4,23 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 const COLORS = {
-  primary: '#1A2138',
+  primary: '#D4AF37',
   white: '#FFFFFF',
-  textHeader: '#11181C',
-  textSubHeader: '#7B818C',
-  accent: '#263A63',
+  textHeader: '#D4AF37',
+  textSubHeader: '#8e98a9',
+  accent: '#D4AF37',
   inactive: '#9AA3A7',
-  border: '#E2E8F0',
+  border: '#494845',
   green: '#38A169',
   red: '#E53E3E',
 };
@@ -163,11 +163,11 @@ export default function FixturesCatalogScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#000000',
   },
   header: {
     paddingHorizontal: 20,
-    backgroundColor: COLORS.white,
+    backgroundColor: '#000000',
     paddingTop: 10,
     paddingBottom: 20,
   },
@@ -178,14 +178,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 28,
     paddingVertical: 14,
     borderRadius: 24,
-    backgroundColor: '#EDF2F7',
+    backgroundColor: '#494845',
     marginRight: 10,
   },
   activeCatTab: {
     backgroundColor: COLORS.primary,
   },
   catTabText: {
-    color: '#4A5568',
+    color: '#FFFFFF',
     fontWeight: '700',
     fontSize: 16,
   },
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
   },
   statBox: {
     flex: 1,
-    backgroundColor: COLORS.white,
+    backgroundColor: '#252523',
     borderRadius: 20,
     padding: 20,
     alignItems: 'center',
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 2,
     borderWidth: 1,
-    borderColor: '#F0F4F8',
+    borderColor: COLORS.border,
   },
   statValue: {
     fontSize: 22,
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   card: {
-    backgroundColor: COLORS.white,
+    backgroundColor: '#252523',
     borderRadius: 24,
     marginBottom: 24,
     overflow: 'hidden',
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 2,
     borderWidth: 1,
-    borderColor: '#F0F4F8',
+    borderColor: COLORS.border,
   },
   imageWrapper: {
     height: 180,
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 16,
     left: 16,
-    backgroundColor: COLORS.white,
+    backgroundColor: '#252523',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 16,
     right: 16,
-    backgroundColor: '#F0FFF4',
+    backgroundColor: '#252523',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 12,
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     color: COLORS.textHeader,
   },
   countTag: {
-    backgroundColor: '#EDF2F7',
+    backgroundColor: '#494845',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
     color: COLORS.textSubHeader,
   },
   cartBtn: {
-    backgroundColor: '#F0F4F8',
+    backgroundColor: '#494845',
     width: 44,
     height: 44,
     borderRadius: 12,
@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 24,
     right: 24,
-    backgroundColor: COLORS.white,
+    backgroundColor: '#252523',
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 10,
@@ -402,11 +402,11 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
-    backgroundColor: COLORS.white,
+    backgroundColor: '#000000',
     height: 90,
     paddingBottom: 25,
     borderTopWidth: 1,
-    borderTopColor: '#F0F2F5',
+    borderTopColor: COLORS.border,
     position: 'absolute',
     bottom: 0,
     left: 0,

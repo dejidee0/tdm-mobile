@@ -2,25 +2,25 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
-import { useCart } from '../../../context/CartContext';
 import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useCart } from '../../../context/CartContext';
 
 const COLORS = {
-  primary: '#1A2138',
+  primary: '#D4AF37',
   white: '#FFFFFF',
-  textHeader: '#11181C',
-  textSubHeader: '#7B818C',
-  accent: '#263A63',
+  textHeader: '#D4AF37',
+  textSubHeader: '#9aa3b0',
+  accent: '#D4AF37',
   inactive: '#9AA3A7',
-  border: '#E2E8F0',
+  border: '#494845',
   green: '#38A169',
 };
 
@@ -205,7 +205,7 @@ export default function CartScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#000000',
   },
   header: {
     flexDirection: 'row',
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     height: 60,
-    backgroundColor: COLORS.white,
+    backgroundColor: '#000000',
   },
   headerTitle: {
     fontSize: 18,
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
   },
   cartCard: {
     flexDirection: 'row',
-    backgroundColor: COLORS.white,
+    backgroundColor: '#252523',
     borderRadius: 20,
     padding: 16,
     marginBottom: 16,
@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
   qtyStepper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F0F4F8',
+    backgroundColor: '#494845',
     borderRadius: 8,
     padding: 4,
   },
@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
   },
   promoInput: {
     flex: 1,
-    backgroundColor: '#EDF2F7',
+    backgroundColor: '#494845',
     height: 56,
     borderRadius: 12,
     paddingHorizontal: 16,
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   summaryCard: {
-    backgroundColor: '#F7FAFC',
+    backgroundColor: '#252523',
     borderRadius: 24,
     padding: 24,
     marginBottom: 40,
@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
   },
   summaryDivider: {
     height: 1,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: COLORS.border,
     marginVertical: 16,
   },
   totalRow: {
@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   recommendCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: '#252523',
     borderRadius: 20,
     padding: 12,
     marginRight: 16,
@@ -440,7 +440,7 @@ const styles = StyleSheet.create({
     color: COLORS.accent,
   },
   miniCartBtn: {
-    backgroundColor: '#F0F4F8',
+    backgroundColor: '#494845',
     width: 32,
     height: 32,
     borderRadius: 8,
@@ -494,11 +494,11 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
-    backgroundColor: COLORS.white,
+    backgroundColor: '#000000',
     height: 90,
     paddingBottom: 25,
     borderTopWidth: 1,
-    borderTopColor: '#F0F2F5',
+    borderTopColor: COLORS.border,
     position: 'absolute',
     bottom: 0,
     left: 0,

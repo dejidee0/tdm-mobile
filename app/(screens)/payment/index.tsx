@@ -116,7 +116,7 @@ export default function PaymentScreen() {
   if (loading || verifying) {
     return (
       <SafeAreaView style={styles.center}>
-        <ActivityIndicator size="large" color="#273054" />
+        <ActivityIndicator size="large" color="#D4AF37" />
         <Text style={styles.loadingText}>{verifying ? 'Verifying your payment, please wait...' : 'Initializing Secure Payment Gate...'}</Text>
       </SafeAreaView>
     );
@@ -126,7 +126,7 @@ export default function PaymentScreen() {
     <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBack}>
-          <Ionicons name="chevron-back" size={24} color="#273054" />
+          <Ionicons name="chevron-back" size={24} color="#D4AF37" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Complete Payment</Text>
         <View style={{ width: 40 }} />
@@ -142,7 +142,7 @@ export default function PaymentScreen() {
           startInLoadingState
           renderLoading={() => (
             <View style={[styles.center, StyleSheet.absoluteFillObject, { backgroundColor: '#fff', zIndex: 10 }]}>
-              <ActivityIndicator size="large" color="#273054" />
+              <ActivityIndicator size="large" color="#D4AF37" />
             </View>
           )}
         />
@@ -158,8 +158,8 @@ export default function PaymentScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: '#fff' },
   center: { flex: 1, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' },
-  loadingText: { marginTop: 16, fontSize: 15, color: '#273054', fontWeight: '500' },
+  loadingText: { marginTop: 16, fontSize: 15, color: '#D4AF37', fontWeight: '500' },
   header: { height: 60, paddingHorizontal: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
   headerBack: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { fontWeight: '600', fontSize: 18, color: '#273054' }
+  headerTitle: { fontWeight: '600', fontSize: 18, color: '#D4AF37' }
 });

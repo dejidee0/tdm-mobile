@@ -1,24 +1,24 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import React from 'react';
-import { useAuth } from '../../../context/AuthContext';
 import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
+import { useAuth } from '../../../context/AuthContext';
 
 const COLORS = {
-  primary: '#1A2138',
+  primary: '#D4AF37',
   white: '#FFFFFF',
-  textHeader: '#11181C',
-  textSubHeader: '#7B818C',
-  accent: '#263A63',
+  textHeader: '#D4AF37',
+  textSubHeader: '#8e98a9',
+  accent: '#D4AF37',
   inactive: '#9AA3A7',
-  border: '#E2E8F0',
+  border: '#494845',
   green: '#38A169',
 };
 
@@ -180,7 +180,7 @@ export default function OrderDetailsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#000000',
   },
   header: {
     flexDirection: 'row',
@@ -188,12 +188,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     height: 60,
-    backgroundColor: COLORS.white,
+    backgroundColor: '#000000',
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#2D3748',
+    color: COLORS.textHeader,
   },
   scrollContent: {
     paddingHorizontal: 20,
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   orderLabel: {
     fontSize: 11,
     fontWeight: '800',
-    color: '#3182CE',
+    color: '#D4AF37',
     letterSpacing: 0.5,
   },
   orderNumber: {
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   arrivalCard: {
-    backgroundColor: '#F7FAFC',
+    backgroundColor: '#252523',
     borderRadius: 16,
     padding: 20,
     flexDirection: 'row',
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   truckIconBg: {
-    backgroundColor: '#EDF2F7',
+    backgroundColor: '#494845',
     width: 48,
     height: 48,
     borderRadius: 14,
@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 12,
     fontWeight: '800',
-    color: '#4A5568',
+    color: COLORS.textSubHeader,
     marginBottom: 20,
     letterSpacing: 1,
   },
@@ -290,12 +290,12 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
   },
   dotPending: {
-    backgroundColor: '#E2E8F0',
+    backgroundColor: COLORS.border,
   },
   line: {
     width: 2,
     flex: 1,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: COLORS.border,
     marginVertical: 4,
   },
   lineCompleted: {
@@ -317,12 +317,12 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   shippingCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: '#252523',
     borderRadius: 20,
     padding: 24,
     marginBottom: 32,
     borderWidth: 1,
-    borderColor: '#F0F4F8',
+    borderColor: COLORS.border,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
     color: COLORS.textHeader,
   },
   summaryCard: {
-    backgroundColor: '#F7FAFC',
+    backgroundColor: '#252523',
     borderRadius: 24,
     padding: 24,
     marginTop: 32,
@@ -413,7 +413,7 @@ const styles = StyleSheet.create({
   },
   summaryDivider: {
     height: 1,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: COLORS.border,
     marginVertical: 16,
   },
   totalAmountRow: {
@@ -438,7 +438,7 @@ const styles = StyleSheet.create({
   },
   invoiceBtn: {
     flex: 1,
-    backgroundColor: '#EDF2F7',
+    backgroundColor: COLORS.white,
     height: 60,
     borderRadius: 12,
     flexDirection: 'row',
@@ -466,11 +466,11 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
-    backgroundColor: COLORS.white,
+    backgroundColor: '#000000',
     height: 90,
     paddingBottom: 25,
     borderTopWidth: 1,
-    borderTopColor: '#F0F2F5',
+    borderTopColor: COLORS.border,
     position: 'absolute',
     bottom: 0,
     left: 0,

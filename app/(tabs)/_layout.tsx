@@ -1,41 +1,27 @@
 import { HapticTab } from '@/components/haptic-tab';
-import { Image } from 'expo-image';
+import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
 
 const TAB_ICONS = {
-  home: {
-    active: require('@/assets/images/tabs/home-active.png'),
-    inactive: require('@/assets/images/tabs/home-inactive.png'),
-  },
-  cart: {
-    active: require('@/assets/images/tabs/cart-active.png'),
-    inactive: require('@/assets/images/tabs/cart-inactive.png'),
-  },
-  favorites: {
-    active: require('@/assets/images/tabs/favorite-active.png'),
-    inactive: require('@/assets/images/tabs/favorite-inactive.png'),
-  },
-  profile: {
-    active: require('@/assets/images/tabs/profile-active.png'),
-    inactive: require('@/assets/images/tabs/profile-inactive.png'),
-  },
+  home: { active: 'home', inactive: 'home-outline' },
+  cart: { active: 'cart', inactive: 'cart-outline' },
+  favorites: { active: 'heart', inactive: 'heart-outline' },
+  profile: { active: 'person', inactive: 'person-outline' },
 };
 
 function TabIcon({
   focused,
-  active,
-  inactive,
+  icon,
 }: {
   focused: boolean;
-  active: any;
-  inactive: any;
+  icon: { active: string; inactive: string };
 }) {
   return (
-    <Image
-      source={focused ? active : inactive}
-      style={{ width: 30, height: 30 }}
-      contentFit="contain"
+    <Ionicons
+      name={focused ? icon.active : icon.inactive}
+      size={28}
+      color={focused ? '#D4AF37' : '#9AA3A7'}
     />
   );
 }
@@ -44,7 +30,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#263A63',
+        tabBarActiveTintColor: '#D4AF37',
         tabBarInactiveTintColor: '#9AA3A7',
         headerShown: false,
         tabBarButton: HapticTab,
@@ -52,6 +38,7 @@ export default function TabLayout() {
           height: 85,
           paddingBottom: 12,
           paddingTop: 8,
+          backgroundColor: '#000',
         },
         tabBarLabelStyle: {
           fontSize: 15,
@@ -67,8 +54,7 @@ export default function TabLayout() {
           tabBarIcon: ({ focused }) => (
             <TabIcon
               focused={focused}
-              active={TAB_ICONS.home.active}
-              inactive={TAB_ICONS.home.inactive}
+              icon={TAB_ICONS.home}
             />
           ),
         }}
@@ -81,8 +67,7 @@ export default function TabLayout() {
           tabBarIcon: ({ focused }) => (
             <TabIcon
               focused={focused}
-              active={TAB_ICONS.cart.active}
-              inactive={TAB_ICONS.cart.inactive}
+              icon={TAB_ICONS.cart}
             />
           ),
         }}
@@ -95,8 +80,7 @@ export default function TabLayout() {
           tabBarIcon: ({ focused }) => (
             <TabIcon
               focused={focused}
-              active={TAB_ICONS.favorites.active}
-              inactive={TAB_ICONS.favorites.inactive}
+              icon={TAB_ICONS.favorites}
             />
           ),
         }}
@@ -109,8 +93,7 @@ export default function TabLayout() {
           tabBarIcon: ({ focused }) => (
             <TabIcon
               focused={focused}
-              active={TAB_ICONS.profile.active}
-              inactive={TAB_ICONS.profile.inactive}
+              icon={TAB_ICONS.profile}
             />
           ),
         }}

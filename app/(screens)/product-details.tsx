@@ -130,11 +130,11 @@ export default function ProductDetails() {
 
             <View style={styles.qtyRow}>
               <TouchableOpacity style={styles.qtyBtn} onPress={dec}>
-                <Ionicons name="remove" size={18} color="#273054" />
+                <Ionicons name="remove" size={18} color="#FFFFFF" />
               </TouchableOpacity>
               <Text style={styles.qtyText}>{qty}</Text>
               <TouchableOpacity style={styles.qtyBtn} onPress={inc}>
-                <Ionicons name="add" size={18} color="#273054" />
+                <Ionicons name="add" size={18} color="#FFFFFF" />
               </TouchableOpacity>
             </View>
           </View>
@@ -210,37 +210,37 @@ export default function ProductDetails() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#fff' },
+  safe: { flex: 1, backgroundColor: '#000000' },
   container: { paddingBottom: 80 },
-  mediaWrap: { height: 300, backgroundColor: '#f5f5f5', position: 'relative' },
+  mediaWrap: { height: 300, backgroundColor: '#252523', position: 'relative' },
   media: { width: '100%', height: '100%' },
   backBtn: { position: 'absolute', top: 14, left: 14, width: 40, height: 40, borderRadius: 10, backgroundColor: 'rgba(0,0,0,0.4)', alignItems: 'center', justifyContent: 'center' },
   heartBtn: { position: 'absolute', top: 14, right: 14, width: 40, height: 40, borderRadius: 10, backgroundColor: 'rgba(0,0,0,0.4)', alignItems: 'center', justifyContent: 'center' },
-  contentCard: { marginTop: -20, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#fff', padding: 20, minHeight: 320 },
-  title: { fontSize: 18, fontWeight: '900', color: '#273054', marginBottom: 8 },
-  price: { fontSize: 20, fontWeight: '900', color: '#273054', marginBottom: 16 },
+  contentCard: { marginTop: -20, borderTopLeftRadius: 20, borderTopRightRadius: 20, backgroundColor: '#252523', padding: 20, minHeight: 320 },
+  title: { fontSize: 18, fontWeight: '900', color: '#D4AF37', marginBottom: 8 },
+  price: { fontSize: 20, fontWeight: '900', color: '#D4AF37', marginBottom: 16 },
   rowSpacing: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
   colorRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   swatch: { width: 24, height: 24, borderRadius: 12 },
-  qtyRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#f5f5f5', borderRadius: 10, paddingHorizontal: 6, paddingVertical: 4 },
+  qtyRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#494845', borderRadius: 10, paddingHorizontal: 6, paddingVertical: 4 },
   qtyBtn: { width: 36, height: 36, borderRadius: 8, alignItems: 'center', justifyContent: 'center' },
-  qtyText: { fontSize: 16, fontWeight: '600', minWidth: 30, textAlign: 'center', color: '#273054' },
+  qtyText: { fontSize: 16, fontWeight: '600', minWidth: 30, textAlign: 'center', color: '#FFFFFF' },
   tabsRow: { flexDirection: 'row', gap: 8, marginBottom: 16, borderBottomWidth: 1, borderBottomColor: '#f0f0f0', paddingBottom: 12 },
   tabBtn: { paddingVertical: 8, paddingHorizontal: 14, borderRadius: 8 },
-  tabActive: { backgroundColor: '#ACB9ED' },
+  tabActive: { backgroundColor: '#494845' },
   tabText: { color: '#999', fontSize: 14, fontWeight: '500' },
-  tabTextActive: { color: '#273054', fontWeight: '900' },
+  tabTextActive: { color: '#D4AF37', fontWeight: '900' },
   description: { color: '#999', lineHeight: 20, marginBottom: 20, fontSize: 14 },
   infoRow: { borderTopWidth: 1, borderTopColor: '#f0f0f0', paddingTop: 16, gap: 16 },
   infoPair: { gap: 4 },
-  infoLabel: { color: '#273054', fontWeight: '600', fontSize: 13 },
+  infoLabel: { color: '#D4AF37', fontWeight: '600', fontSize: 13 },
   infoValue: { color: '#999', fontSize: 13 },
   bottomSpacer: { height: 20 },
   footer: { position: 'absolute', left: 16, right: 16, bottom: 16, flexDirection: 'row', alignItems: 'center', gap: 12 },
-  outlineBtn: { flex: 1, height: 48, borderRadius: 10, borderWidth: 1.5, borderColor: '#273054', backgroundColor: '#fff', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
-  outlineText: { color: '#273054', fontWeight: '600', fontSize: 14 },
-  primaryBtn: { display: 'flex', flexDirection: 'row', flex: 1, gap: 4, height: 48, borderRadius: 10, backgroundColor: '#273054', alignItems: 'center', justifyContent: 'center', shadowColor: '#273054', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 5 },
-  primaryText: { color: '#fff', fontWeight: '900', fontSize: 14 },
+  outlineBtn: { flex: 1, height: 48, borderRadius: 10, borderWidth: 1.5, borderColor: '#FFFFFF', backgroundColor: '#FFFFFF', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8 },
+  outlineText: { color: '#000000', fontWeight: '600', fontSize: 14 },
+  primaryBtn: { display: 'flex', flexDirection: 'row', flex: 1, gap: 4, height: 48, borderRadius: 10, backgroundColor: '#D4AF37', alignItems: 'center', justifyContent: 'center', shadowColor: '#D4AF37', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 5 },
+  primaryText: { color: '#FFFFFF', fontWeight: '900', fontSize: 14 },
   toast: {
     position: 'absolute',
     left: 24,

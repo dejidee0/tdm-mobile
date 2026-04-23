@@ -20,7 +20,7 @@ export default function FavoritesScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.headerBack} onPress={() => router.back()}>
-          <Ionicons name="chevron-back" size={28} color="#273054" />
+          <Ionicons name="chevron-back" size={28} color="#D4AF37" />
         </TouchableOpacity>
         <ThemedText style={styles.headerTitle}>Favorites</ThemedText>
         <View style={{ width: 40 }} />
@@ -74,7 +74,7 @@ export default function FavoritesScreen() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#000000',
   },
   header: {
     height: 60,
@@ -82,9 +82,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: '#fff',
+    backgroundColor: '#000000',
     borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
+    borderBottomColor: 'transparent',
   },
   headerBack: {
     width: 40,
@@ -95,15 +95,15 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontWeight: '600',
     fontSize: 18,
-    color: '#273054',
+    color: '#D4AF37',
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#000000',
   },
   productCard: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#252523',
     borderRadius: 14,
     overflow: 'hidden',
     shadowColor: '#000',
@@ -115,24 +115,24 @@ const styles = StyleSheet.create({
   productImage: {
     width: '100%',
     height: 140,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#252523',
   },
   productInfo: {
     padding: 12,
     gap: 4,
   },
   productTitle: {
-    color: '#AAAAAA',
+    color: '#FFFFFF',
     fontSize: 12,
     fontWeight: '500',
   },
   productPrice: {
     fontWeight: '900',
     fontSize: 14,
-    color: '#273054',
+    color: '#D4AF37',
   },
   tryNowLink: {
-    color: '#273054',
+    color: '#D4AF37',
     fontSize: 11,
     fontWeight: '600',
     marginTop: 4,

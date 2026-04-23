@@ -3,23 +3,23 @@ import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const COLORS = {
-  primary: '#1A2138',
+  primary: '#D4AF37',
   white: '#FFFFFF',
-  textHeader: '#11181C',
-  textSubHeader: '#7B818C',
-  accent: '#263A63',
+  textHeader: '#D4AF37',
+  textSubHeader: '#8e98a9',
+  accent: '#D4AF37',
   inactive: '#9AA3A7',
-  border: '#E2E8F0',
-  secondaryBg: '#F7FAFC',
+  border: '#494845',
+  secondaryBg: '#252523',
 };
 
 const ROOFING_ITEMS = [
@@ -145,12 +145,12 @@ export default function RoofingSelectionScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#000000',
   },
   header: {
     paddingHorizontal: 20,
     paddingVertical: 10,
-    backgroundColor: COLORS.white,
+    backgroundColor: '#000000',
   },
   categoryScroll: {
     marginTop: 16,
@@ -159,14 +159,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 28,
     paddingVertical: 14,
     borderRadius: 24,
-    backgroundColor: '#EDF2F7',
+    backgroundColor: '#494845',
     marginRight: 10,
   },
   activeCatTab: {
     backgroundColor: COLORS.accent,
   },
   catTabText: {
-    color: '#4A5568',
+    color: '#FFFFFF',
     fontWeight: '700',
     fontSize: 16,
   },
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   card: {
-    backgroundColor: COLORS.white,
+    backgroundColor: '#252523',
     borderRadius: 24,
     padding: 20,
     marginBottom: 20,
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 2,
     borderWidth: 1,
-    borderColor: '#F0F4F8',
+    borderColor: COLORS.border,
   },
   cardTop: {
     flexDirection: 'row',
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
   },
   cardDivider: {
     height: 1,
-    backgroundColor: '#F0F4F8',
+    backgroundColor: COLORS.border,
     marginBottom: 20,
   },
   cardBottom: {
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
   stepper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#EDF2F7',
+    backgroundColor: '#494845',
     borderRadius: 12,
     padding: 4,
   },
@@ -313,6 +313,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: COLORS.white,
   },
   quantity: {
     fontSize: 18,
@@ -359,11 +360,11 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
-    backgroundColor: COLORS.white,
+    backgroundColor: '#000000',
     height: 90,
     paddingBottom: 25,
     borderTopWidth: 1,
-    borderTopColor: '#F0F2F5',
+    borderTopColor: COLORS.border,
     position: 'absolute',
     bottom: 0,
     left: 0,
