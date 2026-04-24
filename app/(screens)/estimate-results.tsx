@@ -3,49 +3,80 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { apiFetch, getRenovationEstimates } from '../../services/api';
+import { apiFetch, createRenovationEstimate } from '../../services/api';
 
 export default function EstimateResults() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [estimates, setEstimates] = useState<any[]>([]);
+  const [creating, setCreating] = useState(false);
+  const [estimate, setEstimate] = useState<any>(null);
+  const [selectedLevel, setSelectedLevel] = useState<string>('economy');
 
   // Example parameters fallback
   const estimateRange = String(params.range || '$45k - $62k');
   const timeline = String(params.timeline || '6-8 Weeks');
   const complexity = String(params.complexity || 'Medium');
+  const routeEstimateId = String(params.estimateId || '');
 
-  async function fetchEstimates() {
+  async function fetchEstimateById(id: string) {
     setLoading(true);
     try {
-      const res = await getRenovationEstimates();
+      const res = await apiFetch(`/estimates/${encodeURIComponent(id)}`);
+      console.log({ res: res.data });
       if (res.ok && res.data) {
-        const data = res.data.estimates || [];
-        setEstimates(data);
+        setEstimate(res.data);
       } else {
-        throw new Error(res.data?.message || 'Failed to fetch estimates');
+        throw new Error(res.data?.message || 'Failed to fetch estimate');
       }
     } catch (e: any) {
-      Alert.alert('Error', e.message || 'Could not load estimates');
+      Alert.alert('Error', e.message || 'Could not load estimate');
     } finally {
       setLoading(false);
     }
   }
 
   useEffect(() => {
-    fetchEstimates();
-  }, []);
+    async function init() {
+      // If route provided estimateId, fetch it directly
+      if (routeEstimateId) {
+        await fetchEstimateById(routeEstimateId);
+        return;
+      }
+
+      // Otherwise create an estimate (AI) and then fetch from /estimates/{id}
+      setCreating(true);
+      try {
+        const payload = {
+          budgetRange: estimateRange,
+          timeline,
+          complexity,
+        };
+        const res = await createRenovationEstimate(payload);
+        if (res.ok && res.data && res.data.estimateId) {
+          const newId = String(res.data.estimateId);
+          await fetchEstimateById(newId);
+        } else {
+          throw new Error(res.data?.message || 'Failed to create estimate');
+        }
+      } catch (e: any) {
+        Alert.alert('Error', e.message || 'Unable to generate estimate');
+      } finally {
+        setCreating(false);
+      }
+    }
+
+    init();
+  }, [routeEstimateId]);
 
   async function handleSaveProject() {
     setSaving(true);
     try {
-      // Hit the AI projects creation endpoint
       const res = await apiFetch('/ai/projects', {
         method: 'POST',
         body: JSON.stringify({
-          title: 'New AI Estimate',
+          title: estimate?.projectName || 'New AI Estimate',
           budgetRange: estimateRange,
           timeline,
           complexity,
@@ -68,62 +99,90 @@ export default function EstimateResults() {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.headerRow}>
           <TouchableOpacity onPress={() => router.back()} style={styles.backBtn}>
-            <Ionicons name="chevron-back" size={22} color="#273054" />
+            <Ionicons name="chevron-back" size={22} color="#D4AF37" />
           </TouchableOpacity>
           <Text style={styles.header}>Estimate Results</Text>
         </View>
 
-        <Text style={styles.section}>Your Estimates</Text>
+        <Text style={styles.section}>Estimate Summary</Text>
 
-        {loading ? (
+        {loading || creating ? (
           <View style={styles.centerPlaceholder}>
             <ActivityIndicator size="large" color="#fff" />
           </View>
-        ) : estimates.length === 0 ? (
+        ) : !estimate ? (
           <View style={styles.emptyStateWrap}>
-            <Text style={styles.emptyTitle}>No estimates yet</Text>
-            <Text style={styles.emptySub}>Create a new project to generate an AI-powered estimate.</Text>
+            <Text style={styles.emptyTitle}>No estimate available</Text>
+            <Text style={styles.emptySub}>Try creating an estimate from the estimator screen.</Text>
             <TouchableOpacity style={styles.startButtonPrimary} onPress={() => router.push('/(screens)/ai-estimator') }>
               <Text style={styles.startButtonText}>Create Estimate</Text>
             </TouchableOpacity>
           </View>
         ) : (
-          estimates.map((est: any) => {
-            const id = est.estimateId || est.id;
-            const created = new Date(est.createdAtUtc || est.createdAt || Date.now());
-            const total = Number(est.totalEstimate ?? est.totalEstimate ?? 0);
-            const currency = est.currency || '';
-            return (
-              <TouchableOpacity
-                key={id}
-                style={styles.estimateCard}
-                onPress={() => router.push({ pathname: '/(screens)/detailed-estimate', params: { estimateId: id } })}
-                activeOpacity={0.9}
-              >
-                <View style={styles.cardRow}>
-                  <View style={styles.cardBody}>
-                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                      <View style={styles.cardHeaderLeft}>
-                        <Text style={styles.cardProjectName}>{est.projectName || 'Unnamed Project'}</Text>
-                        <Text style={styles.cardDate}>{created.toLocaleDateString()}</Text>
+          <>
+            <View style={styles.topCard}>
+              <Text style={styles.small}>AI ANALYSIS COMPLETE</Text>
+              <Text style={styles.range}>{estimate.budgetRange || estimateRange}</Text>
+              <Text style={styles.note}>Estimated Total Budget Range</Text>
+
+              <View style={styles.divider} />
+              <View style={styles.row}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.muted}>Timeline</Text>
+                  <Text style={styles.bold}>{estimate.timeline || timeline}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.muted, { textAlign: 'right' }]}>Complexity</Text>
+                  <Text style={[styles.bold, { textAlign: 'right' }]}>{estimate.complexity || complexity}</Text>
+                </View>
+              </View>
+            </View>
+
+            <View style={{ height: 18 }} />
+
+            <View style={styles.sectionRow}>
+              <Text style={[styles.section, { marginTop: 0 }]}>Finish Levels</Text>
+              <View style={styles.pill}><Text style={{ color: '#5b637a' }}>{(estimate.options || []).length || 3} Options</Text></View>
+            </View>
+
+            {(estimate.options || sampleOptions()).map((opt: any) => {
+              const isSelected = selectedLevel === (opt.key || opt.id || opt.name.toLowerCase());
+              const locked = !!opt.locked && !isSelected;
+              return (
+                <View key={opt.key || opt.id || opt.name} style={[styles.levelCard, isSelected ? styles.levelCardSelected : styles.levelCardLocked]}>
+                  <View style={styles.levelImage} />
+                  {isSelected && <View style={styles.badgeWrap}><Text style={styles.badgeText}>Selected</Text></View>}
+                  {locked && (
+                    <TouchableOpacity style={styles.lockOverlay} onPress={() => Alert.alert('Locked', 'Unlock this estimate to view details')}>
+                      <Ionicons name="lock-closed" size={16} color="#fff" />
+                      <Text style={styles.lockText}> Unlock Estimate</Text>
+                    </TouchableOpacity>
+                  )}
+
+                  <View style={styles.levelContent}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Text style={styles.levelTitle}>{opt.name}</Text>
+                      <Text style={styles.levelPrice}>{estimate.currency || '$'}{Number(opt.price || opt.amount || 0).toLocaleString()}</Text>
+                    </View>
+                    <Text style={styles.levelText}>{opt.subtitle}</Text>
+
+                    <View style={{ height: 12 }} />
+                    {(opt.features || []).map((f: string, i: number) => (
+                      <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                        <Ionicons name="checkmark-circle" size={18} color={isSelected ? '#2bb86b' : '#c5cbd6'} />
+                        <Text style={{ color: '#55606b' }}>{f}</Text>
                       </View>
-                      <Text style={{ color: '#FFF' }}>{currency} {total.toLocaleString()}</Text>
-                    </View>
-
-                    <View style={styles.chipsRow}>
-                      <View style={styles.chip}><Ionicons name="home-outline" size={12} color="#cfe0ff" /><Text style={styles.chipText}>{est.roomType || '—'}</Text></View>
-                      <View style={styles.chip}><Ionicons name="pricetag-outline" size={12} color="#cfe0ff" /><Text style={styles.chipText}>{id.split('-')[0]}</Text></View>
-                    </View>
-
-                    <View style={styles.cardFooterRight}>
-                      <Text style={styles.viewDetailsText}>View Detailed BOQ</Text>
-                      <Ionicons name="chevron-forward" size={16} color="#dfeaff" />
-                    </View>
+                    ))}
+                    {!isSelected && !locked && (
+                      <TouchableOpacity style={styles.selectBtn} onPress={() => setSelectedLevel(opt.key || opt.id || opt.name.toLowerCase())}>
+                        <Text style={styles.selectBtnText}>Select</Text>
+                      </TouchableOpacity>
+                    )}
                   </View>
                 </View>
-              </TouchableOpacity>
-            );
-          })
+              );
+            })}
+          </>
         )}
         <View style={{ height: 40 }} />
       </ScrollView>
@@ -145,17 +204,31 @@ const styles = StyleSheet.create({
   container: { padding: 20, paddingBottom: 120 },
   headerRow: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 6, height: 50 },
   backBtn: { padding: 6 },
-  header: { flex: 1, textAlign: 'center', fontSize: 18, fontWeight: '800', color: '#273054', marginRight: 36 },
+  header: { flex: 1, textAlign: 'center', fontSize: 18, fontWeight: '800', color: '#D4AF37', marginRight: 36 },
   card: { backgroundColor: '#243b8a', borderRadius: 14, padding: 20, marginTop: 10, shadowColor: '#243b8a', shadowOpacity: 0.12, shadowOffset: { width: 0, height: 6 }, shadowRadius: 12, elevation: 6 },
+  section: { marginTop: 22, color: '#D4AF37', fontWeight: '800', marginBottom: 8 },
+  topCard: { backgroundColor: '#243b8a', borderRadius: 14, padding: 20, shadowColor: '#243b8a', shadowOpacity: 0.12, shadowOffset: { width: 0, height: 6 }, shadowRadius: 12, elevation: 6 },
   small: { color: '#cfe0ff', fontWeight: '700', marginBottom: 8, fontSize: 12 },
   range: { color: '#fff', fontSize: 28, fontWeight: '900' },
   note: { color: '#dfeaff', marginTop: 6 },
   divider: { height: 1, backgroundColor: '#2f4fa8', marginVertical: 12 },
   row: { flexDirection: 'row', justifyContent: 'space-between' },
-  col: {},
   muted: { color: '#cfe0ff', fontWeight: '700' },
   bold: { color: '#fff', fontWeight: '900', marginTop: 6 },
-  section: { marginTop: 22, color: '#273054', fontWeight: '800', marginBottom: 8 },
+  sectionRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 18 },
+  pill: { backgroundColor: '#f3f5f8', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16 },
+  levelCard: { borderRadius: 16, overflow: 'hidden', marginBottom: 20, borderWidth: 2, borderColor: '#e6e9ef' },
+  levelCardSelected: { borderColor: '#243b8a' },
+  levelCardLocked: { opacity: 0.9 },
+  levelImage: { width: '100%', height: 140, backgroundColor: '#eee' },
+  levelContent: { padding: 14, backgroundColor: '#fff' },
+  badgeWrap: { position: 'absolute', left: 14, top: 110 },
+  badgeText: { backgroundColor: '#fff', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20, fontWeight: '700', color: '#243b8a' },
+  levelTitle: { fontSize: 20, fontWeight: '900', color: '#D4AF37' },
+  levelPrice: { color: '#1f3b82', fontWeight: '900', fontSize: 18 },
+  levelText: { color: '#8e98a9' },
+  selectBtn: { marginTop: 10, backgroundColor: '#D4AF37', paddingHorizontal: 14, paddingVertical: 10, borderRadius: 12, alignSelf: 'flex-start' },
+  selectBtnText: { color: '#fff', fontWeight: '900' },
   estimateCard: {
     backgroundColor: '#243b8a',
     borderRadius: 18,
@@ -231,9 +304,9 @@ const styles = StyleSheet.create({
   },
   centerPlaceholder: { padding: 26, alignItems: 'center', justifyContent: 'center', backgroundColor: '#243b8a', borderRadius: 12, marginBottom: 16 },
   emptyStateWrap: { alignItems: 'center', padding: 24 },
-  emptyTitle: { fontSize: 20, fontWeight: '900', color: '#273054', marginBottom: 8 },
+  emptyTitle: { fontSize: 20, fontWeight: '900', color: '#D4AF37', marginBottom: 8 },
   emptySub: { color: '#7B809A', textAlign: 'center', marginBottom: 12 },
-  startButtonPrimary: { backgroundColor: '#273054', paddingHorizontal: 20, paddingVertical: 12, borderRadius: 12 },
+  startButtonPrimary: { backgroundColor: '#D4AF37', paddingHorizontal: 20, paddingVertical: 12, borderRadius: 12 },
   startButtonText: { color: '#fff', fontWeight: '800' },
   cardRow: { flexDirection: 'row', gap: 14, alignItems: 'flex-start' },
   priceCurrency: { color: '#cfe0ff', fontWeight: '800', fontSize: 11, letterSpacing: 0.5, marginBottom: 2 },
@@ -244,21 +317,20 @@ const styles = StyleSheet.create({
   chip: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: 'rgba(79,157,255,0.08)', paddingVertical: 8, paddingHorizontal: 12, borderRadius: 20, borderWidth: 1, borderColor: 'rgba(207,224,255,0.25)' },
   chipText: { color: '#dfeaff', fontSize: 13, fontWeight: '700' },
   cardFooterRight: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 10, borderTopWidth: 1, borderTopColor: 'rgba(207,224,255,0.1)' },
-  levelCardSelected: { borderRadius: 12, borderWidth: 2, borderColor: '#22346f', overflow: 'hidden', marginBottom: 12 },
-  levelCardLocked: { borderRadius: 12, overflow: 'hidden', marginBottom: 12, position: 'relative' },
-  levelImage: { width: '100%', height: 140, backgroundColor: '#eee' },
-  levelContent: { padding: 14, backgroundColor: '#fff' },
-  levelContentLocked: { padding: 14, backgroundColor: '#fff', opacity: 0.9 },
-  badge: { position: 'absolute', left: 12, top: 12, backgroundColor: '#fff', paddingVertical: 6, paddingHorizontal: 10, borderRadius: 12, fontWeight: '700' },
-  levelTitle: { fontSize: 20, fontWeight: '900', color: '#273054' },
-  levelPrice: { position: 'absolute', right: 16, top: 16, color: '#1f3b82', fontWeight: '900', fontSize: 18 },
-  levelText: { color: '#8e98a9' },
   check: { color: '#2b7a4a', marginTop: 6 },
   lockOverlay: { position: 'absolute', left: '32%', top: '36%', backgroundColor: 'rgba(0,0,0,0.6)', padding: 10, borderRadius: 20 },
   lockText: { color: '#fff', fontWeight: '700' },
   footer: { position: 'absolute', left: 16, right: 16, bottom: 16, flexDirection: 'row', gap: 12 },
   outlineBtn: { flex: 1, height: 50, borderRadius: 12, borderWidth: 1.5, borderColor: '#ccc', alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' },
-  outlineText: { color: '#273054', fontWeight: '700' },
-  primaryBtn: { flex: 2, height: 50, borderRadius: 12, backgroundColor: '#273054', alignItems: 'center', justifyContent: 'center' },
+  outlineText: { color: '#D4AF37', fontWeight: '700' },
+  primaryBtn: { flex: 2, height: 50, borderRadius: 12, backgroundColor: '#D4AF37', alignItems: 'center', justifyContent: 'center' },
   primaryText: { color: '#fff', fontWeight: '900' },
 });
+
+function sampleOptions() {
+  return [
+    { key: 'economy', name: 'Economy', subtitle: 'Standard materials & finishes', price: 45000, features: ['Laminate countertops', 'Standard appliances', 'Vinyl flooring'] },
+    { key: 'premium', name: 'Premium', subtitle: 'Higher quality materials', price: 65000, locked: true, features: ['Quartz countertops', 'Upgraded appliances', 'Engineered hardwood'] },
+    { key: 'luxury', name: 'Luxury', subtitle: 'Top-tier finishes', price: 95000, locked: true, features: ['Marble countertops', 'High-end appliances', 'Solid hardwood'] },
+  ];
+}

@@ -82,15 +82,15 @@ export default function LoginScreen() {
                 onFocus={() => setFocusedInput('password')}
                 onBlur={() => setFocusedInput(null)}
               />
-              <TouchableOpacity
-                onPress={() => setShowPassword((s) => !s)}
-                style={styles.passwordIconButton}
-                accessibilityRole="button"
-                accessibilityLabel={showPassword ? "Hide password" : "Show password"}
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-              >
-                <Ionicons name={showPassword ? "eye-off" : "eye"} size={22} color="#273054" />
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setShowPassword((s) => !s)}
+                  style={styles.passwordIconButton}
+                  accessibilityRole="button"
+                  accessibilityLabel={showPassword ? "Hide password" : "Show password"}
+                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                >
+                  <Ionicons name={showPassword ? "eye-off" : "eye"} size={22} color="#D4AF37" />
+                </TouchableOpacity>
             </View>
           </View>
 
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.93)',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
   },
   container: {
     flex: 1,
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 16,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#252523',
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
@@ -168,14 +168,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: '900',
-    color: '#273054',
+    color: '#D4AF37',
     marginBottom: 8,
     width: '100%',
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 14,
-    color: '#000000',
+    color: '#FFFFFF',
     marginBottom: 8,
     lineHeight: 20,
   },
@@ -188,39 +188,39 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#273054',
+    color: '#D4AF37',
     marginLeft: 2,
   },
   input: {
     height: 52,
     paddingHorizontal: 16,
     borderWidth: 1.5,
-    borderColor: '#e8e8e8',
+    borderColor: '#494845',
     borderRadius: 12,
-    backgroundColor: '#fafafa',
+    backgroundColor: '#494845',
     fontSize: 15,
-    color: '#273054',
+    color: '#FFFFFF',
   },
   inputFocused: {
-    borderColor: '#273054',
+    borderColor: '#D4AF37',
     borderWidth: 2,
-    backgroundColor: '#fff',
+    backgroundColor: '#494845',
   },
   passwordInputWrapper: {
     position: 'relative',
     width: '100%',
     justifyContent: 'center',
     borderWidth: 1.5,
-    borderColor: '#e8e8e8',
+    borderColor: '#494845',
     borderRadius: 12,
-    backgroundColor: '#fafafa',
+    backgroundColor: '#494845',
   },
   passwordInput: {
     height: 52,
     paddingHorizontal: 16,
     paddingRight: 48,
     fontSize: 15,
-    color: '#273054',
+    color: '#FFFFFF',
   },
   passwordIconButton: {
     position: 'absolute',
@@ -228,20 +228,20 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   forgotPasswordText: {
-    color: '#000000',
+    color: '#FFFFFF',
     fontSize: 13,
     fontWeight: '600',
     alignSelf: 'flex-end',
     marginTop: 6,
   },
   loginButton: {
-    backgroundColor: '#273054',
+    backgroundColor: '#D4AF37',
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 12,
-    shadowColor: '#273054',
+    shadowColor: '#D4AF37',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 8,
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: '#e8e8e8',
+    backgroundColor: '#494845',
     marginVertical: 4,
   },
   signUpContainer: {
@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   signUpText: {
-    color: '#999',
+    color: '#FFFFFF',
     fontSize: 13,
   },
   signUpLink: {

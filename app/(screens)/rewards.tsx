@@ -36,13 +36,13 @@ export default function RewardsScreen() {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.headerRow}>
           <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-            <Ionicons name="chevron-back" size={24} color="#273054" />
+            <Ionicons name="chevron-back" size={24} color="#D4AF37" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Rewards</Text>
           <View style={{ width: 40 }} />
         </View>
 
-        <LinearGradient colors={['#273054', '#5367bc']} style={styles.pointsCard} start={[0, 0]} end={[1, 1]}>
+        <LinearGradient colors={['#D4AF37', '#D4AF37']} style={styles.pointsCard} start={[0, 0]} end={[1, 1]}>
           <Text style={styles.pointsLabel}>Your Points</Text>
           <Text style={styles.pointsAmount}>1,250</Text>
           <Text style={styles.pointsSub}>250 points until next reward</Text>
@@ -61,23 +61,23 @@ export default function RewardsScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#fff' },
+  safe: { flex: 1, backgroundColor: '#000000' },
   container: { padding: 16, paddingBottom: 40 },
-  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, paddingBottom: 16, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
+  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, paddingBottom: 16, borderBottomWidth: 1, borderBottomColor: 'transparent' },
   backBtn: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { fontWeight: '600', fontSize: 18, color: '#273054' },
-  pointsCard: { height: 140, borderRadius: 14, padding: 20, justifyContent: 'center', marginBottom: 24, overflow: 'hidden', shadowColor: '#273054', shadowOpacity: 0.1, shadowRadius: 10, shadowOffset: { width: 0, height: 4 }, elevation: 4 },
-  pointsLabel: { color: '#fff', fontSize: 12, fontWeight: '500', marginBottom: 8 },
-  pointsAmount: { color: '#fff', fontSize: 32, fontWeight: '800', marginBottom: 8 },
+  headerTitle: { fontWeight: '600', fontSize: 18, color: '#D4AF37' },
+  pointsCard: { height: 140, borderRadius: 14, padding: 20, justifyContent: 'center', marginBottom: 24, overflow: 'hidden', shadowColor: '#D4AF37', shadowOpacity: 0.1, shadowRadius: 10, shadowOffset: { width: 0, height: 4 }, elevation: 4 },
+  pointsLabel: { color: '#FFFFFF', fontSize: 12, fontWeight: '500', marginBottom: 8 },
+  pointsAmount: { color: '#FFFFFF', fontSize: 32, fontWeight: '800', marginBottom: 8 },
   pointsSub: { color: 'rgba(255,255,255,0.8)', fontSize: 13 },
-  availableTitle: { fontWeight: '900', fontSize: 16, color: '#273054', marginBottom: 12 },
-  listCard: { backgroundColor: '#fff', borderRadius: 12, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
-  rewardRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 14, borderBottomColor: '#f5f5f5', borderBottomWidth: 1 },
+  availableTitle: { fontWeight: '900', fontSize: 16, color: '#D4AF37', marginBottom: 12 },
+  listCard: { backgroundColor: '#252523', borderRadius: 12, overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
+  rewardRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 14, paddingHorizontal: 14, borderBottomColor: '#494845', borderBottomWidth: 1 },
   rewardIconWrap: { marginRight: 12 },
-  rewardIconInner: { width: 44, height: 44, borderRadius: 10, backgroundColor: '#ffe6e3', alignItems: 'center', justifyContent: 'center' },
+  rewardIconInner: { width: 44, height: 44, borderRadius: 10, backgroundColor: '#494845', alignItems: 'center', justifyContent: 'center' },
   rewardInfo: { flex: 1, gap: 3 },
-  rewardTitle: { fontSize: 15, fontWeight: '600', color: '#273054' },
-  rewardPoints: { fontSize: 12, color: '#999' },
-  claimBtn: { backgroundColor: '#e24a43', paddingVertical: 8, paddingHorizontal: 16, borderRadius: 8 },
-  claimText: { color: '#fff', fontWeight: '600', fontSize: 13 },
+  rewardTitle: { fontSize: 15, fontWeight: '600', color: '#D4AF37' },
+  rewardPoints: { fontSize: 12, color: '#FFFFFF' },
+  claimBtn: { backgroundColor: '#D4AF37', paddingVertical: 8, paddingHorizontal: 16, borderRadius: 8 },
+  claimText: { color: '#FFFFFF', fontWeight: '600', fontSize: 13 },
 });

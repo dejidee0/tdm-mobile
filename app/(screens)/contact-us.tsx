@@ -14,7 +14,7 @@ export default function ContactUsScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBack}>
-          <Ionicons name="chevron-back" size={24} color="#273054" />
+          <Ionicons name="chevron-back" size={24} color="#D4AF37" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Contact Us</Text>
         <View style={{ width: 40 }} />
@@ -91,19 +91,19 @@ export default function ContactUsScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#fff' },
-  header: { height: 60, paddingHorizontal: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
+  safe: { flex: 1, backgroundColor: '#000000' },
+  header: { height: 60, paddingHorizontal: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#000000', borderBottomWidth: 0, borderBottomColor: 'transparent' },
   headerBack: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { fontWeight: '600', fontSize: 18, color: '#273054' },
+  headerTitle: { fontWeight: '600', fontSize: 18, color: '#D4AF37' },
   container: { flex: 1, padding: 20, paddingBottom: 40 },
   section: { marginBottom: 28 },
-  sectionTitle: { fontSize: 20, fontWeight: '900', color: '#273054', marginBottom: 8 },
+  sectionTitle: { fontSize: 20, fontWeight: '900', color: '#D4AF37', marginBottom: 8 },
   sectionDesc: { fontSize: 14, color: '#999', lineHeight: 20 },
   formGroup: { marginBottom: 18 },
-  label: { fontSize: 14, fontWeight: '600', color: '#273054', marginBottom: 8 },
-  input: { backgroundColor: '#f5f5f5', borderRadius: 10, paddingHorizontal: 14, paddingVertical: 12, fontSize: 14, color: '#273054', borderWidth: 1, borderColor: '#f0f0f0' },
-  inputFocused: { borderColor: '#273054', borderWidth: 2, backgroundColor: '#fff' },
+  label: { fontSize: 14, fontWeight: '600', color: '#D4AF37', marginBottom: 8 },
+  input: { backgroundColor: '#494845', borderRadius: 10, paddingHorizontal: 14, paddingVertical: 12, fontSize: 14, color: '#FFFFFF', borderWidth: 1, borderColor: '#494845' },
+  inputFocused: { borderColor: '#D4AF37', borderWidth: 2, backgroundColor: '#494845' },
   messageInput: { minHeight: 120, paddingTop: 12, textAlignVertical: 'top' },
-  submitBtn: { backgroundColor: '#273054', paddingVertical: 14, borderRadius: 10, alignItems: 'center', marginTop: 10, marginBottom: 30, shadowColor: '#273054', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 5 },
-  submitText: { color: '#fff', fontWeight: '900', fontSize: 15 },
+  submitBtn: { backgroundColor: '#D4AF37', paddingVertical: 14, borderRadius: 10, alignItems: 'center', marginTop: 10, marginBottom: 30, shadowColor: '#D4AF37', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 5 },
+  submitText: { color: '#FFFFFF', fontWeight: '900', fontSize: 15 },
 });

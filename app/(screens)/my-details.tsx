@@ -49,7 +49,7 @@ export default function MyDetailsScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBack}>
-          <Ionicons name="chevron-back" size={24} color="#273054" />
+          <Ionicons name="chevron-back" size={24} color="#D4AF37" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>My Details</Text>
         <View style={{ width: 40 }} />
@@ -115,7 +115,7 @@ export default function MyDetailsScreen() {
 
         <TouchableOpacity style={styles.saveBtn} onPress={handleSave} activeOpacity={0.8} disabled={loading}>
           {loading ? (
-             <ActivityIndicator color="#fff" size="small" />
+            <ActivityIndicator color="#fff" size="small" />
           ) : (
             <Text style={styles.saveText}>Save Changes</Text>
           )}
@@ -126,17 +126,17 @@ export default function MyDetailsScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#fff' },
-  header: { height: 60, paddingHorizontal: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
+  safe: { flex: 1, backgroundColor: '#000' },
+  header: { height: 60, paddingHorizontal: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#000', borderBottomWidth: 1, borderBottomColor: '#000' },
   headerBack: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { fontWeight: '600', fontSize: 18, color: '#273054' },
+  headerTitle: { fontWeight: '600', fontSize: 18, color: '#D4AF37' },
   container: { flex: 1, padding: 20, paddingBottom: 40 },
-  sectionTitle: { fontSize: 20, fontWeight: '900', color: '#273054', marginBottom: 20 },
+  sectionTitle: { fontSize: 20, fontWeight: '900', color: '#D4AF37', marginBottom: 20 },
   row: { flexDirection: 'row', marginBottom: 12 },
   formGroup: { marginBottom: 18 },
-  label: { fontSize: 14, fontWeight: '600', color: '#273054', marginBottom: 8 },
-  input: { backgroundColor: '#f5f5f5', borderRadius: 10, paddingHorizontal: 14, paddingVertical: 12, fontSize: 14, color: '#273054', borderWidth: 1, borderColor: '#f0f0f0' },
-  inputFocused: { borderColor: '#273054', borderWidth: 2, backgroundColor: '#fff' },
-  saveBtn: { backgroundColor: '#273054', paddingVertical: 14, borderRadius: 10, alignItems: 'center', marginTop: 10, marginBottom: 30, shadowColor: '#273054', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 5 },
+  label: { fontSize: 14, fontWeight: '600', color: '#D4AF37', marginBottom: 8 },
+  input: { backgroundColor: '#f5f5f5', borderRadius: 10, paddingHorizontal: 14, paddingVertical: 12, fontSize: 14, color: '#D4AF37', borderWidth: 1, borderColor: '#f0f0f0' },
+  inputFocused: { borderColor: '#D4AF37', borderWidth: 2, backgroundColor: '#fff' },
+  saveBtn: { backgroundColor: '#D4AF37', paddingVertical: 14, borderRadius: 10, alignItems: 'center', marginTop: 10, marginBottom: 30, shadowColor: '#D4AF37', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 5 },
   saveText: { color: '#fff', fontWeight: '900', fontSize: 15 },
 });

@@ -1,4 +1,4 @@
-import { sendAIAssistantMessage, uploadRoomImage } from '@/services/api';
+import { createAIProject, generateAIImage, generateAIVideo, uploadRoomImage } from '@/services/api';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
@@ -6,29 +6,29 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  ActivityIndicator,
-  Alert,
-  Dimensions,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Alert,
+    Dimensions,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { useAuth } from '../../../context/AuthContext';
 
 const { width } = Dimensions.get('window');
 
 const COLORS = {
-  primary: '#1A2138',
-  textHeader: '#1A2138',
-  textSubHeader: '#7B809A',
+  primary: '#D4AF37',
+  textHeader: '#D4AF37',
+  textSubHeader: '#8e98a9',
   white: '#FFFFFF',
-  inputBg: '#FFFFFF',
+  inputBg: '#494845',
   shadow: '#000000',
-  accent: '#263A63',
+  accent: '#D4AF37',
   inactive: '#9AA3A7',
 };
 
@@ -39,6 +39,9 @@ export default function AIHomeScreen() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const [outputType, setOutputType] = useState<number>(2); // 2 = Video (default)
+  const [contextLabel, setContextLabel] = useState<string>('');
+  const [durationSeconds, setDurationSeconds] = useState<number>(9);
 
   const handlePickImage = async () => {
     const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -65,8 +68,9 @@ export default function AIHomeScreen() {
 
         const res = await uploadRoomImage(formData);
         if (res.ok) {
-           const finalUrl = res.data?.url || res.data?.data?.url || res.data || '';
-           setImageUrl(typeof finalUrl === 'string' ? finalUrl : finalUrl?.url || finalUrl?.fileUrl || '');
+           const finalUrl = res.data?.imageUrl || res.data?.image || res.data?.url || res.data?.data?.imageUrl || res.data?.data?.url || res.data;
+           const resolved = typeof finalUrl === 'string' ? finalUrl : finalUrl?.url || finalUrl?.fileUrl || '';
+           setImageUrl(resolved);
            Alert.alert('Upload successful', 'Image attached to prompt!');
         } else {
            Alert.alert('Upload Failed', 'Could not upload image.');
@@ -80,22 +84,68 @@ export default function AIHomeScreen() {
   };
 
   const handleGenerate = async () => {
-    if (!prompt.trim() && !imageUrl) return;
-    
+    // QA validations: require uploaded image and prompt
+    if (!imageUrl) {
+      Alert.alert('Missing image', 'Please upload a source image before generating.');
+      return;
+    }
+    if (!prompt.trim()) {
+      Alert.alert('Missing prompt', 'Please enter a prompt to generate from.');
+      return;
+    }
+
     setIsGenerating(true);
     try {
-      const messageWithUrl = imageUrl ? `${prompt}\n[Attached Image: ${imageUrl}]` : prompt;
-      const res = await sendAIAssistantMessage({ message: messageWithUrl, enableToolPlanning: false });
-      console.log({ res });
-      if (res.ok) {
-        setPrompt('');
-        setImageUrl('');
-        router.push('/(ai)/visualizer');
-      } else {
-        router.push('/(ai)/visualizer');
+      // 1. Create project
+      const createRes = await createAIProject({
+        sourceImageUrl: imageUrl,
+        outputType,
+        prompt,
+        contextLabel: contextLabel || undefined,
+      });
+
+      if (!createRes.ok) {
+        const msg = createRes.data?.message || 'Failed to create AI project';
+        Alert.alert('Project Error', msg);
+        return;
       }
-    } catch {
-      router.push('/(ai)/visualizer'); 
+
+      const project = createRes.data || createRes.data?.data || {};
+      const projectId = project.id || project.projectId || (project.data && project.data.id);
+      if (!projectId) {
+        Alert.alert('Project Error', 'Could not read project id from response.');
+        return;
+      }
+
+      // 2. Generate
+      if (outputType === 1) {
+        const genRes = await generateAIImage({ projectId });
+        if (!genRes.ok) {
+          const message = genRes.data?.message || 'Image generation failed.';
+          Alert.alert('Generation Error', message);
+          return;
+        }
+        Alert.alert('Generation started', 'Image generation completed.');
+      } else {
+        const genRes = await generateAIVideo({ projectId, durationSeconds });
+        if (!genRes.ok) {
+          const data = genRes.data || {};
+          const message = data.message || data?.error || 'Video generation failed.';
+          if (data.code === 'subscription_quota_exceeded') {
+            Alert.alert('Quota exceeded', message);
+          } else {
+            Alert.alert('Generation Error', message);
+          }
+          return;
+        }
+        Alert.alert('Generation started', 'Video generation completed.');
+      }
+
+      // Navigate to designs list (refresh will pick up new project)
+      router.push('/(ai)/designs');
+    } catch (err) {
+      console.error('[AI] generate error', err);
+      Alert.alert('Error', 'AI generation failed.');
     } finally {
       setIsGenerating(false);
     }
@@ -107,7 +157,7 @@ export default function AIHomeScreen() {
         <View style={styles.guestSection}>
           <View style={styles.guestCenter}>
             <View style={styles.guestIconWrap}>
-              <Ionicons name="lock-closed" size={48} color="#273054" />
+              <Ionicons name="lock-closed" size={48} color="#D4AF37" />
             </View>
             <Text style={styles.guestTitle}>Sign in to continue</Text>
             <Text style={styles.guestSubTitle}>Access AI-powered design tools, save projects, and manage your estimates.</Text>
@@ -131,14 +181,45 @@ export default function AIHomeScreen() {
               <Text style={styles.subGreeting}>What shall we build today?</Text>
             </View>
 
-            {/* Dropdown/Selector */}
-            <TouchableOpacity style={styles.selector}>
-              <Text style={styles.selectorText}>Text to Image</Text>
-              <Ionicons name="chevron-down" size={20} color={COLORS.white} />
-            </TouchableOpacity>
+            {/* Output controls */}
+            <View style={styles.controlsRow}>
+              <View style={styles.outputToggle}>
+                <TouchableOpacity
+                  onPress={() => setOutputType(2)}
+                  style={[styles.outputButton, outputType === 2 && styles.outputActive]}
+                >
+                  <Text style={outputType === 2 ? styles.outputActiveText : styles.outputText}>Video</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => setOutputType(1)}
+                  style={[styles.outputButton, outputType === 1 && styles.outputActive]}
+                >
+                  <Text style={outputType === 1 ? styles.outputActiveText : styles.outputText}>Image</Text>
+                </TouchableOpacity>
+              </View>
+
+              <TextInput
+                placeholder="Room label (optional)"
+                placeholderTextColor="#9AA3A7"
+                style={styles.contextInput}
+                value={contextLabel}
+                onChangeText={setContextLabel}
+              />
+
+              {outputType === 2 && (
+                <TextInput
+                  placeholder="Duration (s)"
+                  placeholderTextColor="#9AA3A7"
+                  keyboardType="numeric"
+                  style={styles.durationInput}
+                  value={String(durationSeconds)}
+                  onChangeText={(t) => setDurationSeconds(Number(t) || 9)}
+                />
+              )}
+            </View>
 
             {/* Recent Generations Card */}
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.cardContainer}
               onPress={() => router.push('/(ai)/designs')}
             >
@@ -177,7 +258,7 @@ export default function AIHomeScreen() {
               <TouchableOpacity 
                 style={styles.sendButton} 
                 onPress={handleGenerate}
-                disabled={isGenerating || (!prompt.trim() && !imageUrl)}
+                disabled={isGenerating || !prompt.trim() || !imageUrl}
               >
                 {isGenerating ? (
                   <ActivityIndicator color={COLORS.white} size="small" />
@@ -196,7 +277,7 @@ export default function AIHomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#000000',
   },
   scrollContent: {
     paddingHorizontal: 24,
@@ -212,20 +293,20 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F7FAFC',
+    backgroundColor: '#494845',
     justifyContent: 'center',
     alignItems: 'center',
   },
   greeting: {
     fontSize: 48,
     fontWeight: '800',
-    color: '#2D3748',
+    color: COLORS.textHeader,
     letterSpacing: -1,
   },
   subGreeting: {
     fontSize: 48,
     fontWeight: '600',
-    color: '#8289A5',
+    color: COLORS.textSubHeader,
     lineHeight: 52,
     letterSpacing: -1,
   },
@@ -289,12 +370,61 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginRight: 10,
   },
+  controlsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 18,
+  },
+  outputToggle: {
+    flexDirection: 'row',
+    backgroundColor: '#494845',
+    borderRadius: 12,
+    padding: 4,
+  },
+  outputButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  outputActive: {
+    backgroundColor: COLORS.primary,
+  },
+  outputText: {
+    color: COLORS.textSubHeader,
+    fontWeight: '600',
+  },
+  outputActiveText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+  },
+  contextInput: {
+    flex: 1,
+    backgroundColor: COLORS.inputBg,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    color: COLORS.white,
+  },
+  durationInput: {
+    width: 86,
+    backgroundColor: COLORS.inputBg,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    color: COLORS.white,
+    textAlign: 'center',
+  },
   cardContainer: {
     width: '100%',
     height: 240,
     borderRadius: 24,
     overflow: 'hidden',
-    backgroundColor: '#F7FAFC',
+    backgroundColor: '#252523',
   },
   cardImage: {
     width: '100%',
@@ -319,7 +449,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   inputWrapper: {
-    backgroundColor: COLORS.white,
+    backgroundColor: '#252523',
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
@@ -332,7 +462,7 @@ const styles = StyleSheet.create({
     shadowRadius: 20,
     elevation: 8,
     borderWidth: 1,
-    borderColor: '#F0F2F5',
+    borderColor: COLORS.border,
   },
   addIcon: {
     marginRight: 16,
@@ -340,7 +470,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 19,
-    color: COLORS.textHeader,
+    color: COLORS.white,
     fontWeight: '400',
   },
   sendButton: {
@@ -353,11 +483,11 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
-    backgroundColor: COLORS.white,
+    backgroundColor: '#000000',
     height: 100,
     paddingBottom: 30,
     borderTopWidth: 1,
-    borderTopColor: '#F7FAFC',
+    borderTopColor: COLORS.border,
     position: 'absolute',
     bottom: 0,
     left: 0,
@@ -383,7 +513,7 @@ const styles = StyleSheet.create({
   guestSection: {
     flex: 1,
     paddingHorizontal: 24,
-    backgroundColor: '#F7FAFC',
+    backgroundColor: '#000000',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -396,13 +526,13 @@ const styles = StyleSheet.create({
     height: 80,
     marginBottom: 20,
     opacity: 0.8,
-    tintColor: '#273054',
+    tintColor: '#D4AF37',
   },
   guestIconWrap: {
     width: 90,
     height: 90,
     borderRadius: 45,
-    backgroundColor: '#EDF2F7',
+    backgroundColor: '#494845',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 24,
@@ -410,20 +540,20 @@ const styles = StyleSheet.create({
   guestTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#273054',
+    color: '#D4AF37',
     marginBottom: 12,
     textAlign: 'center',
   },
   guestSubTitle: {
     fontSize: 16,
-    color: '#7B809A',
+    color: COLORS.textSubHeader,
     textAlign: 'center',
     marginBottom: 32,
     lineHeight: 24,
   },
   loginBtn: {
     width: '100%',
-    backgroundColor: '#1A2138',
+    backgroundColor: COLORS.primary,
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
@@ -442,13 +572,13 @@ const styles = StyleSheet.create({
   signupBtn: {
     width: '100%',
     borderWidth: 1.5,
-    borderColor: '#E0E7FF',
+    borderColor: COLORS.border,
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
   },
   signupBtnText: {
-    color: '#1A2138',
+    color: COLORS.white,
     fontSize: 16,
     fontWeight: '600',
   },

@@ -159,7 +159,7 @@ export default function HomeScreen() {
         {/* Header Section */}
         <ImageBackground source={require('@/assets/images/homehero.png')} style={styles.header} imageStyle={styles.headerImage}>
           <LinearGradient
-            colors={['#273054B0', '#414D7982']}
+            colors={['#000000B0', '#00000080']}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 1 }}
             style={StyleSheet.absoluteFillObject}
@@ -299,7 +299,7 @@ export default function HomeScreen() {
                     </View>
 
                     <TouchableOpacity style={styles.heart} onPress={() => toggleSaved(item.id)}>
-                      <Ionicons name={isSaved(item.id) ? "heart" : "heart-outline"} size={22} color={isSaved(item.id) ? "#e24a43" : "#273054"} />
+                      <Ionicons name={isSaved(item.id) ? "heart" : "heart-outline"} size={22} color={isSaved(item.id) ? "#e24a43" : "#D4AF37"} />
                     </TouchableOpacity>
                   </Animated.View>
                 );
@@ -326,7 +326,7 @@ export default function HomeScreen() {
             ]}
           >
             <LinearGradient
-              colors={['#7F8ECB', '#6977B0']}
+              colors={['#D4AF37', '#D4AF37']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.banner}
@@ -356,7 +356,7 @@ export default function HomeScreen() {
             ]}
           >
             <LinearGradient
-              colors={['#7F8ECB', '#6977B0']}
+              colors={['#D4AF37', '#D4AF37']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.banner}
@@ -427,7 +427,7 @@ export default function HomeScreen() {
                     </View>
 
                     <TouchableOpacity style={styles.heart} onPress={() => toggleSaved(item.id)}>
-                      <Ionicons name={isSaved(item.id) ? "heart" : "heart-outline"} size={22} color={isSaved(item.id) ? "#e24a43" : "#273054"} />
+                      <Ionicons name={isSaved(item.id) ? "heart" : "heart-outline"} size={22} color={isSaved(item.id) ? "#e24a43" : "#D4AF37"} />
                     </TouchableOpacity>
                   </Animated.View>
                 );
@@ -437,8 +437,8 @@ export default function HomeScreen() {
           )}
         </Animated.View>
       </ScrollView>
-      <TouchableOpacity 
-        style={styles.floatingLogo} 
+      <TouchableOpacity
+        style={styles.floatingLogo}
         activeOpacity={0.8}
         onPress={() => router.push('/(ai)')}
       >
@@ -451,13 +451,13 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#000000',
   },
   container: {
     paddingBottom: 20,
   },
   header: {
-    backgroundColor: '#273054B0',
+    backgroundColor: '#D4AF37B0',
     paddingHorizontal: 24,
     paddingVertical: 40,
     justifyContent: 'center',
@@ -484,7 +484,7 @@ const styles = StyleSheet.create({
   searchRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#494845',
     borderRadius: 12,
     paddingHorizontal: 14,
     height: 48,
@@ -496,15 +496,15 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: 14,
-    color: '#273054',
+    color: '#FFFFFF',
   },
   searchInputFocused: {
-    color: '#273054',
+    color: '#FFFFFF',
   },
   card: {
     marginTop: -30,
     paddingTop: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#000',
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     overflow: 'hidden',
@@ -537,7 +537,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   categoryItemActive: {
-    backgroundColor: '#273054',
+    backgroundColor: '#D4AF37',
   },
   categoryIcon: {
     width: 32,
@@ -552,7 +552,7 @@ const styles = StyleSheet.create({
     width: 72,
   },
   catTextActive: {
-    color: '#273054',
+    color: '#D4AF37',
   },
   sectionContainer: {
     marginBottom: 24,
@@ -565,7 +565,7 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   seeAllLink: {
-    color: '#273054',
+    color: '#D4AF37',
     fontSize: 12,
     fontWeight: '600',
   },
@@ -599,7 +599,7 @@ const styles = StyleSheet.create({
     color: '#121212',
   },
   tryNowLink: {
-    color: '#273054',
+    color: '#D4AF37',
     fontSize: 11,
     fontWeight: '600',
     marginTop: 4,
@@ -671,7 +671,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#273054',
+    backgroundColor: '#D4AF37',
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',

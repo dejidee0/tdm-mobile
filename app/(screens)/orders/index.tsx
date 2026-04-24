@@ -17,7 +17,7 @@ export default function OrdersScreen() {
     <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.headerBack}>
-          <Ionicons name="chevron-back" size={24} color="#273054" />
+          <Ionicons name="chevron-back" size={24} color="#D4AF37" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>My Orders</Text>
         <View style={{ width: 40 }} />
@@ -66,15 +66,15 @@ export default function OrdersScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#fff' },
-  header: { height: 60, paddingHorizontal: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
+  safe: { flex: 1, backgroundColor: '#000' },
+  header: { height: 60, paddingHorizontal: 16, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#000', borderBottomWidth: 1, borderBottomColor: '#000' },
   headerBack: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { fontWeight: '600', fontSize: 18, color: '#273054' },
-  container: { flex: 1, backgroundColor: '#fff' },
-  card: { flexDirection: 'row', alignItems: 'center', padding: 14, backgroundColor: '#fff', borderRadius: 12, marginBottom: 10, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
+  headerTitle: { fontWeight: '600', fontSize: 18, color: '#D4AF37' },
+  container: { flex: 1, backgroundColor: '#000' },
+  card: { flexDirection: 'row', alignItems: 'center', padding: 14, backgroundColor: '#D4AF37', borderRadius: 12, marginBottom: 10, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
   thumb: { width: 80, height: 80, borderRadius: 10, backgroundColor: '#f5f5f5' },
   cardInfo: { flex: 1, marginLeft: 14, gap: 4 },
-  cardTitle: { fontWeight: '600', fontSize: 14, color: '#273054' },
+  cardTitle: { fontWeight: '600', fontSize: 14, color: '#fff' },
   cardEstimate: { fontSize: 12, color: '#999' },
-  cardPrice: { fontWeight: '900', fontSize: 15, color: '#273054' },
+  cardPrice: { fontWeight: '900', fontSize: 15, color: '#fff' },
 });

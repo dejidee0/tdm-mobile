@@ -1,28 +1,28 @@
 import { useAuth } from '@/context/AuthContext';
-import { getDesigns } from '@/services/api';
+import { getAIProjects } from '@/services/api';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
-  ActivityIndicator,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const COLORS = {
-  primary: '#1A2138',
-  bannerBg: '#354475',
+  primary: '#D4AF37',
+  bannerBg: '#252523',
   white: '#FFFFFF',
-  textHeader: '#11181C',
-  textSubHeader: '#7B818C',
-  tagBg: '#EDF2F7',
-  accent: '#263A63',
+  textHeader: '#D4AF37',
+  textSubHeader: '#8e98a9',
+  tagBg: '#494845',
+  accent: '#D4AF37',
   inactive: '#9AA3A7',
 };
 
@@ -38,11 +38,12 @@ export default function AIDesignsScreen() {
   const fetchDesigns = React.useCallback(async () => {
     setLoading(true);
     try {
-      console.log('[AIDesigns] Fetching designs...');
-      const res = await getDesigns();
+      console.log('[AIDesigns] Fetching AI projects...');
+      const res = await getAIProjects();
       console.log('[AIDesigns] Response:', JSON.stringify(res, null, 2));
 
       if (res.ok && res.data) {
+        // API returns an array of projects
         const data = Array.isArray(res.data) ? res.data : (res.data.items || res.data.data || []);
         setDesigns(data);
       }
@@ -168,7 +169,7 @@ export default function AIDesignsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#000000',
   },
   scrollContent: {
     paddingHorizontal: 20,
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#494845',
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
@@ -228,14 +229,14 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   upgradeButton: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.accent,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 12,
     alignSelf: 'flex-start',
   },
   upgradeText: {
-    color: COLORS.accent,
+    color: COLORS.white,
     fontWeight: 'bold',
     fontSize: 14,
   },
@@ -248,17 +249,17 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   categoryTag: {
-    backgroundColor: '#E2E8F0',
+    backgroundColor: '#494845',
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 24,
     marginRight: 10,
   },
   activeTag: {
-    backgroundColor: '#2D3748',
+    backgroundColor: COLORS.accent,
   },
   categoryText: {
-    color: '#4A5568',
+    color: COLORS.textSubHeader,
     fontWeight: '600',
     fontSize: 16,
   },
@@ -269,7 +270,7 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   designCard: {
-    backgroundColor: COLORS.white,
+    backgroundColor: '#252523',
     borderRadius: 24,
     overflow: 'hidden',
     shadowColor: '#000',
@@ -290,7 +291,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 16,
     right: 16,
-    backgroundColor: 'rgba(255,255,255,0.95)',
+    backgroundColor: '#252523',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 10,
@@ -298,7 +299,7 @@ const styles = StyleSheet.create({
   categoryBadgeText: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#2D3748',
+    color: COLORS.textHeader,
   },
   cardInfo: {
     padding: 20,
@@ -328,7 +329,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   actionIcon: {
-    backgroundColor: '#EFF2F7',
+    backgroundColor: '#494845',
     width: 42,
     height: 42,
     borderRadius: 12,
@@ -337,11 +338,11 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
-    backgroundColor: COLORS.white,
+    backgroundColor: '#000000',
     height: 90,
     paddingBottom: 25,
     borderTopWidth: 1,
-    borderTopColor: '#F0F2F5',
+    borderTopColor: COLORS.border,
     position: 'absolute',
     bottom: 0,
     left: 0,

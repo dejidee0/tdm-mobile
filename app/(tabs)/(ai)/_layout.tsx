@@ -13,7 +13,6 @@ export default function AILayout() {
         <View style={guestStyles.guestCenter}>
           <Image source={require('@/assets/images/icons/id.png')} style={guestStyles.guestIcon} />
           <Text style={guestStyles.guestTitle}>You are not logged in</Text>
-          <Text style={guestStyles.guestSubTitle}>Sign in to access AI tools and generate designs.</Text>
           <TouchableOpacity style={guestStyles.loginBtn} onPress={() => router.push('/(auth)/login')}>
             <Text style={guestStyles.loginBtnText}>Log In</Text>
           </TouchableOpacity>
@@ -46,7 +45,7 @@ const guestStyles = StyleSheet.create({
   guestSection: {
     flex: 1,
     paddingHorizontal: 24,
-    backgroundColor: '#fff',
+    backgroundColor: '#000000',
   },
   guestCenter: {
     flex: 1,
@@ -59,27 +58,27 @@ const guestStyles = StyleSheet.create({
     height: 80,
     marginBottom: 20,
     opacity: 0.8,
-    tintColor: '#273054',
+    tintColor: '#D4AF37',
   },
   guestTitle: {
     fontSize: 22,
     fontWeight: '800',
-    color: '#273054',
+    color: '#D4AF37',
     marginBottom: 8,
   },
   guestSubTitle: {
     fontSize: 15,
-    color: '#666',
+    color: '#FFFFFF',
     textAlign: 'center',
     marginBottom: 30,
     lineHeight: 22,
   },
   loginBtn: {
-    backgroundColor: '#273054',
+    backgroundColor: '#D4AF37',
     paddingVertical: 14,
     paddingHorizontal: 50,
     borderRadius: 12,
-    shadowColor: '#273054',
+    shadowColor: '#D4AF37',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
